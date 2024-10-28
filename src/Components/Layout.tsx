@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 
 
 function Layout(props:{search:undefined|string,setSearch:any,setLogOut:any,logOut:boolean}){
-    const [pageSwitch, setPageSwitch] = useState<number>(1)
+    // const [pageSwitch, setPageSwitch] = useState<number>(1)
     const navigate = useNavigate()
 
     const header = useRef<any>()

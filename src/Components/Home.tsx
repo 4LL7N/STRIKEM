@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+// import styled from "styled-components";
 import './CSS/home.css'
 
 interface filmdata {
@@ -340,36 +340,36 @@ function Home(props: {
 
 export default Home;
 
-const TrendingBox = styled.div`
-  display: flex;
-  gap: 15px;
-  overflow: scroll;
-  flex-wrap: nowrap;
-  max-width: 100%;
-  margin-bottom: 24px;
-  border-radius: 8px;
-    padding: 0px;
+// const TrendingBox = styled.div`
+//   display: flex;
+//   gap: 15px;
+//   overflow: scroll;
+//   flex-wrap: nowrap;
+//   max-width: 100%;
+//   margin-bottom: 24px;
+//   border-radius: 8px;
+//     padding: 0px;
 
-  @media (min-width: 768px) {
-    /* width: 718px; */
-    margin-bottom: 39px;
-    gap: 40px;
-  }
+//   @media (min-width: 768px) {
+//     /* width: 718px; */
+//     margin-bottom: 39px;
+//     gap: 40px;
+//   }
 
-  @media (min-width: 1024px) {
-    /* width: 1305px; */
-    overflow-x: scroll;
+//   @media (min-width: 1024px) {
+//     /* width: 1305px; */
+//     overflow-x: scroll;
 
-    &::-webkit-scrollbar {
-      appearance: none;
-      height: 5px;
-      width: 300px;
-    }
+//     &::-webkit-scrollbar {
+//       appearance: none;
+//       height: 5px;
+//       width: 300px;
+//     }
 
-    &::-webkit-scrollbar-thumb {
-      height: 3px;
-      border-radius: 5px;
-      background-color: gray;
-    }
-  }
-`;
+//     &::-webkit-scrollbar-thumb {
+//       height: 3px;
+//       border-radius: 5px;
+//       background-color: gray;
+//     }
+//   }
+// `;
