@@ -1,0 +1,67 @@
+
+/* 
+.PoolSection{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #10141E;
+  width: 100vw;
+  min-height: 100vh;
+  padding: 0px 0px 120px 0px;
+}
+
+@media (min-width: 768px) { 
+  .PoolSection {
+       padding:  0px 25px 120px 25px ;
+  }
+} */
+
+.direction-div-vertical {
+  min-width: 30px;
+  max-width: 70px;
+  width: 7%; 
+  transform: translate(0, -50%);
+}
+
+.direction-div-horizontal {
+  max-width: 70px;
+  min-width: 30px;
+
+  width: 7%; 
+  transform: translate(-50%, 0);
+}
+
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s ease-in forwards;
+}
+
+.div-container {
+  transition: top 0.3s ease, left 0.3s ease; /* Add transition for smooth movement */
+}
+
+.imageScroll::-webkit-scrollbar{
+    appearance: none;
+    height: 5px;
+    width: 300px;
+    margin-top: 10px;
+  }
+
+
+.imageScroll::-webkit-scrollbar-thumb{
+    height:3px;
+    border-radius: 5px;
+    background-color: gray;
+  }

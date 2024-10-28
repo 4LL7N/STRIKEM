@@ -1,0 +1,13 @@
+.imageScroll::-webkit-scrollbar{
+    appearance: none;
+    height: 5px;
+    width: 300px;
+    margin-top: 10px;
+  }
+
+
+.imageScroll::-webkit-scrollbar-thumb{
+    height:3px;
+    border-radius: 5px;
+    background-color: gray;
+  }
