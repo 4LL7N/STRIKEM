@@ -339,7 +339,7 @@ function Pool() {
                     className="hover:opacity-30 transition-opacity duration-300 "
                     style={{ padding: "5px", borderRadius: "5px" }}
                   >
-                    <img src="/public/images/east.png" className="img-fluid" />
+                    <img src="/images/east.png" className="img-fluid" />
                   </button>
                 </div>
 
@@ -358,7 +358,7 @@ function Pool() {
                     className="hover:opacity-30 transition-opacity duration-300 "
                     style={{ padding: "5px", borderRadius: "5px" }}
                   >
-                    <img src="/public/images/west.png" className="img-fluid" />
+                    <img src="/images/west.png" className="img-fluid" />
                   </button>
                 </div>
 
@@ -379,7 +379,7 @@ function Pool() {
                     className="hover:opacity-30 transition-opacity duration-300 "
                     style={{ padding: "5px", borderRadius: "5px" }}
                   >
-                    <img src="/public/images/north.png" className="img-fluid" />
+                    <img src="/images/north.png" className="img-fluid" />
                   </button>
                 </div>
 
@@ -398,7 +398,7 @@ function Pool() {
                     className="hover:opacity-30 transition-opacity duration-300 "
                     style={{ padding: "5px", borderRadius: "5px" }}
                   >
-                    <img src="/public/images/south.png" className="img-fluid" />
+                    <img src="/images/south.png" className="img-fluid" />
                   </button>
                 </div>
 
@@ -455,7 +455,7 @@ function Pool() {
 
                   <img
                     ref={img}
-                    src="/public/images/test2.jpg"
+                    src="/images/test2.jpg"
                     id="largeImage"
                     className="img-fluid"
                   />
@@ -481,10 +481,10 @@ function Pool() {
         <div className="relative w-full pb-[54%] rounded-[18px] overflow-hidden " >
           <img src={poolInfo.pics[imageI].image} className="absolute top-0 left-0 w-full h-full object-cover image-smooth" alt="billiard image" />
           <div className={` absolute top-1/2 transform -translate-y-1/2 right-[10px] w-[48px] h-[48px] flex items-center justify-center rounded-[50%] bg-[#0000002a] ${imageI == poolInfo.pics.length - 1 && ' hidden'} `} onClick={()=>{handlePicture('right')}} >
-            <img src="/public/media/right.svg" className=" w-2/3 h-2/3 " alt="" />
+            <img src="/media/right.svg" className=" w-2/3 h-2/3 " alt="" />
           </div>
           <div className={` absolute  top-1/2 left-[10px]  transform -translate-y-1/2 w-[48px] h-[48px] flex items-center justify-center rounded-[50%] bg-[#0000002a] ${imageI == 0 && ' hidden'} `} onClick={()=>{handlePicture('left')}} >
-            <img src="/public/media/left.svg" className=" w-2/3 h-2/3  " alt="" />
+            <img src="/media/left.svg" className=" w-2/3 h-2/3  " alt="" />
           </div>
         </div>
         <div className="max-w-[100%]  flex gap-[14px] overflow-x-auto flex-nowrap pb-[14px] imageScroll " >

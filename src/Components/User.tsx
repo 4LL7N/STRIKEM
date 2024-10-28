@@ -118,7 +118,7 @@ function User() {
       <main className="w-[100%] flex flex-col justify-center">
         <div className=" flex w-[90%] gap-[30px] items-center justify-start ">
           <img
-            src={userInfo?.profile_image}
+            src={`/${userInfo?.profile_image}`}
             alt="profile"
             className="w-[256px] h-[256px] rounded-[50%] mx-[20px] "
           />
@@ -238,7 +238,7 @@ function User() {
                         </div>
                         <div className=" flex items-center justify-between" >
                             <h2 className="text-[#fff] text-[96px] ">{outcome == 'WIN'?item.result_winner:item.result_loser}</h2>
-                        <img src="public/media/vs1.png" className="w-[96px] h-[96px]" alt="" />
+                        <img src="/media/vs1.png" className="w-[96px] h-[96px]" alt="" />
                             <h2  className="text-[#fff] text-[96px] " >{outcome == 'LOSE'?item.result_winner:item.result_loser}</h2>
                         </div>
                         <div className="flex items-center gap-[12px] " >
@@ -278,7 +278,7 @@ function User() {
                         </div>
                         <div className=" flex items-center justify-between" >
                             <h2 className="text-[#fff] text-[96px] ">{item.result_winner}</h2>
-                        <img src="public/media/vs1.png" className="w-[96px] h-[96px]" alt="" />
+                        <img src="/media/vs1.png" className="w-[96px] h-[96px]" alt="" />
                             <h2  className="text-[#fff] text-[96px] " >{item.result_loser}</h2>
                         </div>
                         <div className="flex items-center gap-[12px] " >
@@ -319,7 +319,7 @@ function User() {
                         </div>
                         <div className=" flex items-center justify-between" >
                             <h2 className="text-[#fff] text-[96px] ">{item.result_loser}</h2>
-                        <img src="public/media/vs1.png" className="w-[96px] h-[96px]" alt="" />
+                        <img src="/media/vs1.png" className="w-[96px] h-[96px]" alt="" />
                             <h2  className="text-[#fff] text-[96px] " >{item.result_winner}</h2>
                         </div>
                         <div className="flex items-center gap-[12px] " >

@@ -43,7 +43,7 @@ function App() {
   }, []);
 
   const users= useRef<usersObj[]>([]) //useRef
-  const [search, setSearch] = useState<undefined|string>()
+  const [search, setSearch] = useState<string>('')
   const [logOut, setLogOut] = useState<boolean>(false)
 
 
