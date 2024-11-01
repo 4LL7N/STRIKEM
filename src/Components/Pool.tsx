@@ -402,7 +402,7 @@ function Pool() {
       <header className="w-[100%]  bg-[#161D2F] p-[16px] md:px-[20px] md:mx-[25px] flex items-center justify-between md:rounded-[10px] mb-[24px] md:my-[24px] lg:my-[48px] ">
         <Link
           to="/home"
-          className='w-[25px] h-[25px] bg-[length:25px_25px] bg-[url("/public/images/logo1.png")] md:w-[32px] md:h-[32px] md:bg-[length:32px_32px] '
+          className='w-[25px] h-[25px] bg-[length:25px_25px] bg-[url("/images/logo1.png")] md:w-[32px] md:h-[32px] md:bg-[length:32px_32px] '
         />
         <img
           className="w-[24px] h-[24px] md:w-[32px] md:h-[32px] lg:w-[40px] lg:h-[40px]"
