@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -37,7 +38,6 @@ function Home(props: {
 }) {
   const navigate = useNavigate();
 
-//   const [rezolution, serRezolution] = useState(window.innerWidth);
   const [nearby, setNearby] = useState<PoolHall[]>([]);
     const [recommended,setRecommended] = useState<PoolHall[]>([])
 

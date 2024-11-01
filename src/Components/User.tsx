@@ -151,7 +151,7 @@ function User() {
                   Points:{userInfo?.total_points}
                 </p>
               </div>
-              <div className=" flex-col flex-1 flex-col">
+              <div className=" flex-col flex-1 ">
                 <p className="text-[#fff] text-[24px] ">
                   Email:{userInfo?.user.email}
                 </p>
