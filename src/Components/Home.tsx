@@ -5,25 +5,7 @@ import { useNavigate } from "react-router-dom";
 // import styled from "styled-components";
 import './CSS/home.css'
 
-interface filmdata {
-  title: string;
-  thumbnail: {
-    trending?: {
-      small: string;
-      large: string;
-    };
-    regular: {
-      small: string;
-      medium: string;
-      large: string;
-    };
-  };
-  year: number;
-  category: string;
-  rating: string;
-  isBookmarked: boolean;
-  isTrending: boolean;
-}
+
 interface PoolHall {
   id: number;
   title: string;
@@ -44,9 +26,13 @@ interface Picture {
   image: string;
 }
 
+interface ImageObject {
+  id: number;
+  image: string;
+}
+
 function Home(props: {
-  Filmdata: filmdata[];
-  poolHubData: PoolHall[];
+  
   search: string;
 }) {
   const navigate = useNavigate();
@@ -58,15 +44,14 @@ function Home(props: {
   const Fetch = async () => {
     try {
       const response = await axios.get(
-        "http://134.122.88.48/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316",
+        "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316",
         {
           headers: {
             Authorization:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwMjA3MzA0LCJpYXQiOjE3MzAxMjA5MDQsImp0aSI6IjEzNTc5NTVkODJjNTRjOGVhYTk3N2I5ZmQ1MWQ3MGI3IiwidXNlcl9pZCI6MTl9.EjArhfgKcSW6m_w8FUWEjY8WU14tvD7XUuxZzUVIEW0",
+              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwNTU2Njc1LCJpYXQiOjE3MzA0NzAyNzUsImp0aSI6ImU1YTdmNTMzZmMyNDQ0YTBhODc4NTgxNjczMWM2MjM0IiwidXNlcl9pZCI6MTl9.DCojpLiIrCpR5eEtsz2I0eCY-YWJz2Gp8lQhVdtq29I",
           },
         }
       );
-
       const data = response.data;
       const newData: any = [];
       data?.forEach((item: PoolHall) => {
@@ -84,19 +69,21 @@ function Home(props: {
         newData.push(pool);
       });
       setNearby(newData);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
-  useEffect(() => {
-    Fetch();
-    const Recommended = [...props.poolHubData];
-    const newData: any = [];
+      const PoolHousesResponse = await axios.get("https://strikem.site/api/poolhouses/",{
+        headers:{
+          'Authorization':'JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwNTU2Njc1LCJpYXQiOjE3MzA0NzAyNzUsImp0aSI6ImU1YTdmNTMzZmMyNDQ0YTBhODc4NTgxNjczMWM2MjM0IiwidXNlcl9pZCI6MTl9.DCojpLiIrCpR5eEtsz2I0eCY-YWJz2Gp8lQhVdtq29I'
+        }
+      });
+    console.log(PoolHousesResponse);
+    
+    const Recommended = [... PoolHousesResponse.data];
+   
+    const PoolHousesNewData: any = [];
     Recommended?.forEach((item) => {
       const pool = item;
       const imageData: any = [];
-      pool.pics.forEach((element) => {
+      pool.pics.forEach((element:ImageObject) => {
         let image = {};
         image = {
           id: element.id,
@@ -105,65 +92,34 @@ function Home(props: {
         imageData.push(image);
       });
       pool.pics = [...imageData];
-      newData.push(pool);
+      PoolHousesNewData.push(pool);
     });
-    console.log(newData)
-    setRecommended(newData);
+    console.log(PoolHousesNewData)
+    setRecommended(PoolHousesNewData);
 
-    // function handleResize() {
-    //   serRezolution(window.innerWidth);
-    // }
-    // window.addEventListener("resize", handleResize);
 
-    // return () => {
-    //   window.removeEventListener("resize", handleResize);
-    // };
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    Fetch();
+    
   }, []);
 
-  // const Trending = props.Filmdata.filter((item:filmdata) => item.isTrending == true)
-  // const Recommended = props.Filmdata.filter((_item:filmdata,index:number) => index > Trending.length - 1)
-
   
-
-  // const [TrendingbookMark, setTrendingBookMark] = useState<boolean>(true)
-//   const [RecommendedBookMark, setRecommendedBookMark] = useState<boolean>(true);
-
-//   function categrory(icon: string) {
-//     if (icon == "Movie") {
-//       return "/images/icon-category-movie.svg";
-//     } else if (icon == "TV Series") {
-//       return "/images/icon-category-tv.svg";
-//     }
-//   }
-
   let SearchArr: PoolHall[] = [];
 
   function search() {
-    // props.poolHubData.forEach((item) => {
-    //   for (let i = 0; i < item.title.length; i++) {
-    //     if (
-    //       item.title.slice(
-    //         0 + i,
-    //         props.search?.length ? props.search.length + i : 0
-    //       ) == props.search
-    //     ) {
-    //       find = true;
-    //     }
-    //     // console.log("for " +item.title.slice(0 + i, props.search?.length? props.search.length + i:0));
-    //   }
-    //   if (find) {
-    //     SearchArr?.push(item);
-    //   }
-    //   find = false;
-    // });
+    
     if(props.search){
         SearchArr = recommended?.filter((item)=> item.title.toLowerCase().includes(props.search.toLowerCase()))
     }
-    console.log(SearchArr)
+    
   }
 
   useEffect(() => {
-    console.log(props.search)
     search();
   }, [props.search]);
 
@@ -178,7 +134,7 @@ function Home(props: {
         <section className="flex flex-col w-[100%] bg-[#10141E] px-[16px] md:px-[0]">
           <div className="max-w-[100%]" >
             <h1 className="text-[#FFF] text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] ">
-              Trending
+              Nearby
             </h1>
             <div className="imageScroll flex gap-[15px] overflow-x-scroll flex-nowrap max-w-[91%] mb-[24px] rounded-[8px] p-0 md:mb-[39px] md:gap-[40px] lg:overflow-x-scroll" >
               {nearby?.map((item: PoolHall, index: number) => {
@@ -223,7 +179,7 @@ function Home(props: {
             </h1>
             <div className="flex flex-wrap gap-x-[15px] gap-y-[16px] md:gap-y-[29.5px] md:gap-x-[24px] lg:gap-x-[60px] lg:gap-y-[32px]">
               {recommended?.map((item, index) => {
-                
+                console.log(item)
                 return (
                   <div
                     key={index}

@@ -65,11 +65,11 @@ function User() {
   const Fetch = async () => {
     try {
       const response = await axios.get(
-        `http://134.122.88.48/api/players/?user__username=gurjika`,
+        `https://strikem.site/auth/users/me/`,
         {
           headers: {
             Authorization:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwMjA3MzA0LCJpYXQiOjE3MzAxMjA5MDQsImp0aSI6IjEzNTc5NTVkODJjNTRjOGVhYTk3N2I5ZmQ1MWQ3MGI3IiwidXNlcl9pZCI6MTl9.EjArhfgKcSW6m_w8FUWEjY8WU14tvD7XUuxZzUVIEW0",
+              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwNTc3ODg3LCJpYXQiOjE3MzA0OTE0ODcsImp0aSI6IjA1YWRlODg3MGIwZDRkYTY5NWNiNGU0MWNiYjQ0ZGI1IiwidXNlcl9pZCI6MTl9.zACZdslyLBAakdu7LrlCEa5yt8gEnqT60RXWlgmvLyM",
           },
         }
       );
@@ -78,11 +78,11 @@ function User() {
       setUserInfo(data);
       
       const historyResponse = await axios.get(
-        `http://134.122.88.48/api/history/`,
+        `https://strikem.site/api/history/`,
         {
           headers: {
             Authorization:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwMjA3MzA0LCJpYXQiOjE3MzAxMjA5MDQsImp0aSI6IjEzNTc5NTVkODJjNTRjOGVhYTk3N2I5ZmQ1MWQ3MGI3IiwidXNlcl9pZCI6MTl9.EjArhfgKcSW6m_w8FUWEjY8WU14tvD7XUuxZzUVIEW0",
+              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwNTc3ODg3LCJpYXQiOjE3MzA0OTE0ODcsImp0aSI6IjA1YWRlODg3MGIwZDRkYTY5NWNiNGU0MWNiYjQ0ZGI1IiwidXNlcl9pZCI6MTl9.zACZdslyLBAakdu7LrlCEa5yt8gEnqT60RXWlgmvLyM",
           },
         }
       );

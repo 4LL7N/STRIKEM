@@ -22,21 +22,21 @@ import { FaBuilding } from "react-icons/fa";
 interface Rating {
   id: number;
   poolhouse: {
-      address: string;
-      id: number;
-      title: string;
+    address: string;
+    id: number;
+    title: string;
   };
   rate: number;
   rater: {
-      profile_image: string;
-      total_points: number;
-      user: {
-        email: string;
-        first_name: string;
-        id: number;
-        last_name: string;
-        username:string
-      };
+    profile_image: string;
+    total_points: number;
+    user: {
+      email: string;
+      first_name: string;
+      id: number;
+      last_name: string;
+      username: string;
+    };
   };
   review: string;
 }
@@ -61,13 +61,12 @@ interface Picture {
   image: string;
 }
 
-
-const Star = ({ fillPercentage }:{fillPercentage:number}) => {
+const Star = ({ fillPercentage }: { fillPercentage: number }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      width="2.7rem"  // Use viewport width for responsiveness
+      width="2.7rem" // Use viewport width for responsiveness
       height="2.7rem" // Use viewport width for responsiveness
       style={{ position: "relative" }}
     >
@@ -86,11 +85,11 @@ const Star = ({ fillPercentage }:{fillPercentage:number}) => {
   );
 };
 
-const StarRating = ({ rating }:{rating:number|undefined}) => {
+const StarRating = ({ rating }: { rating: number | undefined }) => {
   const maxStars = 5;
 
   // Split the rating into full stars and fractional part
-  if(!rating)return
+  if (!rating) return;
   const fullStars = Math.floor(rating);
   const partialStar = rating - fullStars;
 
@@ -110,22 +109,26 @@ const StarRating = ({ rating }:{rating:number|undefined}) => {
 
   return (
     // <div className="flex justify-center w-[60%] mx-auto">
-      <div className="flex space-x-1">{stars}</div>
+    <div className="flex space-x-1">{stars}</div>
     // </div>
   );
 };
 
-
 function Pool() {
-  const  location  = useLocation();
+  const location = useLocation();
   const Navigate = useNavigate();
   // const poolHub = Poolhubs.find((item) => item.id == Number(Pool))
-  const [ratings,setRatings] = useState<Rating[]>([]) 
-  const avgRating = location.state.avg_rating
+  const [ratings, setRatings] = useState<Rating[]>([]);
 
-  const id = location.pathname.split('/')[location.pathname.split('/').length-1]
-  const poolInfo:PoolHall = location.state
-  const [imageI,setImageI] = useState<number>(0)
+  const [whiteBoxHeight,setWhiteBoxHeight] = useState<number>(0)
+  const [whiteBoxWidth,setWhiteBoxWidth] = useState<number>(0)
+
+  const avgRating = location.state.avg_rating;
+
+  const id =
+    location.pathname.split("/")[location.pathname.split("/").length - 1];
+  const poolInfo: PoolHall = location.state;
+  const [imageI, setImageI] = useState<number>(0);
 
   let positionVertical = 1;
   let positionHorizontal = 1;
@@ -133,23 +136,27 @@ function Pool() {
   const img = useRef<any>();
   const overlayDiv = useRef<any>();
   const imgContainer = useRef<any>();
-  
+  const mapImage = useRef<any>();
+  const whiteBoxRef = useRef<any>()
+
   const Fetch = async () => {
     try {
-      const response = await axios.get(`http://134.122.88.48/api/poolhouses/${id}/ratings/`,{
-        headers:{
-          'Authorization':'JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwMjA3MzA0LCJpYXQiOjE3MzAxMjA5MDQsImp0aSI6IjEzNTc5NTVkODJjNTRjOGVhYTk3N2I5ZmQ1MWQ3MGI3IiwidXNlcl9pZCI6MTl9.EjArhfgKcSW6m_w8FUWEjY8WU14tvD7XUuxZzUVIEW0'
+      const response = await axios.get(
+        `https://strikem.site/api/poolhouses/${id}/ratings/`,
+        {
+          headers: {
+            Authorization:
+              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwNTU2Njc1LCJpYXQiOjE3MzA0NzAyNzUsImp0aSI6ImU1YTdmNTMzZmMyNDQ0YTBhODc4NTgxNjczMWM2MjM0IiwidXNlcl9pZCI6MTl9.DCojpLiIrCpR5eEtsz2I0eCY-YWJz2Gp8lQhVdtq29I",
+          },
         }
-      });
-      setRatings(response.data)
+      );
+      setRatings(response.data);
       // console.log(response.data);
-      
-      
+
       // setPoolHubData(response.data)
     } catch (err) {
       console.error(err);
     }
-    
   };
   useEffect(() => {
     if (img.current.complete) {
@@ -160,11 +167,37 @@ function Pool() {
 
     window.addEventListener("resize", handleResize);
 
-    Fetch()
+    Fetch();
+
+
+
+    setTimeout(()=>{
+    const heightPercent =
+      (imgContainer?.current?.getBoundingClientRect().height * 100) /
+      img?.current?.getBoundingClientRect().height /
+      100;
+    const widthPercent =
+      (imgContainer?.current?.getBoundingClientRect().width * 100) /
+      img?.current?.getBoundingClientRect().width /
+      100;
+
+    const whiteBoxHeight = Number(
+      mapImage?.current?.getBoundingClientRect().height * heightPercent
+    );
+    const whiteBoxWidth = Number(
+      mapImage?.current?.getBoundingClientRect().width * widthPercent
+    );
+
+    setWhiteBoxHeight(whiteBoxHeight)
+    setWhiteBoxWidth(whiteBoxWidth)
+
+    
+
+      
+    },100)
+    
+
   }, []);
-
-
-
 
   function handleResize() {
     const sectionNumHorizontal = img.current?.naturalWidth / 1920;
@@ -280,16 +313,89 @@ function Pool() {
     button.disabled = false;
   }
 
-  function handlePicture(direction:string){
-    switch (direction){
-      case 'left':
-        setImageI((i)=> i-1)
-        break
-      case 'right':
-        setImageI((i)=> i+1)
-        break
+  function handlePicture(direction: string) {
+    switch (direction) {
+      case "left":
+        setImageI((i) => i - 1);
+        break;
+      case "right":
+        setImageI((i) => i + 1);
+        break;
     }
   }
+  useEffect(()=>{
+    whiteBoxRef.current.style.left
+  })
+
+  function mapNavigation(direction:string) {
+
+    switch (direction){
+      case 'east':{
+        let left = whiteBoxRef.current.style.left
+        if(left.includes('px')){
+          left = left.slice(0, -2)
+        }
+        whiteBoxRef.current.style.left = `${Number(left) + whiteBoxWidth}px`;
+        break
+      }
+      case 'west':{
+        let left = whiteBoxRef.current.style.left
+        if(left.includes('px')){
+          left = left.slice(0, -2)
+        }
+        whiteBoxRef.current.style.left = `${Number(left) - whiteBoxWidth}px`;
+        break
+      }
+      case 'south':{
+        let top = whiteBoxRef.current.style.top
+        if(top.includes('px')){
+          top = top.slice(0, -2)
+        }
+        whiteBoxRef.current.style.top = `${Number(top) + whiteBoxHeight}px`;
+        break
+      }
+      case 'north':{
+        let top = whiteBoxRef.current.style.top
+        if(top.includes('px')){
+          top = top.slice(0, -2)
+        }
+        whiteBoxRef.current.style.top = `${Number(top) - whiteBoxHeight}px`;
+        break
+      }
+    }
+    
+  }
+
+  const ImageMap = () => {
+    setTimeout(()=>{
+    whiteBoxRef.current.style.left = '0px'
+      whiteBoxRef.current.style.top = '0px'
+    },1)
+    return (
+      <div className=" absolute right-0 top-0 w-[20%] z-1 border border-black ">
+        <div className="relative w-[100%] h-[100%] ">
+          <img
+            ref={mapImage}
+            className="max-w-[100%] max-h-[100%] "
+            src="/images/test2.jpg"
+            alt=""
+          />
+
+          <div
+            ref={whiteBoxRef}
+            style={{
+              position:'absolute',
+              width: `${whiteBoxWidth}px`,
+              height: `${whiteBoxHeight}px`,
+              transition: 'left 0.3s ease, top 0.3s ease',
+            }}
+            className={`bg-[#ffffff8b] `}
+          />
+        </div>
+      </div>
+    );
+  };
+
   return (
     <section className="flex flex-col items-center bg-[#10141E] w-screen min-h-screen  pb-[120px] md:px-[25px]">
       <header className="w-[100%]  bg-[#161D2F] p-[16px] md:px-[20px] md:mx-[25px] flex items-center justify-between md:rounded-[10px] mb-[24px] md:my-[24px] lg:my-[48px] ">
@@ -300,243 +406,273 @@ function Pool() {
         <img
           className="w-[24px] h-[24px] md:w-[32px] md:h-[32px] lg:w-[40px] lg:h-[40px]"
           src="/images/image-avatar.png"
-          onClick={() => {Navigate('/user')}}
+          onClick={() => {
+            Navigate("/user");
+          }}
         />
       </header>
-    <main className="w-[100%] px-[10px]" >
-      <div className="container-fluid max-w-[90%] p-0  ">
-        <div className="row justify-content-center  ">
-          <div className="col-lg-10 col-12 p-0 rounded-[10px]">
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+      <main className="w-[100%] px-[10px]">
+        <div className="container-fluid max-w-[90%] p-0  ">
+          <div className="row justify-content-center  ">
+            <div className="col-lg-10 col-12 p-0 rounded-[10px] relative ">
+              <ImageMap />
               <div
-                ref={imgContainer}
-                id="imageContainer"
                 style={{
-                  position: "relative",
-                  width: "100%",
-                  overflow: "hidden",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
-                className="rounded-[10px]"
               >
                 <div
+                  ref={imgContainer}
+                  id="imageContainer"
                   style={{
-                    position: "absolute",
-                    right: "0",
-                    top: "50%",
-                    zIndex: "40",
+                    position: "relative",
+                    width: "100%",
+                    overflow: "hidden",
                   }}
-                  className="direction-div-vertical me-1"
-                >
-                  <button
-                    onClick={() => navigate("east", false)}
-                    id="east"
-                    className="hover:opacity-30 transition-opacity duration-300 "
-                    style={{ padding: "5px", borderRadius: "5px" }}
-                  >
-                    <img src="/images/east.png" className="img-fluid" />
-                  </button>
-                </div>
-
-                <div
-                  style={{
-                    position: "absolute",
-                    left: "0",
-                    top: "50%",
-                    zIndex: "40",
-                  }}
-                  className="direction-div-vertical ms-1"
-                >
-                  <button
-                    onClick={() => navigate("west", false)}
-                    id="west"
-                    className="hover:opacity-30 transition-opacity duration-300 "
-                    style={{ padding: "5px", borderRadius: "5px" }}
-                  >
-                    <img src="/images/west.png" className="img-fluid" />
-                  </button>
-                </div>
-
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "0",
-                    left: "50%",
-                    zIndex: "40",
-                  }}
-                  className="direction-div-horizontal  mt-1"
-                >
-                  <button
-                    onClick={() => {
-                      navigate("north", false);
-                    }}
-                    id="north"
-                    className="hover:opacity-30 transition-opacity duration-300 "
-                    style={{ padding: "5px", borderRadius: "5px" }}
-                  >
-                    <img src="/images/north.png" className="img-fluid" />
-                  </button>
-                </div>
-
-                <div
-                  style={{
-                    position: "absolute",
-                    left: "50%",
-                    zIndex: "40",
-                    bottom: "0",
-                  }}
-                  className="direction-div-horizontal mb-1"
-                >
-                  <button
-                    onClick={() => navigate("south", false)}
-                    id="south"
-                    className="hover:opacity-30 transition-opacity duration-300 "
-                    style={{ padding: "5px", borderRadius: "5px" }}
-                  >
-                    <img src="/images/south.png" className="img-fluid" />
-                  </button>
-                </div>
-
-                <div
-                  ref={overlayDiv}
-                  style={{
-                    position: "absolute",
-                    top: "0",
-                    left: "0",
-                    zIndex: "0",
-                  }}
-                  className="div-container fade-in"
+                  className="rounded-[10px]"
                 >
                   <div
-                    className=" absolute top-[11.9%] left-[8.7%] z-40 w-[6.95%] h-[31.3%] hover:bg-[#000000a4] cursor-pointer flex justify-center items-center "
-                    // style={{
-                    //   position: "absolute",
-                    //   top: "149.99px",
-                    //   left: "292.5px",
-                    //   zIndex: "40",
-                    //   width:'6.95%',
-                    //   height:'31.3%',
-                    //   backgroundColor:'#000000a4'
-                    // }}
+                    style={{
+                      position: "absolute",
+                      right: "0",
+                      top: "50%",
+                      zIndex: "40",
+                    }}
+                    className="direction-div-vertical me-1"
                   >
-                    <div className="flex flex-col items-center" >
-                    <p className="text-[#fff] text-[100%]" >{ratings[0]?.rater?.user?.username} vs {ratings[1]?.rater?.user?.username} </p>
-                    <p className="text-[#fff] text-[100%]">1:30:29</p>
-                    </div>
+                    <button
+                      onClick={() => {navigate("east", false),mapNavigation("east")}}
+                      id="east"
+                      className="hover:opacity-30 transition-opacity duration-300 "
+                      style={{ padding: "5px", borderRadius: "5px" }}
+                    >
+                      <img src="/images/east.png" className="img-fluid" />
+                    </button>
                   </div>
 
-                  {/* <div
-                    className="w-md-auto"
+                  <div
                     style={{
                       position: "absolute",
-                      top: "10%",
-                      right: "20%",
+                      left: "0",
+                      top: "50%",
                       zIndex: "40",
                     }}
+                    className="direction-div-vertical ms-1"
                   >
-                    <button>hey</button>
-                  </div> */}
+                    <button
+                      onClick={() =>{navigate("west", false),mapNavigation("west")}}
+                      id="west"
+                      className="hover:opacity-30 transition-opacity duration-300 "
+                      style={{ padding: "5px", borderRadius: "5px" }}
+                    >
+                      <img src="/images/west.png" className="img-fluid" />
+                    </button>
+                  </div>
 
-                  {/* <div
+                  <div
                     style={{
                       position: "absolute",
-                      top: "10%",
-                      right: "50%",
+                      top: "0",
+                      left: "50%",
                       zIndex: "40",
                     }}
+                    className="direction-div-horizontal  mt-1"
                   >
-                    <button>hey2</button>
-                  </div> */}
+                    <button
+                      onClick={() => 
+                        {navigate("north", false),mapNavigation("north")}
+                      }
+                      id="north"
+                      className="hover:opacity-30 transition-opacity duration-300 "
+                      style={{ padding: "5px", borderRadius: "5px" }}
+                    >
+                      <img src="/images/north.png" className="img-fluid" />
+                    </button>
+                  </div>
 
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "50%",
+                      zIndex: "40",
+                      bottom: "0",
+                    }}
+                    className="direction-div-horizontal mb-1"
+                  >
+                    <button
+                      onClick={() => {navigate("south", false),mapNavigation("south")}}
+                      id="south"
+                      className="hover:opacity-30 transition-opacity duration-300 "
+                      style={{ padding: "5px", borderRadius: "5px" }}
+                    >
+                      <img src="/images/south.png" className="img-fluid" />
+                    </button>
+                  </div>
+                  <div
+                    ref={overlayDiv}
+                    style={{
+                      position: "absolute",
+                      top: "0",
+                      left: "0",
+                      zIndex: "0",
+                    }}
+                    className="div-container fade-in"
+                  >
+                    <div className=" absolute top-[11.9%] left-[8.7%] z-40 w-[6.95%] h-[31.3%] hover:bg-[#000000a4] cursor-pointer flex justify-center items-center ">
+                      <div className="flex flex-col items-center">
+                        <p className="text-[#fff] text-[100%]">
+                          {ratings[0]?.rater?.user?.username} vs{" "}
+                          {ratings[1]?.rater?.user?.username}{" "}
+                        </p>
+                        <p className="text-[#fff] text-[100%]">1:30:29</p>
+                      </div>
+                    </div>
+
+                    <img
+                      ref={img}
+                      src="/images/test2.jpg"
+                      id="largeImage"
+                      className="img-fluid"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="mt-[24px] lg:mt-[48px] flex flex-col justify-center md:justify-start md:ml-[2.5%] w-[100%] ">
+          <h1 className=" text-[#fff]  text-[32px] md:text-[48px]">
+            {poolInfo.title}
+          </h1>
+          <div className="flex items-center gap-[5px]">
+            <MdTableRestaurant
+              className=" w-[24px] md:w-[32px] h-[24px] md:h-[32px] "
+              style={{ color: "white" }}
+            />
+
+            <h3 className=" text-[#fff]  text-[24px] md:text-[32px]">
+              {poolInfo.table_count}
+            </h3>
+          </div>
+          <div className="flex items-center gap-[5px]">
+            <FaBuilding
+              className=" w-[24px] md:w-[32px] h-[24px] md:h-[32px] "
+              style={{ color: "white" }}
+            />
+            <h3 className=" text-[#fff] text-[24px] md:text-[32px]">
+              {poolInfo.address}
+            </h3>
+          </div>
+        </div>
+        <div className="w-[95%] mt-[24px] lg:mt-[48px] flex flex-col gap-[14px] md:ml-[2.5%] ">
+          <div className="relative w-full pb-[54%] rounded-[18px] overflow-hidden ">
+            <img
+              src={poolInfo.pics[imageI].image}
+              className="absolute top-0 left-0 w-full h-full object-cover image-smooth"
+              alt="billiard image"
+            />
+            <div
+              className={` absolute top-1/2 transform -translate-y-1/2 right-[10px] w-[48px] h-[48px] flex items-center justify-center rounded-[50%] bg-[#0000002a] ${
+                imageI == poolInfo.pics.length - 1 && " hidden"
+              } `}
+              onClick={() => {
+                handlePicture("right");
+              }}
+            >
+              <img src="/media/right.svg" className=" w-2/3 h-2/3 " alt="" />
+            </div>
+            <div
+              className={` absolute  top-1/2 left-[10px]  transform -translate-y-1/2 w-[48px] h-[48px] flex items-center justify-center rounded-[50%] bg-[#0000002a] ${
+                imageI == 0 && " hidden"
+              } `}
+              onClick={() => {
+                handlePicture("left");
+              }}
+            >
+              <img src="/media/left.svg" className=" w-2/3 h-2/3  " alt="" />
+            </div>
+          </div>
+          <div className="max-w-[100%]  flex gap-[14px] overflow-x-auto flex-nowrap pb-[14px] imageScroll ">
+            {poolInfo.pics?.map((item, i: number) => {
+              return (
+                <div
+                  key={i}
+                  className="min-w-[144px] max-w-[144.1px] h-[77px] relative overflow-hidden rounded-[18px]  "
+                  onClick={() => {
+                    setImageI(i);
+                  }}
+                >
+                  <div
+                    className={`w-[100%] h-[100%] bg-[#0000006c] absolute top-0 left-0 ${
+                      imageI !== i && "hidden"
+                    }`}
+                  />
                   <img
-                    ref={img}
-                    src="/images/test2.jpg"
-                    id="largeImage"
-                    className="img-fluid"
+                    src={item.image}
+                    className="w-full h-full object-cover"
+                    alt=""
                   />
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="mt-[24px] lg:mt-[48px] flex flex-col justify-center md:justify-start md:ml-[2.5%] w-[100%] " >
-      <h1 className=" text-[#fff]  text-[32px] md:text-[48px]" >{poolInfo.title}</h1>
-      <div className="flex items-center gap-[5px]" >
-      <MdTableRestaurant  className=" w-[24px] md:w-[32px] h-[24px] md:h-[32px] " style={{ color: "white"}} />
-      
-      <h3 className=" text-[#fff]  text-[24px] md:text-[32px]" >{poolInfo.table_count}</h3>
-      </div>
-      <div className="flex items-center gap-[5px]" >
-      <FaBuilding className=" w-[24px] md:w-[32px] h-[24px] md:h-[32px] " style={{ color: "white" }} />
-      <h3 className=" text-[#fff] text-[24px] md:text-[32px]" >{poolInfo.address}</h3>
-      </div>
-      </div>
-      <div className="w-[95%] mt-[24px] lg:mt-[48px] flex flex-col gap-[14px] md:ml-[2.5%] " >
-        <div className="relative w-full pb-[54%] rounded-[18px] overflow-hidden " >
-          <img src={poolInfo.pics[imageI].image} className="absolute top-0 left-0 w-full h-full object-cover image-smooth" alt="billiard image" />
-          <div className={` absolute top-1/2 transform -translate-y-1/2 right-[10px] w-[48px] h-[48px] flex items-center justify-center rounded-[50%] bg-[#0000002a] ${imageI == poolInfo.pics.length - 1 && ' hidden'} `} onClick={()=>{handlePicture('right')}} >
-            <img src="/media/right.svg" className=" w-2/3 h-2/3 " alt="" />
-          </div>
-          <div className={` absolute  top-1/2 left-[10px]  transform -translate-y-1/2 w-[48px] h-[48px] flex items-center justify-center rounded-[50%] bg-[#0000002a] ${imageI == 0 && ' hidden'} `} onClick={()=>{handlePicture('left')}} >
-            <img src="/media/left.svg" className=" w-2/3 h-2/3  " alt="" />
-          </div>
-        </div>
-        <div className="max-w-[100%]  flex gap-[14px] overflow-x-auto flex-nowrap pb-[14px] imageScroll " >
-            {poolInfo.pics?.map((item,i:number)=>{
-              return(
-                <div key={i} className="min-w-[144px] max-w-[144.1px] h-[77px] relative overflow-hidden rounded-[18px]  " onClick={()=>{setImageI(i)}}  >
-                  <div className={`w-[100%] h-[100%] bg-[#0000006c] absolute top-0 left-0 ${ imageI !== (i) && 'hidden' }`} />
-                  <img src={item.image} className="w-full h-full object-cover" alt="" />
-                </div>
-              )
+              );
             })}
-
+          </div>
         </div>
-      </div>
 
-      <div className="flex justify-center md:justify-start md:ml-[2.5%] items-center gap-[20px] w-[100%] mt-[24px] lg:mt-[48px] " >
-      <StarRating rating={avgRating} />
-      <h1 className='text-[#fff] text-4xl md:text-5xl   ' >{avgRating}</h1>
-      </div>
-        <h1 className=" text-[#fff] text-[32px] md:text-[48px] md:ml-[2.5%] mt-[24px] lg:mt-[48px] " >Reviews</h1>
-      <div className="w-[100%] flex flex-col md:flex-row gap-[20px] md:gap-0 justify-evenly mt-[24px] lg:mt-[48px] ">
-        {ratings?.map((item: Rating,i:number) => {
-          return (
-            <div key={i} className="flex-col gap-5 bg-[#161D2F] p-[20px] w-[100%] md:w-[30%] rounded-[24px] border !border-[#ffffff80] ">
-              <div className="flex items-center gap-[10px]">
-                <img
-                  className=" rounded-[50%] w-[60px] h-[60px]"
-                  src={item.rater?.profile_image}
-                  alt=""
-                />
-                <div className="flex flex-col self-stretch justify-around ]">
-                  <h1 className="text-[#fff] text-[14px] lg:text-[20px] font-semibold ">
-                    {item.rater?.user.username} 
-                  </h1>
-                  <div className="flex gap-[5px]">
-                    <CiStar
-                      style={{ color: "white", width: "19px", height: "19px" }}
-                    />
-                    <h2 className="text-[#fff]">{item.rate}</h2>
-                    <TbLetterW
-                      style={{ color: "white", width: "19px", height: "19px", marginLeft:'10px' }}
-                     />
-                    <h2 className="text-[#fff]">{item.rater?.total_points}</h2>
+        <div className="flex justify-center md:justify-start md:ml-[2.5%] items-center gap-[20px] w-[100%] mt-[24px] lg:mt-[48px] ">
+          <StarRating rating={avgRating} />
+          <h1 className="text-[#fff] text-4xl md:text-5xl   ">{avgRating}</h1>
+        </div>
+        <h1 className=" text-[#fff] text-[32px] md:text-[48px] md:ml-[2.5%] mt-[24px] lg:mt-[48px] ">
+          Reviews
+        </h1>
+        <div className="w-[100%] flex flex-col md:flex-row gap-[20px] md:gap-0 justify-evenly mt-[24px] lg:mt-[48px] ">
+          {ratings?.map((item: Rating, i: number) => {
+            return (
+              <div
+                key={i}
+                className="flex-col gap-5 bg-[#161D2F] p-[20px] w-[100%] md:w-[30%] rounded-[24px] border !border-[#ffffff80] "
+              >
+                <div className="flex items-center gap-[10px]">
+                  <img
+                    className=" rounded-[50%] w-[60px] h-[60px]"
+                    src={item.rater?.profile_image}
+                    alt=""
+                  />
+                  <div className="flex flex-col self-stretch justify-around ]">
+                    <h1 className="text-[#fff] text-[14px] lg:text-[20px] font-semibold ">
+                      {item.rater?.user.username}
+                    </h1>
+                    <div className="flex gap-[5px]">
+                      <CiStar
+                        style={{
+                          color: "white",
+                          width: "19px",
+                          height: "19px",
+                        }}
+                      />
+                      <h2 className="text-[#fff]">{item.rate}</h2>
+                      <TbLetterW
+                        style={{
+                          color: "white",
+                          width: "19px",
+                          height: "19px",
+                          marginLeft: "10px",
+                        }}
+                      />
+                      <h2 className="text-[#fff]">
+                        {item.rater?.total_points}
+                      </h2>
+                    </div>
                   </div>
                 </div>
+                <div className=" bg-[#ffffff80] h-[1px] border-none my-[10px] " />
+                <p className="text-[#fff]">{item.review}</p>
               </div>
-              <div className=" bg-[#ffffff80] h-[1px] border-none my-[10px] " />
-              <p className="text-[#fff]">{item.review}</p>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
       </main>
     </section>
   );
