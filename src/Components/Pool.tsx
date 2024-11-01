@@ -173,12 +173,29 @@ function Pool() {
 
 
     setTimeout(()=>{
-    
+    const heightPercent =
+      (imgContainer?.current?.getBoundingClientRect().height * 100) /
+      img?.current?.getBoundingClientRect().height /
+      100;
+    const widthPercent =
+      (imgContainer?.current?.getBoundingClientRect().width * 100) /
+      img?.current?.getBoundingClientRect().width /
+      100;
+
+    const whiteBoxHeight = Number(
+      mapImage?.current?.getBoundingClientRect().height * heightPercent
+    );
+    const whiteBoxWidth = Number(
+      mapImage?.current?.getBoundingClientRect().width * widthPercent
+    );
+
+    setWhiteBoxHeight(whiteBoxHeight)
+    setWhiteBoxWidth(whiteBoxWidth)
 
     
 
       
-    },300)
+    },1000)
     
 
   }, []);
@@ -352,26 +369,6 @@ function Pool() {
 
   const ImageMap = () => {
     setTimeout(()=>{
-
-      const heightPercent =
-      (imgContainer?.current?.getBoundingClientRect().height * 100) /
-      img?.current?.getBoundingClientRect().height /
-      100;
-    const widthPercent =
-      (imgContainer?.current?.getBoundingClientRect().width * 100) /
-      img?.current?.getBoundingClientRect().width /
-      100;
-
-    const whiteBoxHeight = Number(
-      mapImage?.current?.getBoundingClientRect().height * heightPercent
-    );
-    const whiteBoxWidth = Number(
-      mapImage?.current?.getBoundingClientRect().width * widthPercent
-    );
-
-    setWhiteBoxHeight(whiteBoxHeight)
-    setWhiteBoxWidth(whiteBoxWidth)
-
     whiteBoxRef.current.style.left = '0px'
       whiteBoxRef.current.style.top = '0px'
     },1)
