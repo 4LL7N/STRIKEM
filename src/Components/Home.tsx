@@ -42,72 +42,72 @@ function Home(props: {
   const [nearby, setNearby] = useState<PoolHall[]>([]);
     const [recommended,setRecommended] = useState<PoolHall[]>([])
 
-  const Fetch = async () => {
-    const token = Cookies.get('token')
-    // console.log(token)
-    try {
-      const response = await axios.get(
-        "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316",
-        {
-          headers: {
-            Authorization:
-              `JWT ${token}`,
-          },
-        }
-      );
-      const data = response.data;
-      const newData: any = [];
-      data?.forEach((item: PoolHall) => {
-        const pool = item;
-        const imageData: any = [];
-        pool.pics.forEach((element) => {
-          let image = {};
-          image = {
-            id: element.id,
-            image: `/${element.image.split("/").splice(3).join("/")}`,
-          };
-          imageData.push(image);
-        });
-        pool.pics = [...imageData];
-        newData.push(pool);
-      });
-      setNearby(newData);
+  // const Fetch = async () => {
+  //   const token = Cookies.get('token')
+  //   // console.log(token)
+  //   try {
+  //     const response = await axios.get(
+  //       "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316",
+  //       {
+  //         headers: {
+  //           Authorization:
+  //             `JWT ${token}`,
+  //         },
+  //       }
+  //     );
+  //     const data = response.data;
+  //     const newData: any = [];
+  //     data?.forEach((item: PoolHall) => {
+  //       const pool = item;
+  //       const imageData: any = [];
+  //       pool.pics.forEach((element) => {
+  //         let image = {};
+  //         image = {
+  //           id: element.id,
+  //           image: `/${element.image.split("/").splice(3).join("/")}`,
+  //         };
+  //         imageData.push(image);
+  //       });
+  //       pool.pics = [...imageData];
+  //       newData.push(pool);
+  //     });
+  //     setNearby(newData);
 
-      const PoolHousesResponse = await axios.get("https://strikem.site/api/poolhouses/",{
-        headers:{
-          'Authorization':`JWT ${token}`
-        }
-      });
-    // console.log(PoolHousesResponse);
+  //     const PoolHousesResponse = await axios.get("https://strikem.site/api/poolhouses/",{
+  //       headers:{
+  //         'Authorization':`JWT ${token}`
+  //       }
+  //     });
+  //   // console.log(PoolHousesResponse);
     
-    const Recommended = [... PoolHousesResponse.data];
+  //   const Recommended = [... PoolHousesResponse.data];
    
-    const PoolHousesNewData: any = [];
-    Recommended?.forEach((item) => {
-      const pool = item;
-      const imageData: any = [];
-      pool.pics.forEach((element:ImageObject) => {
-        let image = {};
-        image = {
-          id: element.id,
-          image: `/${element.image.split("/").splice(3).join("/")}`,
-        };
-        imageData.push(image);
-      });
-      pool.pics = [...imageData];
-      PoolHousesNewData.push(pool);
-    });
-    // console.log(PoolHousesNewData)
-    setRecommended(PoolHousesNewData);
+  //   const PoolHousesNewData: any = [];
+  //   Recommended?.forEach((item) => {
+  //     const pool = item;
+  //     const imageData: any = [];
+  //     pool.pics.forEach((element:ImageObject) => {
+  //       let image = {};
+  //       image = {
+  //         id: element.id,
+  //         image: `/${element.image.split("/").splice(3).join("/")}`,
+  //       };
+  //       imageData.push(image);
+  //     });
+  //     pool.pics = [...imageData];
+  //     PoolHousesNewData.push(pool);
+  //   });
+  //   // console.log(PoolHousesNewData)
+  //   setRecommended(PoolHousesNewData);
 
 
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   useEffect(() => {
-    const token = Cookies.get('token')
+    // const token = Cookies.get('token')
     // console.log(token)
     // Fetch();
   }, []);
