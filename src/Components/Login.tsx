@@ -4,24 +4,24 @@ import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 
-interface usersObj {
-  email: string;
-  password: string;
-}
+// interface usersObj {
+//   email: string;
+//   password: string;
+// }
 
 function Login(props: { users: any; setLogOut: any }) {
   const logNavigation = useNavigate();
 
   const logEmail = useRef<any>(null);
   const logPassword = useRef<any>(null);
-
+    console.log(props)
   const [emptyLogEmailErr, setEmptyLogEmailErr] = useState(false);
   const [emptyLogPassErr, setEmptyLogPassErr] = useState(false);
   const [userError, setUserError] = useState(false);
 
-  let emptyLogEmailErrChk = false;
-  let emptyLogPassErrChk = false;
-  let userErrorChk = false;
+//   let emptyLogEmailErrChk = false;
+//   let emptyLogPassErrChk = false;
+//   let userErrorChk = false;
 
   // console.log(props.users);
 

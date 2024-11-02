@@ -130,10 +130,10 @@ function User() {
           <div className="flex flex-col  flex-grow ">
             <div className="w-[100%] flex justify-start items-end">
               <h1 className="text-[#fff]  text-[48px] ">
-                {userInfo?.username}
+                {/* {userInfo?.username} */}
                 
               </h1>
-              <p className="text-[#7e7e7e]  text-[32px] ">({userInfo?.first_name} {userInfo?.last_name})</p>
+              {/* <p className="text-[#7e7e7e]  text-[32px] ">({userInfo?.first_name} {userInfo?.last_name})</p> */}
             </div>
             <div className=" flex mt-[15px] ">
               <div className="flex-1 flex-col">
@@ -157,7 +157,7 @@ function User() {
               </div>
               <div className=" flex-col flex-1 ">
                 <p className="text-[#fff] text-[24px] ">
-                  Email:{userInfo?.email}
+                  {/* Email:{userInfo?.email} */}
                 </p>
                 <button className="rounded-[10px] px-[8px] py-[6px] text-[#fff] bg-[#fab907] mt-[5px] ">
                   Edit profile
