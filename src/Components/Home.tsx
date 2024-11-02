@@ -5,7 +5,7 @@ import { useEffect
   // , useState
  } from "react";
 // import { useNavigate } from "react-router-dom";
-// import Cookies from 'js-cookie';
+import Cookies from 'js-cookie';
 // import styled from "styled-components";
 import './CSS/home.css'
 
@@ -109,8 +109,8 @@ function Home(props: {
   // };
 
   useEffect(() => {
-    // const token = Cookies.get('token')
-    // console.log(token)
+    const token = Cookies.get('token')
+    console.log(token)
     // Fetch();
   }, []);
 
