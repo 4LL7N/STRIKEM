@@ -56,8 +56,8 @@ function Login(props: { users: any; setLogOut: any }) {
     // console.log(userObj);
     // if(!emptyLogEmailErrChk && !emptyLogPassErrChk && !userErrorChk){
 
-    logNavigation("/home");
     Fetch();
+    logNavigation("/home");
 
     // }
   }

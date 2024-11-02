@@ -26,7 +26,7 @@ function Layout(props:{search:undefined|string,setSearch:any,setLogOut:any,logOu
     const header = useRef<any>()
     const [contentW,setContentW] = useState<string>()
 
-    const [socket, setSocket] = useState<any>();
+    // const [socket, setSocket] = useState<any>();
 
     useEffect(()=>{
         if (header.current) {
@@ -35,26 +35,26 @@ function Layout(props:{search:undefined|string,setSearch:any,setLogOut:any,logOu
             setContentW(`${viewportWidth - headerWidth}px`);
           }
 
-          const ws = new WebSocket('wss://strikem.site/ws/poolhouses/billiard-club-rio/')
+        //   const ws = new WebSocket('wss://strikem.site/ws/poolhouses/billiard-club-rio/')
 
-          ws.onopen = () => {
-            console.log('WebSocket connection established');
-        };
+        //   ws.onopen = () => {
+        //     console.log('WebSocket connection established');
+        // };
 
-        ws.onmessage = (event) => {
-            console.log('Message from server:', event.data);
-            // setMessages((prevMessages) => [...prevMessages, event.data]);
-        };
+        // ws.onmessage = (event) => {
+        //     console.log('Message from server:', event.data);
+        //     // setMessages((prevMessages) => [...prevMessages, event.data]);
+        // };
 
-        ws.onclose = () => {
-            console.log('WebSocket connection closed');
-        };
+        // ws.onclose = () => {
+        //     console.log('WebSocket connection closed');
+        // };
 
-        setSocket(ws);
+        // setSocket(ws);
 
-        return () => {
-            ws.close();
-        };
+        // return () => {
+        //     ws.close();
+        // };
 
     },[])
 
@@ -68,7 +68,7 @@ function Layout(props:{search:undefined|string,setSearch:any,setLogOut:any,logOu
 
     //   const handleClickSendMessage = () => sendMessage('Hello');
 
-    const handleClickSendMessage = () => {socket.send('hello')};
+    // const handleClickSendMessage = () => {socket.send('hello')};
     return(
         <>
         <div className="w-[100vw] overflow-hidden bg-[#10141E] flex flex-col md:p-[25px] lg:flex-row lg:gap-[39px] lg:p-[32px] lg:pr-[36px]" >
@@ -80,7 +80,7 @@ function Layout(props:{search:undefined|string,setSearch:any,setLogOut:any,logOu
                     <Link to="series"  className={` w-[16px] h-[16px] bg-no-repeat bg-[length:16px_16px] bg-[url("/images/icon-category-tv.svg")] ${pageSwitch == 3? "opacity-100":"opacity-50"} md:w-[20px] md:h-[20px] md:bg-[length:20px_20px] `} onClick={() => setPageSwitch(3)} />
                     <Link to="bookmarked"  className={` w-[16px] h-[16px] bg-no-repeat bg-[length:16px_16px] bg-[url("/images/icon-category-bookmark.svg")] ${pageSwitch == 4? "opacity-100":"opacity-50"} md:w-[20px] md:h-[20px] md:bg-[length:20px_20px] `} onClick={() => setPageSwitch(4)} />
                 </div> */}
-                <div className="w-[20px] h-[20px] bg-[#fff] " onClick={()=>{handleClickSendMessage}}  />
+                {/* <div className="w-[20px] h-[20px] bg-[#fff] " onClick={()=>{handleClickSendMessage}}  /> */}
                 <img className="w-[24px] h-[24px] md:w-[32px] md:h-[32px] lg:w-[40px] lg:h-[40px]" src="/images/image-avatar.png" onClick={()=>{ navigate('/user') }} />
             </header>
             <div style={{maxWidth:contentW}}  >
