@@ -80,13 +80,13 @@ console.log('')
       );
     //   console.log(response.data.access);
       console.log(response.data)
-      Cookies.set('token',response.data.access
+    //   Cookies.set('token',response.data.access
         // ,{
     //     // secure: true,
     //     // sameSite: 'Strict',
     //      path: '/'
     //   }
-    )
+    // )
 
     } catch (err) {
       console.log(err);
