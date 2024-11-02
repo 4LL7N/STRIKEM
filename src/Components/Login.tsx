@@ -2,7 +2,7 @@
 import axios from "axios";
 import { useRef, useState } from "react";
 import { Link,
-    //  useNavigate
+     useNavigate
      } from "react-router-dom";
 import Cookies from 'js-cookie';
 
@@ -12,25 +12,28 @@ interface usersObj {
 }
 
 function Login(props: { users: any; setLogOut: any }) {
-//   const logNavigation = useNavigate();
+  const logNavigation = useNavigate();
 
   const logEmail = useRef<any>(null);
   const logPassword = useRef<any>(null);
-    console.log(props)
+  console.log(props)
   const [emptyLogEmailErr, setEmptyLogEmailErr] = useState(false);
   const [emptyLogPassErr, setEmptyLogPassErr] = useState(false);
   const [userError, setUserError] = useState(false);
-
+  
   let emptyLogEmailErrChk = false;
   let emptyLogPassErrChk = false;
   let userErrorChk = false;
-
+  
   // console.log(props.users);
-
+  
   function HandleLogin() {
-    
-    console.log('fetch')
-    Fetch();
+      
+      console.log('fetch')
+      Fetch();
+      setTimeout(()=>{
+      logNavigation("/home");
+    },500)
     console.log('after fetching')
 
     if(!logEmail.current?.value){
@@ -62,8 +65,7 @@ function Login(props: { users: any; setLogOut: any }) {
     }
     console.log(userObj);
     if(!emptyLogEmailErrChk && !emptyLogPassErrChk && !userErrorChk){
-
-    // logNavigation("/home");
+console.log('')
 
     }
   }
