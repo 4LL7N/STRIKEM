@@ -35,7 +35,7 @@ function Layout(props:{search:undefined|string,setSearch:any,setLogOut:any,logOu
             setContentW(`${viewportWidth - headerWidth}px`);
           }
 
-          const ws = new WebSocket('ws://strikem.site/ws/poolhouses/billiard-club-rio/')
+          const ws = new WebSocket('wss://strikem.site/ws/poolhouses/billiard-club-rio/')
 
           ws.onopen = () => {
             console.log('WebSocket connection established');

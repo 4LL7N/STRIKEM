@@ -109,7 +109,7 @@ function Home(props: {
   useEffect(() => {
     const token = Cookies.get('token')
     console.log(token)
-    Fetch();
+    // Fetch();
   }, []);
 
   
