@@ -16,7 +16,6 @@ function Login(props: { users: any; setLogOut: any }) {
 
   const logEmail = useRef<any>(null);
   const logPassword = useRef<any>(null);
-  console.log(props)
   const [emptyLogEmailErr, setEmptyLogEmailErr] = useState(false);
   const [emptyLogPassErr, setEmptyLogPassErr] = useState(false);
   const [userError, setUserError] = useState(false);
