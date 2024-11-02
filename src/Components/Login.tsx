@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios from "axios";
+// import axios from "axios";
 import { useRef, useState } from "react";
 import { Link,
      useNavigate
      } from "react-router-dom";
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 
 interface usersObj {
   email: string;
