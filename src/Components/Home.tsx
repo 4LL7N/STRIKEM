@@ -120,7 +120,7 @@ function Home(props: {
     if(props.search){
         SearchArr = recommended?.filter((item)=> item.title.toLowerCase().includes(props.search.toLowerCase()))
     }
-    
+    Fetch()
   }
 
   useEffect(() => {

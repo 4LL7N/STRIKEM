@@ -78,7 +78,7 @@ function User() {
       const data = response.data;
       // data.profile_image = data.profile_image.split("/").splice(3).join("/");
       console.log(data)
-      // setUserInfo(data);
+      setUserInfo(data);
       
       const historyResponse = await axios.get(
         `https://strikem.site/api/history/`,

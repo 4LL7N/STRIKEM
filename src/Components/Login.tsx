@@ -1,16 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link,
+    //  useNavigate
+     } from "react-router-dom";
 import Cookies from 'js-cookie';
 
-// interface usersObj {
-//   email: string;
-//   password: string;
-// }
+interface usersObj {
+  email: string;
+  password: string;
+}
 
 function Login(props: { users: any; setLogOut: any }) {
-  const logNavigation = useNavigate();
+//   const logNavigation = useNavigate();
 
   const logEmail = useRef<any>(null);
   const logPassword = useRef<any>(null);
@@ -19,47 +21,51 @@ function Login(props: { users: any; setLogOut: any }) {
   const [emptyLogPassErr, setEmptyLogPassErr] = useState(false);
   const [userError, setUserError] = useState(false);
 
-//   let emptyLogEmailErrChk = false;
-//   let emptyLogPassErrChk = false;
-//   let userErrorChk = false;
+  let emptyLogEmailErrChk = false;
+  let emptyLogPassErrChk = false;
+  let userErrorChk = false;
 
   // console.log(props.users);
 
   function HandleLogin() {
-    // if(!logEmail.current?.value){
-    //     setEmptyLogEmailErr(true)
-    //     emptyLogEmailErrChk = true
-    // }else{
-    //     setEmptyLogEmailErr(false)
-    //     emptyLogEmailErrChk = false
-    // }
-
-    // if(!logPassword.current.value){
-    //     setEmptyLogPassErr(true)
-    //     emptyLogPassErrChk = true
-    // }else{
-    //     setEmptyLogPassErr(false)
-    //     emptyLogPassErrChk = false
-    // }
-
-    // const userObj = props.users.current.filter((item:usersObj) => item?.email == logEmail.current?.value && item?.password == logPassword.current.value )
-
-    // if(userObj.length == 0){
-    //     setUserError(true)
-    //     userErrorChk = true
-    //     console.log("userErrorChk "+userErrorChk);
-
-    // }else{
-    //     setUserError(false)
-    //     userErrorChk = false
-    // }
-    // console.log(userObj);
-    // if(!emptyLogEmailErrChk && !emptyLogPassErrChk && !userErrorChk){
-
+    
+    console.log('fetch')
     Fetch();
-    logNavigation("/home");
+    console.log('after fetching')
 
-    // }
+    if(!logEmail.current?.value){
+        setEmptyLogEmailErr(true)
+        emptyLogEmailErrChk = true
+    }else{
+        setEmptyLogEmailErr(false)
+        emptyLogEmailErrChk = false
+    }
+
+    if(!logPassword.current.value){
+        setEmptyLogPassErr(true)
+        emptyLogPassErrChk = true
+    }else{
+        setEmptyLogPassErr(false)
+        emptyLogPassErrChk = false
+    }
+
+    const userObj = props.users.current.filter((item:usersObj) => item?.email == logEmail.current?.value && item?.password == logPassword.current.value )
+
+    if(userObj.length == 0){
+        setUserError(true)
+        userErrorChk = true
+        console.log("userErrorChk "+userErrorChk);
+
+    }else{
+        setUserError(false)
+        userErrorChk = false
+    }
+    console.log(userObj);
+    if(!emptyLogEmailErrChk && !emptyLogPassErrChk && !userErrorChk){
+
+    // logNavigation("/home");
+
+    }
   }
 
   const Fetch = async () => {
@@ -72,7 +78,7 @@ function Login(props: { users: any; setLogOut: any }) {
         }
       );
     //   console.log(response.data.access);
-
+      console.log(response.data)
       Cookies.set('token',response.data.access
         // ,{
     //     // secure: true,
