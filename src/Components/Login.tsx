@@ -29,7 +29,7 @@ function Login(props: { users: any; setLogOut: any }) {
   function HandleLogin() {
       
       console.log('fetch')
-      Fetch();
+    //   Fetch();
       setTimeout(()=>{
       logNavigation("/home");
     },500)
@@ -69,29 +69,29 @@ console.log('')
     }
   }
 
-  const Fetch = async () => {
-    try {
-      const response = await axios.post(
-        "https://strikem.site/auth/jwt/create",
-        {
-          username: logEmail.current?.value,
-          password: logPassword.current.value,
-        }
-      );
-    //   console.log(response.data.access);
-      console.log(response.data)
-    //   Cookies.set('token',response.data.access
-        // ,{
-    //     // secure: true,
-    //     // sameSite: 'Strict',
-    //      path: '/'
-    //   }
-    // )
+//   const Fetch = async () => {
+//     try {
+//       const response = await axios.post(
+//         "https://strikem.site/auth/jwt/create",
+//         {
+//           username: logEmail.current?.value,
+//           password: logPassword.current.value,
+//         }
+//       );
+//     //   console.log(response.data.access);
+//       console.log(response.data)
+//     //   Cookies.set('token',response.data.access
+//         // ,{
+//     //     // secure: true,
+//     //     // sameSite: 'Strict',
+//     //      path: '/'
+//     //   }
+//     // )
 
-    } catch (err) {
-      console.log(err);
-    }
-  };
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   };
 
   return (
     <>
