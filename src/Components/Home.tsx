@@ -3,6 +3,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 // import styled from "styled-components";
 import './CSS/home.css'
 
@@ -42,13 +43,14 @@ function Home(props: {
     const [recommended,setRecommended] = useState<PoolHall[]>([])
 
   const Fetch = async () => {
+    const token = Cookies.get('token')
     try {
       const response = await axios.get(
         "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316",
         {
           headers: {
             Authorization:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwNTU2Njc1LCJpYXQiOjE3MzA0NzAyNzUsImp0aSI6ImU1YTdmNTMzZmMyNDQ0YTBhODc4NTgxNjczMWM2MjM0IiwidXNlcl9pZCI6MTl9.DCojpLiIrCpR5eEtsz2I0eCY-YWJz2Gp8lQhVdtq29I",
+              `JWT ${token}`,
           },
         }
       );
@@ -72,10 +74,10 @@ function Home(props: {
 
       const PoolHousesResponse = await axios.get("https://strikem.site/api/poolhouses/",{
         headers:{
-          'Authorization':'JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwNTU2Njc1LCJpYXQiOjE3MzA0NzAyNzUsImp0aSI6ImU1YTdmNTMzZmMyNDQ0YTBhODc4NTgxNjczMWM2MjM0IiwidXNlcl9pZCI6MTl9.DCojpLiIrCpR5eEtsz2I0eCY-YWJz2Gp8lQhVdtq29I'
+          'Authorization':`JWT ${token}`
         }
       });
-    console.log(PoolHousesResponse);
+    // console.log(PoolHousesResponse);
     
     const Recommended = [... PoolHousesResponse.data];
    
@@ -94,7 +96,7 @@ function Home(props: {
       pool.pics = [...imageData];
       PoolHousesNewData.push(pool);
     });
-    console.log(PoolHousesNewData)
+    // console.log(PoolHousesNewData)
     setRecommended(PoolHousesNewData);
 
 
@@ -105,7 +107,6 @@ function Home(props: {
 
   useEffect(() => {
     Fetch();
-    
   }, []);
 
   
@@ -179,7 +180,7 @@ function Home(props: {
             </h1>
             <div className="flex flex-wrap gap-x-[15px] gap-y-[16px] md:gap-y-[29.5px] md:gap-x-[24px] lg:gap-x-[60px] lg:gap-y-[32px]">
               {recommended?.map((item, index) => {
-                console.log(item)
+                // console.log(item)
                 return (
                   <div
                     key={index}
@@ -232,7 +233,7 @@ function Home(props: {
             </h1>
             <div className="flex flex-wrap gap-x-[15px] gap-y-[16px]  md:w-[718px] md:mb-[39px]  md:gap-y-[29px] md:gap-x-[24px] lg:w-[1330px] lg:gap-x-[60px] lg:gap-y-[32px]">
               {SearchArr?.map((item, index) => {
-                console.log(item);
+                // console.log(item);
                 return (
                     <div
                     key={index}

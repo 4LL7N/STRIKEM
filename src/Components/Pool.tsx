@@ -15,6 +15,8 @@ import { TbLetterW } from "react-icons/tb";
 import { MdTableRestaurant } from "react-icons/md";
 import { FaBuilding } from "react-icons/fa";
 
+import Cookies from 'js-cookie';
+
 // interface User {
 //   name: string;
 //   image: string;
@@ -141,13 +143,14 @@ function Pool() {
   const whiteBoxRef = useRef<any>()
 
   const Fetch = async () => {
+    const token = Cookies.get('token')
     try {
       const response = await axios.get(
         `https://strikem.site/api/poolhouses/${id}/ratings/`,
         {
           headers: {
             Authorization:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwNTU2Njc1LCJpYXQiOjE3MzA0NzAyNzUsImp0aSI6ImU1YTdmNTMzZmMyNDQ0YTBhODc4NTgxNjczMWM2MjM0IiwidXNlcl9pZCI6MTl9.DCojpLiIrCpR5eEtsz2I0eCY-YWJz2Gp8lQhVdtq29I",
+              `JWT ${token}`,
           },
         }
       );

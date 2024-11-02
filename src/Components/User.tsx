@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 
 interface User {
@@ -63,31 +64,34 @@ function User() {
   const [loseHistory,setLoseHistory] = useState<GameResult[]>()
 
   const Fetch = async () => {
+    const token = Cookies.get('token')
     try {
       const response = await axios.get(
         `https://strikem.site/auth/users/me/`,
         {
           headers: {
             Authorization:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwNTc3ODg3LCJpYXQiOjE3MzA0OTE0ODcsImp0aSI6IjA1YWRlODg3MGIwZDRkYTY5NWNiNGU0MWNiYjQ0ZGI1IiwidXNlcl9pZCI6MTl9.zACZdslyLBAakdu7LrlCEa5yt8gEnqT60RXWlgmvLyM",
+              `JWT ${token}`,
           },
         }
       );
-      const data = response.data[0];
-      data.profile_image = data.profile_image.split("/").splice(3).join("/");
-      setUserInfo(data);
+      const data = response.data;
+      // data.profile_image = data.profile_image.split("/").splice(3).join("/");
+      console.log(data)
+      // setUserInfo(data);
       
       const historyResponse = await axios.get(
         `https://strikem.site/api/history/`,
         {
           headers: {
             Authorization:
-              "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzMwNTc3ODg3LCJpYXQiOjE3MzA0OTE0ODcsImp0aSI6IjA1YWRlODg3MGIwZDRkYTY5NWNiNGU0MWNiYjQ0ZGI1IiwidXNlcl9pZCI6MTl9.zACZdslyLBAakdu7LrlCEa5yt8gEnqT60RXWlgmvLyM",
+              `JWT ${token}`,
           },
         }
       );
 
       const historyData = historyResponse.data
+      console.log(historyData)
       setGameHistory(historyData)
       const wins = historyData.filter((item:GameResult)=> {if(item.winner_player.user.first_name == data?.user.first_name && item.winner_player.user.last_name == data?.user.last_name)return item} )
       setWinHistory(wins)
@@ -126,10 +130,10 @@ function User() {
           <div className="flex flex-col  flex-grow ">
             <div className="w-[100%] flex justify-start items-end">
               <h1 className="text-[#fff]  text-[48px] ">
-                {userInfo?.user.username}
+                {userInfo?.username}
                 
               </h1>
-              <p className="text-[#7e7e7e]  text-[32px] ">({userInfo?.user.first_name} {userInfo?.user.last_name})</p>
+              <p className="text-[#7e7e7e]  text-[32px] ">({userInfo?.first_name} {userInfo?.last_name})</p>
             </div>
             <div className=" flex mt-[15px] ">
               <div className="flex-1 flex-col">
@@ -153,7 +157,7 @@ function User() {
               </div>
               <div className=" flex-col flex-1 ">
                 <p className="text-[#fff] text-[24px] ">
-                  Email:{userInfo?.user.email}
+                  Email:{userInfo?.email}
                 </p>
                 <button className="rounded-[10px] px-[8px] py-[6px] text-[#fff] bg-[#fab907] mt-[5px] ">
                   Edit profile
