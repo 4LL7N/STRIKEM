@@ -44,6 +44,7 @@ function Home(props: {
 
   const Fetch = async () => {
     const token = Cookies.get('token')
+    console.log(token)
     try {
       const response = await axios.get(
         "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316",
