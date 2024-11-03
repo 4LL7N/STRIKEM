@@ -68,7 +68,7 @@ function User() {
 
   const Fetch = async () => {
     const token = Cookies.get('token')
-    console.log(token)
+    console.log(token,'token')
     try {
       const response = await axios.get(
         `https://strikem.site/auth/users/me/`,
@@ -81,7 +81,7 @@ function User() {
       );
       const data = response.data;
       // data.profile_image = data.profile_image.split("/").splice(3).join("/");
-      console.log(data)
+      console.log(data,'data')
       setUserInfo(data);
       
       const historyResponse = await axios.get(
@@ -95,13 +95,13 @@ function User() {
       );
 
       const historyData = historyResponse.data
-      console.log(historyData)
+      console.log(historyData,'historyData')
       setGameHistory(historyData)
       const wins = historyData.filter((item:GameResult)=> {if(item.winner_player.user.first_name == data?.first_name && item.winner_player.user.last_name == data?.last_name)return item} )
-      console.log(wins)
+      console.log(wins,'wins')
         setWinHistory(wins)
       const loses = historyData.filter((item:GameResult)=> {if(item.loser_player.user.first_name == data?.first_name && item.loser_player.user.last_name == data?.last_name)return item} )
-      console.log(loses);
+      console.log(loses,'loses');
       
         setLoseHistory(loses)
     } catch (err) {

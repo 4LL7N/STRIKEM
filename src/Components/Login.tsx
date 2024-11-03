@@ -28,12 +28,12 @@ function Login(props: { users: any; setLogOut: any }) {
   
   function HandleLogin() {
       
-      console.log('fetch')
+      
       Fetch();
       setTimeout(()=>{
       logNavigation("/home");
-    },500)
-    console.log('after fetching')
+    },1000)
+    
 
     if(!logEmail.current?.value){
         setEmptyLogEmailErr(true)
