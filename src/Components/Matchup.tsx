@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CiStar } from "react-icons/ci";
 import { LuMapPin } from "react-icons/lu";
+
+import './CSS/matchup.css'
 
 interface User {
   id: number;
@@ -28,6 +32,8 @@ function Matchup({usersSearch}:{usersSearch:string}) {
   const [playersData, setPlayersData] = useState<Profile[]>([]);
   const [players, setPlayers] = useState<Profile[]>([]);
 
+  const matchupSectionRef = useRef<any>()
+
   const handleCheckboxChange = (num: number) => {
     let filterArr = [...filter];
     if (filterArr.includes(num)) {
@@ -51,6 +57,16 @@ function Matchup({usersSearch}:{usersSearch:string}) {
 
   useEffect(() => {
     Fetch();
+
+    const windwoHeight = window.innerHeight
+    setTimeout(()=>{
+        const sectionPosition = matchupSectionRef.current?.getBoundingClientRect().top
+        console.log(sectionPosition)
+        console.log(windwoHeight)
+        matchupSectionRef.current.style.height = `${windwoHeight-sectionPosition-33}px`
+    },500)
+
+
   }, []);
 
   
@@ -69,8 +85,8 @@ function Matchup({usersSearch}:{usersSearch:string}) {
   },[usersSearch,filter])
 
   return (
-    <section className="flex flex-col h-[100%] w-[100%]  ">
-      {/* <div className=" flex flex-col "> */}
+    <section ref={matchupSectionRef} className="flex flex-col w-[100%]  ">
+      <div className=" flex flex-col h-[100%] ">
         <div className=" flex flex-col ">
           <h1 className="text-[48px] text-[#fff] ">Filter</h1>
           <div className="flex mt-[20px] gap-[20px]">
@@ -124,34 +140,77 @@ function Matchup({usersSearch}:{usersSearch:string}) {
             </label>
           </div>
         </div>
-        <main className="flex flex-col gap-[20px] mt-[24px] md:mt-[32px] h-[100%] ">
+        <main className="flex flex-col gap-[20px] mt-[24px] md:mt-[32px] h-[100%] overflow-hidden ">
           <h1 className="text-[48px] text-[#fff] ">Players</h1>
-          <div className="flex flex-col gap-[4%] h-[100%] overflow-y-auto " >
+          <div className="flex-1 overflow-hidden " >
+          <div className="flex flex-col gap-[3.5%] h-[100%] max-h-[100%] overflow-y-auto playersScroll pr-[10px]" >
             {players.map((item: Profile, i: number) => {
               return (
                 <div
                   key={i}
-                  className="flex  rounded-[20px] bg-[#161D2F] p-[10px] h-[16%] w-[100%]  "
-                >\
-                  {/* <img src={item.profile_image}   alt="profile_image" /> */}
-                  <div  className="flex flex-col items-center gap-[10px] ">
-                    <div className="flex gap-[2px] " >
-                      <h1 className="text-[20px] text-[#fff] ">
+                  className="flex justify-between items-center rounded-[20px] bg-[#161D2F] p-[16px] h-[17.4%] w-[100%]  "
+                >
+                    <div className="flex gap-[20px] h-[100%] " >
+                  <img src={item.profile_image}  className="h-[100%] aspect-square rounded-full "  alt="profile_image" />
+                  <div  className="flex flex-col items-center justify-start text-left gap-[10px] ">
+                    <div className="flex gap-[2px] items-end " >
+                      <h1 className="text-[18px] text-[#fff]  ">
                         {item.user.username}
                       </h1>
-                      <h2 className="text-[14px] text-[#ffffff57] ">
+                      <h2 className="text-[12px] text-[#ffffff57] ">
                         ({item.user.first_name} {item.user.last_name})
                       </h2>
                     </div>
-                    <h3 className="text-[14px] text-[#fff] " >Email:{item.user.email}</h3>
+                    <h3 className="text-[10px] text-[#fff] self-start " >Email:{item.user.email}</h3>
                   </div>
+                  </div>
+                  <div className="flex gap-[5px]" >
+                    <CiStar size={28} style={{ color: "white" }}/>
+                    <p className="text-[18px] text-[#fff]  ">{item.total_points}</p>
+                    </div>
+                    <button className="bg-[#fab907] px-[8px] py-[4px] text-[#FFF] hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px] " >
+                        Matchup
+                    </button>
                 </div>
               );
             })}
-            
+             {players.map((item: Profile, i: number) => {
+              return (
+                <div
+                  key={i}
+                  className="flex justify-between items-center rounded-[20px] bg-[#161D2F] p-[16px] h-[17.4%] w-[100%]  "
+                >
+                    <div className="flex gap-[20px] h-[100%] " >
+                  <img src={item.profile_image}  className="h-[100%] aspect-square rounded-full "  alt="profile_image" />
+                  <div  className="flex flex-col items-center justify-start text-left gap-[10px] ">
+                    <div className="flex gap-[2px] items-end " >
+                      <h1 className="text-[18px] text-[#fff]  ">
+                        {item.user.username}
+                      </h1>
+                      <h2 className="text-[12px] text-[#ffffff57] ">
+                        ({item.user.first_name} {item.user.last_name})
+                      </h2>
+                    </div>
+                    <h3 className="text-[10px] text-[#fff] self-start " >Email:{item.user.email}</h3>
+                  </div>
+                  </div>
+                  <div className="flex gap-[5px]" >
+                    <CiStar size={28} style={{ color: "white" }}/>
+                    <p className="text-[18px] text-[#fff]  ">{item.total_points}</p>
+                    </div>
+                    <button className="bg-[#fab907] px-[8px] py-[4px] text-[#FFF] hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px] " >
+                        Matchup
+                    </button>
+                </div>
+              );
+            })}
+          </div>
           </div>
         </main>
-      {/* </div> */}
+      </div>
+      <div>
+        <h1></h1>
+      </div>
     </section>
   );
 }
