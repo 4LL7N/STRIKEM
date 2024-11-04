@@ -10,3 +10,16 @@
     border-radius: 5px;
     background-color: #243257d5;
   }
+
+  .messagesScroll::-webkit-scrollbar{
+    appearance: none;
+    width: 5px;
+    margin-top: 10px;
+  }
+
+
+.messagesScroll::-webkit-scrollbar-thumb{
+    height:3px;
+    border-radius: 5px;
+    background-color: #243257d5;
+  }

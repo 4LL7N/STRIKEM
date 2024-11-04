@@ -35,7 +35,7 @@ function Layout(props:{search:string,setSearch:(search:string)=>void,usersSearch
     const [contentW,setContentW] = useState<string>()
 
 
-    useEffect(()=>{
+    const divSize = () => {
         const viewportWidth = window.innerWidth; 
         if(location.pathname == '/user' || location.pathname == '/messenger' || location.pathname.includes('Pools')  ){
             
@@ -47,6 +47,10 @@ function Layout(props:{search:string,setSearch:(search:string)=>void,usersSearch
                 setContentW(`100%`);
             }
         }
+    }
+
+    useEffect(()=>{
+        divSize()
 
     },[])
 
@@ -71,7 +75,7 @@ function Layout(props:{search:string,setSearch:(search:string)=>void,usersSearch
       }, [socketUrl]);
 
       useEffect(()=>{
-        console.log(location)
+        divSize()
       },[location.pathname])
 
     // console.log(lastMessage?.data);

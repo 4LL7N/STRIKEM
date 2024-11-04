@@ -27,6 +27,60 @@ interface Profile {
 }
 
 function Matchup({usersSearch}:{usersSearch:string}) {
+
+    const messagesData = [
+        {
+          "id": 1,
+          "player1": {
+            "id": 101,
+            "username": "PlayerOne",
+            "profile_image": "https://randomuser.me/api/portraits/men/1.jpg"
+          },
+          "player2": {
+            "id": 102,
+            "username": "PlayerTwo",
+            "profile_image": "https://randomuser.me/api/portraits/women/1.jpg"
+          },
+          "match_time": "2024-11-05T14:30:00Z",
+          "status": "upcoming",
+          "message": "You have a matchup scheduled with PlayerTwo."
+        },
+        {
+          "id": 2,
+          "player1": {
+            "id": 101,
+            "username": "PlayerOne",
+            "profile_image": "https://randomuser.me/api/portraits/men/1.jpg"
+          },
+          "player2": {
+            "id": 103,
+            "username": "PlayerThree",
+            "profile_image": "https://randomuser.me/api/portraits/women/2.jpg"
+          },
+          "match_time": "2024-11-05T16:00:00Z",
+          "status": "completed",
+          "message": "You won your matchup against PlayerThree!"
+        },
+        {
+          "id": 3,
+          "player1": {
+            "id": 104,
+            "username": "PlayerFour",
+            "profile_image": "https://randomuser.me/api/portraits/women/3.jpg"
+          },
+          "player2": {
+            "id": 101,
+            "username": "PlayerOne",
+            "profile_image": "https://randomuser.me/api/portraits/men/1.jpg"
+          },
+          "match_time": "2024-11-06T10:00:00Z",
+          "status": "upcoming",
+          "message": "PlayerFour has challenged you to a match."
+        }
+      ]
+      
+      
+
   const [filter, setFilter] = useState<number[]>([]);
 
   const [playersData, setPlayersData] = useState<Profile[]>([]);
@@ -59,12 +113,14 @@ function Matchup({usersSearch}:{usersSearch:string}) {
     Fetch();
 
     const windwoHeight = window.innerHeight
+    console.log(window.innerHeight)
+    console.log(window.innerWidth)
     setTimeout(()=>{
         const sectionPosition = matchupSectionRef.current?.getBoundingClientRect().top
         console.log(sectionPosition)
         console.log(windwoHeight)
         matchupSectionRef.current.style.height = `${windwoHeight-sectionPosition-33}px`
-    },500)
+    },10)
 
 
   }, []);
@@ -85,8 +141,8 @@ function Matchup({usersSearch}:{usersSearch:string}) {
   },[usersSearch,filter])
 
   return (
-    <section ref={matchupSectionRef} className="flex flex-col w-[100%]  ">
-      <div className=" flex flex-col h-[100%] ">
+    <section ref={matchupSectionRef} className="flex w-[100%] gap-[2%] ">
+      <div className=" flex flex-col h-[100%] w-[100%] ">
         <div className=" flex flex-col ">
           <h1 className="text-[48px] text-[#fff] ">Filter</h1>
           <div className="flex mt-[20px] gap-[20px]">
@@ -177,7 +233,7 @@ function Matchup({usersSearch}:{usersSearch:string}) {
              {players.map((item: Profile, i: number) => {
               return (
                 <div
-                  key={i}
+                  key={(i+1)*players.length}
                   className="flex justify-between items-center rounded-[20px] bg-[#161D2F] p-[16px] h-[17.4%] w-[100%]  "
                 >
                     <div className="flex gap-[20px] h-[100%] " >
@@ -208,8 +264,80 @@ function Matchup({usersSearch}:{usersSearch:string}) {
           </div>
         </main>
       </div>
-      <div>
-        <h1></h1>
+      <div className=" flex flex-col h-[100%] w-[55%] gap-[20px] overflow-hidden " >
+        <h1 className="text-[48px] text-[#ffffff] " >Matchups</h1>
+        <div className="flex flex-col rounded-[20px]  border-[1px] border-[#243257d5] h-[100%] overflow-y-auto messagesScroll  " >
+            {messagesData.map((item,i)=>{
+                const index = i * playersData.length * players.length
+
+                const options:any = {
+                    year: 'numeric',
+                    month: 'long',  // Use 'short' for abbreviated month (e.g., Nov)
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    timeZone: 'UTC',
+                    timeZoneName: 'short'  // For UTC display
+                  };
+                const date =  new Date(item.match_time).toLocaleString('en-US', options);
+                return(
+                    <div key={index} className={`flex p-[20px] justify-between ${i!=messagesData.length-1 || messagesData.length < 5 ?'border-b-[1px] border-b-[#243257d5]':''} `}  >
+                        <div className="flex flex-col gap-[10px] justify-center pr-[20px] border-r-[1px] border-r-[#243257d5] max-w-[74px] " >
+                            
+                            <img src={item.player1.profile_image} className="rounded-full" alt="image" />
+                            <h1 className="text-[12px] text-[#fff] " >{item.player1.username}</h1>
+                            
+                        </div>
+                        <div className="flex flex-col gap-[5px] items-center w-[100%] " >
+                            <p className="text-[12px] text-[#fff] ">{item.status}</p>
+                            <p className="text-[12px] text-[#fff] ">{date}</p>
+                            <p className="text-[12px] text-[#fff] ">{item.message}</p>
+                        </div>
+                        <div className="flex flex-col gap-[10px] justify-center pl-[20px] border-l-[1px] border-l-[#243257d5] max-w-[74px] " >
+                            
+                            <img src={item.player2.profile_image} className="rounded-full" alt="image" />
+                            <h1 className="text-[12px] text-[#fff] " >{item.player2.username}</h1>
+                            
+                        </div>
+                    </div>
+                )
+            })}
+            {messagesData.map((item,i)=>{
+                const index = i * playersData.length * players.length
+
+                const options:any = {
+                    year: 'numeric',
+                    month: 'long',  // Use 'short' for abbreviated month (e.g., Nov)
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    timeZone: 'UTC',
+                    timeZoneName: 'short'  // For UTC display
+                  };
+                const date =  new Date(item.match_time).toLocaleString('en-US', options);
+                return(
+                    <div key={index} className={`flex p-[20px] justify-between ${i!=messagesData.length-1?'border-b-[1px] border-b-[#243257d5]':''} `}  >
+                        <div className="flex flex-col gap-[10px] justify-center pr-[10px] border-r-[1px] border-r-[#243257d5] max-w-[64px] " >
+                            
+                            <img src={item.player1.profile_image} className="rounded-full" alt="image" />
+                            <h1 className="text-[12px] text-[#fff] " >{item.player1.username}</h1>
+                            
+                        </div>
+                        <div className="flex flex-col gap-[5px] items-center w-[100%] " >
+                            <p className="text-[12px] text-[#fff] ">{item.status}</p>
+                            <p className="text-[12px] text-[#fff] ">{date}</p>
+                            <p className="text-[12px] text-[#fff] ">{item.message}</p>
+                        </div>
+                        <div className="flex flex-col gap-[10px] justify-center pl-[10px] border-l-[1px] border-l-[#243257d5] max-w-[64px] " >
+                            
+                            <img src={item.player2.profile_image} className="rounded-full" alt="image" />
+                            <h1 className="text-[12px] text-[#fff] " >{item.player2.username}</h1>
+                            
+                        </div>
+                    </div>
+                )
+            })}
+        </div>
       </div>
     </section>
   );

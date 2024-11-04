@@ -343,9 +343,7 @@ function Pool() {
         break;
     }
   }
-  useEffect(()=>{
-    whiteBoxRef.current.style.left
-  })
+ 
 
   function mapNavigation(direction:string) {
 
