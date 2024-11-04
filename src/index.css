@@ -18,3 +18,16 @@
   overflow-x: hidden;
 }
 
+:root::-webkit-scrollbar{
+  appearance: none;
+  width: 10px;
+  margin-top: 10px;
+  background-color:#10141E;
+}
+
+
+:root::-webkit-scrollbar-thumb{
+  height:3px;
+  border-radius: 5px;
+  background-color: gray;
+}

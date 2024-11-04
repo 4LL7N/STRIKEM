@@ -236,7 +236,7 @@ function Home(props: {
             </h1>
             <div className="flex flex-wrap gap-x-[15px] gap-y-[16px]  md:w-[718px] md:mb-[39px]  md:gap-y-[29px] md:gap-x-[24px] lg:w-[1330px] lg:gap-x-[60px] lg:gap-y-[32px]">
               {SearchArr?.map((item, index) => {
-                 console.log(item); 
+                 
                  return ( 
                     <div
                     key={index}

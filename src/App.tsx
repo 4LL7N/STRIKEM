@@ -9,6 +9,8 @@ import Page from './Components/Page';
 import Pool from './Components/Pool'
 import { Navigate , createBrowserRouter , RouterProvider } from 'react-router-dom';
 import User from './Components/User';
+import Messenger from './Components/Messenger';
+import Matchup from './Components/Matchup';
 
 
 
@@ -23,12 +25,13 @@ function App() {
 
   const users= useRef<usersObj[]>([]) //useRef
   const [search, setSearch] = useState<string>('')
+  const [usersSearch,setUsersSearch] = useState<string>('')
   const [logOut, setLogOut] = useState<boolean>(false)
 
 
   const router = createBrowserRouter([
     {
-      element:<Layout search={search} setSearch={setSearch} logOut={logOut} setLogOut={setLogOut} />,
+      element:<Layout search={search} setSearch={setSearch} usersSearch={usersSearch} setUsersSearch={setUsersSearch} logOut={logOut} setLogOut={setLogOut} />,
       children:[
         {
           path:"/home",
@@ -37,6 +40,22 @@ function App() {
         {
           path:"/:page",
           element:<Page Filmdata={Filmdata} search={search} />
+        },
+        {
+          element:<Pool/>,
+          path:"/Pools/:Pool"
+        },
+        {
+          element:<User/>,
+          path:'/user'
+        },
+        {
+          path:'/messenger',
+          element:<Messenger/>
+        },
+        {
+          path:'/matchup',
+          element:<Matchup usersSearch={usersSearch} />
         }
       ]
     },
@@ -57,14 +76,7 @@ function App() {
         }
       ]
     },
-    {
-      element:<Pool/>,
-      path:"/Pools/:Pool"
-    },
-    {
-      element:<User/>,
-      path:'/user'
-    }
+  
   ])
 
   

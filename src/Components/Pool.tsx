@@ -7,7 +7,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 // import Poolhubs from "../../PoolHub.json";
 
 import { useRef, useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 import { CiStar } from "react-icons/ci";
 import axios from "axios";
@@ -119,7 +119,7 @@ const StarRating = ({ rating }: { rating: number | undefined }) => {
 
 function Pool() {
   const location = useLocation();
-  const Navigate = useNavigate();
+  // const Navigate = useNavigate();
   // const poolHub = Poolhubs.find((item) => item.id == Number(Pool))
   const [ratings, setRatings] = useState<Rating[]>([]);
 
@@ -194,12 +194,28 @@ function Pool() {
 
     setWhiteBoxHeight(whiteBoxHeight)
     setWhiteBoxWidth(whiteBoxWidth)
-
-    
-
-      
     },1000)
     
+    window.addEventListener('resize', () => {
+      const heightPercent =
+      (imgContainer?.current?.getBoundingClientRect().height * 100) /
+      img?.current?.getBoundingClientRect().height /
+      100;
+    const widthPercent =
+      (imgContainer?.current?.getBoundingClientRect().width * 100) /
+      img?.current?.getBoundingClientRect().width /
+      100;
+
+    const whiteBoxHeight = Number(
+      mapImage?.current?.getBoundingClientRect().height * heightPercent
+    );
+    const whiteBoxWidth = Number(
+      mapImage?.current?.getBoundingClientRect().width * widthPercent
+    );
+
+    setWhiteBoxHeight(whiteBoxHeight)
+    setWhiteBoxWidth(whiteBoxWidth)
+  });
 
   }, []);
 
@@ -401,21 +417,8 @@ function Pool() {
   };
 
   return (
-    <section className="flex flex-col items-center bg-[#10141E] w-screen min-h-screen  pb-[120px] md:px-[25px]">
-      <header className="w-[100%]  bg-[#161D2F] p-[16px] md:px-[20px] md:mx-[25px] flex items-center justify-between md:rounded-[10px] mb-[24px] md:my-[24px] lg:my-[48px] ">
-        <Link
-          to="/home"
-          className='w-[25px] h-[25px] bg-[length:25px_25px] bg-[url("/images/logo1.png")] md:w-[32px] md:h-[32px] md:bg-[length:32px_32px] '
-        />
-        <img
-          className="w-[24px] h-[24px] md:w-[32px] md:h-[32px] lg:w-[40px] lg:h-[40px]"
-          src="/images/image-avatar.png"
-          onClick={() => {
-            Navigate("/user");
-          }}
-        />
-      </header>
-      <main className="w-[100%] px-[10px]">
+    <section className="flex flex-col items-center bg-[#10141E] w-[100%] min-h-screen  pb-[120px]">
+      <main className="w-[100%] ">
         <div className="container-fluid max-w-[90%] p-0  ">
           <div className="row justify-content-center  ">
             <div className="col-lg-10 col-12 p-0 rounded-[10px] relative ">
@@ -546,7 +549,7 @@ function Pool() {
             </div>
           </div>
         </div>
-        <div className="mt-[24px] lg:mt-[48px] flex flex-col justify-center md:justify-start md:ml-[2.5%] w-[100%] ">
+        <div className="mt-[24px] lg:mt-[48px] flex flex-col justify-center md:justify-start  w-[100%] ">
           <h1 className=" text-[#fff]  text-[32px] md:text-[48px]">
             {poolInfo.title}
           </h1>
@@ -570,7 +573,7 @@ function Pool() {
             </h3>
           </div>
         </div>
-        <div className="w-[95%] mt-[24px] lg:mt-[48px] flex flex-col gap-[14px] md:ml-[2.5%] ">
+        <div className="w-[100%] mt-[24px] lg:mt-[48px] flex flex-col gap-[14px]  ">
           <div className="relative w-full pb-[54%] rounded-[18px] overflow-hidden ">
             <img
               src={poolInfo.pics[imageI].image}
@@ -624,14 +627,14 @@ function Pool() {
           </div>
         </div>
 
-        <div className="flex justify-center md:justify-start md:ml-[2.5%] items-center gap-[20px] w-[100%] mt-[24px] lg:mt-[48px] ">
+        <div className="flex justify-center md:justify-start  items-center gap-[20px] w-[100%] mt-[24px] lg:mt-[48px] ">
           <StarRating rating={avgRating} />
           <h1 className="text-[#fff] text-4xl md:text-5xl   ">{avgRating}</h1>
         </div>
-        <h1 className=" text-[#fff] text-[32px] md:text-[48px] md:ml-[2.5%] mt-[24px] lg:mt-[48px] ">
+        <h1 className=" text-[#fff] text-[32px] md:text-[48px]  mt-[24px] lg:mt-[48px] ">
           Reviews
         </h1>
-        <div className="w-[100%] flex flex-col md:flex-row gap-[20px] md:gap-0 justify-evenly mt-[24px] lg:mt-[48px] ">
+        <div className=" flex flex-col md:flex-row gap-[20px] md:gap-0 justify-evenly mt-[24px] lg:mt-[48px] ">
           {ratings?.map((item: Rating, i: number) => {
             return (
               <div

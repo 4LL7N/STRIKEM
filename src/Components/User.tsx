@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import Cookies from 'js-cookie';
 
 
@@ -20,18 +19,15 @@ interface Profile {
   opponents_met: number;
   profile_image: string;
   total_points: number;
-  first_name: string;
-    last_name: string;
-    email: string;
-  username:string
+  user:User
 }
 
-interface User {
-    first_name: string;
-    last_name: string;
-    email: string;
-    id: number;
-  }
+// interface User {
+//     first_name: string;
+//     last_name: string;
+//     email: string;
+//     id: number;
+//   }
   
   interface Player {
     user: User;
@@ -68,10 +64,10 @@ function User() {
 
   const Fetch = async () => {
     const token = Cookies.get('token')
-    console.log(token,'token')
+    // console.log(token,'token')
     try {
       const response = await axios.get(
-        `https://strikem.site/auth/users/me/`,
+        `https://strikem.site/users/current-user`,
         {
           headers: {
             Authorization:
@@ -95,13 +91,13 @@ function User() {
       );
 
       const historyData = historyResponse.data
-      console.log(historyData,'historyData')
+      // console.log(historyData,'historyData')
       setGameHistory(historyData)
-      const wins = historyData.filter((item:GameResult)=> {if(item.winner_player.user.first_name == data?.first_name && item.winner_player.user.last_name == data?.last_name)return item} )
-      console.log(wins,'wins')
+      const wins = historyData.filter((item:GameResult)=> {if(item.winner_player.user.first_name == data?.user.first_name && item.winner_player.user.last_name == data?.user.last_name)return item} )
+      // console.log(wins,'wins')
         setWinHistory(wins)
-      const loses = historyData.filter((item:GameResult)=> {if(item.loser_player.user.first_name == data?.first_name && item.loser_player.user.last_name == data?.last_name)return item} )
-      console.log(loses,'loses');
+      const loses = historyData.filter((item:GameResult)=> {if(item.loser_player.user.first_name == data?.user.first_name && item.loser_player.user.last_name == data?.user.last_name)return item} )
+      // console.log(loses,'loses');
       
         setLoseHistory(loses)
     } catch (err) {
@@ -111,61 +107,49 @@ function User() {
 
 
   useEffect(() => {
-    console.log('fetch')
     Fetch();
   }, []);
 
   return (
-    <section className="flex flex-col items-center bg-[#10141E] w-screen min-h-screen  md:pb-[120px] md:px-[25px]">
-      <header className="w-[100%]  bg-[#161D2F] p-[16px] md:px-[20px] md:mx-[25px] flex items-center justify-between md:rounded-[10px] mb-[24px] md:my-[24px] lg:my-[48px] ">
-        <Link
-          to="/home"
-          className='w-[25px] h-[25px] bg-[length:25px_25px] bg-[url("/public/images/logo1.png")] md:w-[32px] md:h-[32px] md:bg-[length:32px_32px] '
-        />
-        <img
-          className="w-[24px] h-[24px] md:w-[32px] md:h-[32px] lg:w-[40px] lg:h-[40px]"
-          src="/images/image-avatar.png"
-        />
-      </header>
+    <section className="flex flex-col items-center bg-[#10141E] min-w-[100%] min-h-screen  md:pb-[120px]">
       <main className="w-[100%] flex flex-col justify-center">
         <div className=" flex w-[90%] gap-[30px] items-center justify-start ">
           <img
-            // src={`/${userInfo?.profile_image}`}
+            src={userInfo?.profile_image}
             alt="profile"
             className="w-[256px] h-[256px] rounded-[50%] mx-[20px] "
           />
-
           <div className="flex flex-col  flex-grow ">
             <div className="w-[100%] flex justify-start items-end">
               <h1 className="text-[#fff]  text-[48px] ">
-                {/* {userInfo?.username} */}
+                {userInfo?.user.username}
                 
               </h1>
-              {/* <p className="text-[#7e7e7e]  text-[32px] ">({userInfo?.first_name} {userInfo?.last_name})</p> */}
+              <p className="text-[#7e7e7e]  text-[32px] ">({userInfo?.user.first_name} {userInfo?.user.last_name})</p>
             </div>
             <div className=" flex mt-[15px] ">
               <div className="flex-1 flex-col">
                 <p className="text-[#fff] text-[24px] ">
-                  {/* Games:{userInfo?.games_played} */}
+                  Games:{userInfo?.games_played}
                 </p>
                 <p className="text-[#fff] text-[24px] ">
-                  {/* Wins:{userInfo?.games_won} */}
+                  Wins:{userInfo?.games_won}
                 </p>
                 <p className="text-[#fff] text-[24px] ">
                   Loses:
-                  {/* {userInfo?.games_played && */}
-                    {/* userInfo?.games_played - userInfo?.games_won} */}
+                  {userInfo?.games_played &&
+                    userInfo?.games_played - userInfo?.games_won} 
                 </p>
                 <p className="text-[#fff] text-[24px] ">
-                  {/* Meets:{userInfo?.opponents_met} */}
+                  Meets:{userInfo?.opponents_met}
                 </p>
                 <p className="text-[#fff] text-[24px] ">
-                  {/* Points:{userInfo?.total_points} */}
+                  Points:{userInfo?.total_points}
                 </p>
               </div>
               <div className=" flex-col flex-1 ">
                 <p className="text-[#fff] text-[24px] ">
-                  {/* Email:{userInfo?.email} */}
+                  Email:{userInfo?.user.email}
                 </p>
                 <button className="rounded-[10px] px-[8px] py-[6px] text-[#fff] bg-[#fab907] mt-[5px] ">
                   Edit profile
@@ -174,7 +158,7 @@ function User() {
             </div>
           </div>
         </div>
-        <div className="mt-[48px]" >
+        <div className="mt-[48px] max-w-[100%] " >
           <nav>
             <div className="nav nav-tabs" id="nav-tab" role="tablist">
               <button
@@ -226,11 +210,11 @@ function User() {
                 let outcome:string = 'WIN' ;
                 let myStats:Player = item.winner_player;
                 let opponentStats:Player = item.loser_player;
-                if(item.winner_player.user.first_name == userInfo?.first_name && item.winner_player.user.last_name == userInfo?.last_name){
+                if(item.winner_player.user.first_name == userInfo?.user.first_name && item.winner_player.user.last_name == userInfo?.user.last_name){
                     outcome = 'WIN'
                     myStats = item.winner_player
                     opponentStats = item.loser_player
-                }else if(item.loser_player.user.first_name == userInfo?.first_name && item.loser_player.user.last_name == userInfo?.last_name){
+                }else if(item.loser_player.user.first_name == userInfo?.user.first_name && item.loser_player.user.last_name == userInfo?.user.last_name){
                     outcome = 'LOSE'
                     opponentStats = item.winner_player
                     myStats = item.loser_player
