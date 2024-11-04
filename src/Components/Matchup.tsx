@@ -101,7 +101,7 @@ function Matchup({usersSearch}:{usersSearch:string}) {
 
   const Fetch = async () => {
     try {
-      const response = await axios("http://strikem.site/api/players/");
+      const response = await axios("https://strikem.site/api/players/");
       setPlayers(response.data);
       setPlayersData(response.data)
     } catch (err) {
