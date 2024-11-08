@@ -243,13 +243,25 @@ const chatMessages = useMemo(() => {
     currentUser = currentUser ? JSON.parse(currentUser) : null;
     return chat?.map((item: chatMessage, i: number) => {
 
+        const author = item?.sender.id === currentUser.id
+
         let rounded = "rounded-[40px]";
+        if(author){
         if (chat[i + 1] && chat[i]?.sender.id === chat[i + 1]?.sender.id) {
             rounded = chat[i - 1] && chat[i]?.sender.id === chat[i - 1]?.sender.id
                 ? "rounded-[40px_0px_0px_40px]"
                 : "rounded-[40px_40px_0px_40px]";
         } else if (chat[i - 1] && chat[i].sender?.id === chat[i - 1]?.sender.id) {
             rounded = "rounded-[40px_0px_40px_40px]";
+        }
+        }else{
+            if (chat[i + 1] && chat[i]?.sender.id === chat[i + 1]?.sender.id) {
+                rounded = chat[i - 1] && chat[i]?.sender.id === chat[i - 1]?.sender.id
+                    ? "rounded-[0px_40px_40px_0px]"
+                    : "rounded-[40px_40px_40px_0px]";
+            } else if (chat[i - 1] && chat[i].sender?.id === chat[i - 1]?.sender.id) {
+                rounded = "rounded-[0px_40px_40px_40px]";
+            }
         }
 
         const margin = i === 0
@@ -262,7 +274,7 @@ const chatMessages = useMemo(() => {
             <ChatBubble
           key={i}
           item={item}
-          isCurrentUser={item?.sender.id === currentUser.id}
+          isCurrentUser={author}
           rounded={rounded}
           margin={margin}
         />

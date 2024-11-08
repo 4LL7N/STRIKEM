@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CiStar } from "react-icons/ci";
 import { LuMapPin } from "react-icons/lu";
 import Cookies from "js-cookie";
 
 import "./CSS/matchup.css";
 import { useWebSocketContext } from "./Websocket";
-// import { useWebSocketContext } from "./Websocket";
+import PlayerCard from "./MatchMakeMemo/PlayerCard";
 
 interface User {
   id: number;
@@ -60,7 +60,7 @@ interface Message {
   };
 }
 
-interface invitations {
+interface Invitation {
   id?: string;
   player_invited: {
     id: number;
@@ -91,79 +91,76 @@ interface invitations {
 function Matchup({ usersSearch }: { usersSearch: string }) {
     const { sendJsonMessage, lastJsonMessage } = useWebSocketContext();
     
+    const currentUser = useMemo(() => {
+        return localStorage.getItem("currentUser") 
+          ? JSON.parse(localStorage.getItem("currentUser")!) 
+          : null;
+      }, []);
+      
+
     const [filter, setFilter] = useState<number[]>([]);
     
     const [playersData, setPlayersData] = useState<Profile[]>([]);
-    const [players, setPlayers] = useState<Profile[]>([]);
+    // const [players, setPlayers] = useState<Profile[]>([]);
     
     const [matchMakes, setMatchMakes] = useState<Message[]>([]);
-    const [invitations, setInvitations] = useState<invitations[]>([]);
+    const [invitations, setInvitations] = useState<Invitation[]>([]);
     
     const matchupSectionRef = useRef<any>();
     const [isOn, setIsOn] = useState(false);
 
-  const handleCheckboxChange = (num: number) => {
-    let filterArr = [...filter];
-    if (filterArr.includes(num)) {
-      filterArr = filterArr.filter((item) => item !== num);
-      setFilter([...filterArr]);
-    } else {
-      filterArr.push(num);
-      setFilter(filterArr);
-    }
-  };
+    const handleCheckboxChange = useCallback((num: number) => {
+        setFilter((prevFilter) =>
+          prevFilter.includes(num)
+            ? prevFilter.filter((item) => item !== num)
+            : [...prevFilter, num]
+        );
+      }, []);
 
-  const Fetch = async () => {
+//   const handleCheckboxChange = (num: number) => {
+//     let filterArr = [...filter];
+//     if (filterArr.includes(num)) {
+//       filterArr = filterArr.filter((item) => item !== num);
+//       setFilter([...filterArr]);
+//     } else {
+//       filterArr.push(num);
+//       setFilter(filterArr);
+//     }
+//   };
+
+const Fetch = useCallback(async () => {
     const token = Cookies.get("token");
     try {
-      const response = await axios("https://strikem.site/api/filter-ratings/", {
-        headers: {
-          Authorization: `JWT ${token}`,
-        },
-      });
-
-      setPlayers(response.data);
-      setPlayersData(response.data);
-      const matchmakeResponse = await axios(
-        "https://strikem.site/api/matchups/",
-        {
-          headers: {
-            Authorization: `JWT ${token}`,
-          },
-        }
-      );
-      console.log(matchmakeResponse.data.results);
-      setMatchMakes(matchmakeResponse.data.results);
-
-      const invationsResponse = await axios(
-        "https://strikem.site/api/invitations/",
-        {
-          headers: {
-            Authorization: `JWT ${token}`,
-          },
-        }
-      );
-      console.log(invationsResponse.data);
-      setInvitations(invationsResponse.data);
+        const [playersResponse, matchMakesResponse, invitationsResponse] = await Promise.all([
+            axios.get("https://strikem.site/api/filter-ratings/", {
+              headers: { Authorization: `JWT ${token}` },
+            }),
+            axios.get("https://strikem.site/api/matchups/", {
+              headers: { Authorization: `JWT ${token}` },
+            }),
+            axios.get("https://strikem.site/api/invitations/", {
+              headers: { Authorization: `JWT ${token}` },
+            }),
+          ]);
+      
+        setPlayersData(playersResponse.data);
+        setMatchMakes(matchMakesResponse.data.results);
+        setInvitations(invitationsResponse.data);
     } catch (err) {
       console.log(err);
     }
-  };
+  }, []);
+  
 
   useEffect(() => {
     console.log(lastJsonMessage);
     if(lastJsonMessage && lastJsonMessage.protocol == 'invite'){
-    let currentUser: any = localStorage?.getItem("currentUser");
-    currentUser
-      ? (currentUser = JSON.parse(currentUser))
-      : (currentUser = null);
-    //   console.log(currentUser)
     const newInvites = [...invitations];
     const newInvite:any = {
       player_invited: {
-        profile_image: currentUser.profile_image,
-        total_points: currentUser.total_points,
-        user:currentUser.user
+        profile_image: currentUser?.profile_image,
+        total_points: currentUser?.total_points,
+        user:currentUser?.user
       },
     player_inviting:{
         profile_image:'../../public/images/logo1.png',
@@ -181,49 +178,39 @@ function Matchup({ usersSearch }: { usersSearch: string }) {
   }, [lastJsonMessage]);
 
   const sendMatchmake = (username: string) => {
-    let currentUser: any = localStorage?.getItem("currentUser");
-    currentUser
-      ? (currentUser = JSON.parse(currentUser))
-      : (currentUser = null);
+    
     console.log(currentUser);
     sendJsonMessage({
       action: "matchmake",
       matchmaker_username: username,
-      username: currentUser.user.username,
+      username: currentUser?.user.username,
     });
   };
 
   const acceptMatchmake = (username: string) => {
-    let currentUser: any = localStorage?.getItem("currentUser");
-    currentUser
-      ? (currentUser = JSON.parse(currentUser))
-      : (currentUser = null);
+    
     sendJsonMessage({
       action: "matchmake",
-      username: currentUser.user.username,
+      username: currentUser?.user.username,
       invite_sender_username: username,
       invite_response: "accept",
     });
   };
 
   const declineMatchmake = (username: string) => {
-    let currentUser: any = localStorage?.getItem("currentUser");
-    currentUser
-      ? (currentUser = JSON.parse(currentUser))
-      : (currentUser = null);
+    
     sendJsonMessage({
       action: "matchmake",
-      username: currentUser.user.username,
+      username: currentUser?.user.username,
       invite_sender_username: username,
       invite_response: "deny",
     });
   };
 
   useEffect(() => {
-    let currentUser: any = localStorage?.getItem("currentUser");
-    currentUser
-      ? (currentUser = JSON.parse(currentUser))
-      : (currentUser = null);
+    const currentUser: Profile  = localStorage.getItem("currentUser") 
+    ? JSON.parse(localStorage.getItem("currentUser")!) 
+    : null;
     setIsOn(currentUser.inviting_to_play)
     console.log(currentUser)
       
@@ -239,33 +226,30 @@ function Matchup({ usersSearch }: { usersSearch: string }) {
     }, 100);
   }, []);
 
-  useEffect(() => {
+  const filteredPlayers = useMemo(() => {
     let newArr = playersData.filter((item: Profile) =>
       item.user.username.startsWith(usersSearch)
     );
-
+  
     if (filter.includes(1)) {
       console.log("not implemented");
     }
-
+  
     if (filter.includes(2)) {
       newArr = newArr.sort((a, b) => b.total_points - a.total_points);
     }
-    setPlayers(newArr);
-  }, [usersSearch, filter]);
+    return newArr;
+  }, [playersData, usersSearch, filter]);
 
 
   const toggleSlider = () => {
-    let currentUser: any = localStorage?.getItem("currentUser");
-    currentUser
-      ? (currentUser = JSON.parse(currentUser))
-      : (currentUser = null);
+    
     console.log(currentUser);
 
     sendJsonMessage(
         {
             'action': 'matchmake',
-            'username': currentUser.user.username,
+            'username': currentUser?.user.username,
             'protocol': 'control_user'
         }
     );
@@ -360,59 +344,16 @@ function Matchup({ usersSearch }: { usersSearch: string }) {
           <h1 className="text-[48px] text-[#fff] ">Players</h1>
           <div className="flex-1 overflow-hidden ">
             <div className="flex flex-col gap-[3.5%] h-[100%] max-h-[100%] overflow-y-auto playersScroll pr-[10px]">
-              {players.map((item: Profile, i: number) => {
-                let currentUser: any = localStorage?.getItem("currentUser");
-                currentUser
-                  ? (currentUser = JSON.parse(currentUser))
-                  : (currentUser = null);
+              {filteredPlayers.map((item: Profile) => {
+                
 
                 return (
-                  <div
-                    key={i + 10}
-                    className="flex justify-between items-center rounded-[20px] bg-[#161D2F] p-[16px] h-[17.4%] w-[100%]  "
-                  >
-                    <div className="flex gap-[20px] h-[100%] ">
-                      <img
-                        src={item.profile_image}
-                        className="h-[100%] aspect-square rounded-full "
-                        alt="profile_image"
-                      />
-                      <div className="flex flex-col items-center justify-start text-left gap-[10px] ">
-                        <div className="flex gap-[2px] items-end ">
-                          <h1 className="text-[18px] text-[#fff]  ">
-                            {item.user.username}
-                          </h1>
-                          <h2 className="text-[12px] text-[#ffffff57] ">
-                            ({item.user.first_name} {item.user.last_name})
-                          </h2>
-                        </div>
-                        <h3 className="text-[10px] text-[#fff] self-start ">
-                          Email:{item.user.email}
-                        </h3>
-                      </div>
-                    </div>
-                    <div className="flex gap-[5px]">
-                      <CiStar size={28} style={{ color: "white" }} />
-                      <p className="text-[18px] text-[#fff]  ">
-                        {item.total_points}
-                      </p>
-                    </div>
-                    <button
-                      className={` ${
-                        item.user.id == currentUser.user.id &&
-                        "bg-transparent text-transparent"
-                      } bg-[#fab907] px-[8px] py-[4px] text-[#FFF] hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px] `}
-                      onClick={
-                        item.user.id == currentUser.user.id
-                          ? () => {}
-                          : () => {
-                              sendMatchmake(item.user.username);
-                            }
-                      }
-                    >
-                      Matchmake
-                    </button>
-                  </div>
+                    <PlayerCard
+                    key={item.id}
+                    player={item}
+                    currentUser={currentUser}
+                    onMatchmake={sendMatchmake}
+                  />
                 );
               })}
             </div>
@@ -425,17 +366,6 @@ function Matchup({ usersSearch }: { usersSearch: string }) {
           <div className="flex flex-col rounded-[20px]  border-[1px] border-[#243257d5] h-[238px] overflow-y-auto messagesScroll  ">
             {matchMakes?.map((item: Message, i: number) => {
               const index = (i + 10) * 100;
-
-              // const options:any = {
-              //     year: 'numeric',
-              //     month: 'long',  // Use 'short' for abbreviated month (e.g., Nov)
-              //     day: 'numeric',
-              //     hour: 'numeric',
-              //     minute: 'numeric',
-              //     timeZone: 'UTC',
-              //     timeZoneName: 'short'  // For UTC display
-              //   };
-              // const date =  new Date(item.match_time).toLocaleString('en-US', options);
               return (
                 <div
                   key={index}
@@ -456,9 +386,6 @@ function Matchup({ usersSearch }: { usersSearch: string }) {
                     </h1>
                   </div>
                   <div className="flex flex-col gap-[5px] items-center w-[100%] ">
-                    {/* <p className="text-[12px] text-[#fff] ">{item.status}</p> */}
-                    {/* <p className="text-[12px] text-[#fff] ">{date}</p> */}
-                    {/* <p className="text-[12px] text-[#fff] ">{item.message}</p> */}
                   </div>
                   <div className="flex flex-col gap-[10px] justify-center items-center pl-[20px] border-l-[1px] border-l-[#243257d5] max-w-[74px] ">
                     <img
@@ -478,19 +405,8 @@ function Matchup({ usersSearch }: { usersSearch: string }) {
         <div className="flex flex-col gap-[20px] ">
           <h1 className="text-[48px] text-[#ffffff] ">invations</h1>
           <div className="flex flex-col rounded-[20px]  border-[1px] border-[#243257d5] h-[238px] overflow-y-auto messagesScroll  ">
-            {invitations?.map((item: invitations, i: number) => {
+            {invitations?.map((item: Invitation, i: number) => {
               const index = (i + 10) * 100;
-              console.log("asd");
-              // const options:any = {
-              //     year: 'numeric',
-              //     month: 'long',  // Use 'short' for abbreviated month (e.g., Nov)
-              //     day: 'numeric',
-              //     hour: 'numeric',
-              //     minute: 'numeric',
-              //     timeZone: 'UTC',
-              //     timeZoneName: 'short'  // For UTC display
-              //   };
-              // const date =  new Date(item.match_time).toLocaleString('en-US', options);
               return (
                 <div
                   key={index}

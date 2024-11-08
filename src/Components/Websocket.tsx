@@ -31,6 +31,7 @@ const WebSocketContext = createContext<any>(null);
 export const useWebSocketContext = () => useContext(WebSocketContext);
 
 export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [invitationAccept,setInvitationAccept] = useState<any>()
   const [wsToken, setWsToken] = useState<string | null>(null);
   const token = Cookies.get("token");
 
@@ -60,7 +61,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Provide the WebSocket context to children
   return (
-    <WebSocketContext.Provider value={{ sendJsonMessage, lastJsonMessage}}>
+    <WebSocketContext.Provider value={{ sendJsonMessage, lastJsonMessage,invitationAccept,setInvitationAccept}}>
       {children}
     </WebSocketContext.Provider>
   );
