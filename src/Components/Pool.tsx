@@ -3,24 +3,18 @@
 import "./CSS/Pool.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
-
-// import Poolhubs from "../../PoolHub.json";
-
+import "leaflet/dist/leaflet.css";
+import L from 'leaflet';
 import { useRef, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-
 import { CiStar } from "react-icons/ci";
 import axios from "axios";
 import { TbLetterW } from "react-icons/tb";
 import { MdTableRestaurant } from "react-icons/md";
 import { FaBuilding } from "react-icons/fa";
-
 import Cookies from 'js-cookie';
-
-// interface User {
-//   name: string;
-//   image: string;
-// }
+import { MapContainer, Marker, TileLayer, Tooltip } from "react-leaflet";
+import { useGeolocated } from "react-geolocated";
 
 interface Rating {
   id: number;
@@ -52,6 +46,10 @@ interface PoolHall {
   avg_rating: number;
   pics: Picture[];
   table_count: number;
+  slug:string,
+  latitude:number,
+  longitude:number
+
 }
 
 interface Table {
@@ -73,12 +71,10 @@ const Star = ({ fillPercentage }: { fillPercentage: number }) => {
       height="2.7rem" // Use viewport width for responsiveness
       style={{ position: "relative" }}
     >
-      {/* Full background star (gray) */}
       <path
         d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
         fill="#e4e5e9"
       />
-      {/* Dynamic foreground star (gold) with clipping for partial fill */}
       <path
         d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
         fill="#ffd700"
@@ -91,36 +87,46 @@ const Star = ({ fillPercentage }: { fillPercentage: number }) => {
 const StarRating = ({ rating }: { rating: number | undefined }) => {
   const maxStars = 5;
 
-  // Split the rating into full stars and fractional part
   if (!rating) return;
   const fullStars = Math.floor(rating);
   const partialStar = rating - fullStars;
 
-  // Create an array to represent each star
   const stars = Array.from({ length: maxStars }, (_, index) => {
     if (index < fullStars) {
-      // Full stars
       return <Star key={index} fillPercentage={100} />;
     } else if (index === fullStars) {
-      // Partial star
       return <Star key={index} fillPercentage={partialStar * 100} />;
     } else {
-      // Empty stars
       return <Star key={index} fillPercentage={0} />;
     }
   });
 
   return (
-    // <div className="flex justify-center w-[60%] mx-auto">
     <div className="flex space-x-1">{stars}</div>
-    // </div>
   );
 };
 
+
+const markerIcon = new L.Icon({
+  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
+  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
+
+
 function Pool() {
+
+  const { coords, isGeolocationAvailable, isGeolocationEnabled } =
+        useGeolocated({
+            positionOptions: {
+                enableHighAccuracy: false,
+            },
+            userDecisionTimeout: 5000,
+        });
+
   const location = useLocation();
-  // const Navigate = useNavigate();
-  // const poolHub = Poolhubs.find((item) => item.id == Number(Pool))
   const [ratings, setRatings] = useState<Rating[]>([]);
 
   const [whiteBoxHeight,setWhiteBoxHeight] = useState<number>(0)
@@ -155,9 +161,7 @@ function Pool() {
         }
       );
       setRatings(response.data);
-      // console.log(response.data);
 
-      // setPoolHubData(response.data)
     } catch (err) {
       console.error(err);
     }
@@ -172,8 +176,6 @@ function Pool() {
     window.addEventListener("resize", handleResize);
 
     Fetch();
-
-
 
     setTimeout(()=>{
     const heightPercent =
@@ -233,7 +235,6 @@ function Pool() {
     imgContainer.current.style.height = `${
       img.current.getBoundingClientRect().height / sectionNumVertical
     }px`;
-
     navigate("", true);
   }
 
@@ -280,7 +281,6 @@ function Pool() {
           positionVertical += 1;
           exact = stepVertical * (positionVertical - 1) * topSign;
           overlayDiv.current.style.top = `${exact}px`;
-
           break;
 
         case "west":
@@ -293,11 +293,9 @@ function Pool() {
           positionHorizontal += 1;
           exact = stepHorizontal * (positionHorizontal - 1) * leftSign;
           overlayDiv.current.style.left = `${exact}px`;
-
           break;
       }
     }
-
     checkNextDirection(sectionNumHorizontal, sectionNumVertical);
   }
 
@@ -344,7 +342,6 @@ function Pool() {
     }
   }
  
-
   function mapNavigation(direction:string) {
 
     switch (direction){
@@ -381,14 +378,13 @@ function Pool() {
         break
       }
     }
-    
   }
 
   const ImageMap = () => {
     setTimeout(()=>{
-    whiteBoxRef.current.style.left = '0px'
+      whiteBoxRef.current.style.left = '0px'
       whiteBoxRef.current.style.top = '0px'
-    },1)
+    },10)
     return (
       <div className=" absolute right-0 top-0 w-[20%] z-1 border border-black ">
         <div className="relative w-[100%] h-[100%] ">
@@ -677,6 +673,38 @@ function Pool() {
               </div>
             );
           })}
+        </div>
+        <div className=" flex items-center justify-center mt-[48px] rounded-[18px] overflow-hidden " >
+          {!isGeolocationAvailable ? (
+        <h1 className="text-[20px] text-[#fff] " >Your browser does not support Geolocation</h1>
+    ) : !isGeolocationEnabled ? (
+      <h1 className="text-[20px] text-[#fff] " >Geolocation is not enabled</h1>
+    ) : coords ? (
+      <MapContainer
+      center={[poolInfo?.latitude, poolInfo?.longitude]} // Initial center of the map
+      zoom={15}
+      minZoom={13}            
+      maxZoom={18}
+      style={{ height: '400px', width: '100%' }}
+    >
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+      />
+      <Marker position={[poolInfo?.latitude, poolInfo?.longitude]} icon={markerIcon} >
+      <Tooltip direction="top" offset={[0, -20]} permanent>
+          {poolInfo.title}
+        </Tooltip>
+      </Marker>
+      <Marker position={[coords.latitude,coords.longitude]} icon={markerIcon} >
+      <Tooltip direction="top" offset={[0, -20]} permanent>
+          You
+        </Tooltip>
+      </Marker>
+    </MapContainer>
+    ) : (
+      <h1 className="text-[20px] text-[#fff] " >Getting the location data&hellip; </h1>
+    )}
         </div>
       </main>
     </section>

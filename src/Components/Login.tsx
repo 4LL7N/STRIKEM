@@ -83,7 +83,7 @@ console.log('')
         ,{
         // secure: true,
         // sameSite: 'Strict',
-         path: '/'
+         
       }
     )
 

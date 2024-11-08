@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
-import { useEffect
-  , useState
+import { useCallback, useEffect
+  , useMemo, useState
  } from "react";
-import { useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
-// import styled from "styled-components";
 import './CSS/home.css'
 
 
@@ -40,95 +39,149 @@ function Home(props: {
   search: string;
 }) {
   const navigate = useNavigate();
-
   const [nearby, setNearby] = useState<PoolHall[]>([]);
     const [recommended,setRecommended] = useState<PoolHall[]>([])
 
-  const Fetch = async () => {
-    const token = Cookies.get('token')
-    // console.log(token)
+  // const Fetch = async () => {
+  //   const token = Cookies.get('token')
+  //   // console.log(token)
+  //   try {
+  //     const response = await axios.get(
+  //       "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316",
+  //       {
+  //         headers: {
+  //           Authorization:
+  //             `JWT ${token}`,
+  //         },
+  //       }
+  //     );
+  //     const data = response.data;
+  //     const newData: any = [];
+  //     data?.forEach((item: PoolHall) => {
+  //       const pool = item;
+  //       const imageData: any = [];
+  //       pool.pics.forEach((element) => {
+  //         let image = {};
+  //         image = {
+  //           id: element.id,
+  //           image: `/${element.image.split("/").splice(3).join("/")}`,
+  //         };
+  //         imageData.push(image);
+  //       });
+  //       pool.pics = [...imageData];
+  //       newData.push(pool);
+  //     });
+  //     setNearby(newData);
+
+  //     const PoolHousesResponse = await axios.get("https://strikem.site/api/poolhouses/",{
+  //       headers:{
+  //         'Authorization':`JWT ${token}`
+  //       }
+  //     });
+  //   // console.log(PoolHousesResponse.data);
+    
+  //   const Recommended = [... PoolHousesResponse.data];
+   
+  //   const PoolHousesNewData: any = [];
+  //   Recommended?.forEach((item) => {
+  //     const pool = item;
+  //     const imageData: any = [];
+  //     pool.pics.forEach((element:ImageObject) => {
+  //       let image = {};
+  //       image = {
+  //         id: element.id,
+  //         image: `/${element.image.split("/").splice(3).join("/")}`,
+  //       };
+  //       imageData.push(image);
+  //     });
+  //     pool.pics = [...imageData];
+  //     PoolHousesNewData.push(pool);
+  //   });
+  //   // console.log(PoolHousesNewData)
+  //   setRecommended(PoolHousesNewData);
+
+  //   const currentUserResponse = await axios.get(
+  //     "https://strikem.site/users/current-user",
+  //     {
+  //       headers: {
+  //         Authorization:
+  //           `JWT ${token}`,
+  //       },
+  //     }
+  //   );
+  //   // console.log(currentUserResponse.data)
+  //   localStorage.setItem('currentUser',JSON.stringify(currentUserResponse.data))
+  // } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
+
+  const fetchData = useCallback(async () => {
+    const token = Cookies.get('token');
     try {
       const response = await axios.get(
         "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316",
         {
-          headers: {
-            Authorization:
-              `JWT ${token}`,
-          },
+          headers: { Authorization: `JWT ${token}` },
         }
       );
-      const data = response.data;
-      const newData: any = [];
-      data?.forEach((item: PoolHall) => {
-        const pool = item;
-        const imageData: any = [];
-        pool.pics.forEach((element) => {
-          let image = {};
-          image = {
-            id: element.id,
-            image: `/${element.image.split("/").splice(3).join("/")}`,
-          };
-          imageData.push(image);
-        });
-        pool.pics = [...imageData];
-        newData.push(pool);
-      });
-      setNearby(newData);
 
-      const PoolHousesResponse = await axios.get("https://strikem.site/api/poolhouses/",{
-        headers:{
-          'Authorization':`JWT ${token}`
+      const data = response.data.map((item: PoolHall) => ({
+        ...item,
+        pics: item.pics.map((pic: Picture) => ({
+          ...pic,
+          image: `/${pic.image.split("/").splice(3).join("/")}`,
+        })),
+      }));
+
+      setNearby(data);
+
+      const PoolHousesResponse = await axios.get("https://strikem.site/api/poolhouses/", {
+        headers: { Authorization: `JWT ${token}` },
+      });
+
+      const recommendedData = PoolHousesResponse.data.map((item: PoolHall) => ({
+        ...item,
+        pics: item.pics.map((pic: ImageObject) => ({
+          ...pic,
+          image: `/${pic.image.split("/").splice(3).join("/")}`,
+        })),
+      }));
+
+      setRecommended(recommendedData);
+
+      const currentUserResponse = await axios.get(
+        "https://strikem.site/users/current-user",
+        {
+          headers: { Authorization: `JWT ${token}` },
         }
-      });
-    // console.log(PoolHousesResponse);
-    
-    const Recommended = [... PoolHousesResponse.data];
-   
-    const PoolHousesNewData: any = [];
-    Recommended?.forEach((item) => {
-      const pool = item;
-      const imageData: any = [];
-      pool.pics.forEach((element:ImageObject) => {
-        let image = {};
-        image = {
-          id: element.id,
-          image: `/${element.image.split("/").splice(3).join("/")}`,
-        };
-        imageData.push(image);
-      });
-      pool.pics = [...imageData];
-      PoolHousesNewData.push(pool);
-    });
-    // console.log(PoolHousesNewData)
-    setRecommended(PoolHousesNewData);
+      );
 
-
+      localStorage.setItem('currentUser', JSON.stringify(currentUserResponse.data));
     } catch (err) {
       console.error(err);
     }
-  };
+  }, [])
 
   useEffect(() => {
-    // const token = Cookies.get('token')
-    // console.log(token)
-    Fetch();
-  }, []);
+    fetchData();
+  }, [fetchData]);
 
   
-  let SearchArr: PoolHall[] = [];
-
-  function search() {
-    
-    if(props.search){
-        SearchArr = recommended?.filter((item)=> item.title.toLowerCase().includes(props.search.toLowerCase()))
+  const filteredSearchResults = useMemo(() => {
+    if (props.search) {
+      return recommended.filter((item) =>
+        item.title.toLowerCase().includes(props.search.toLowerCase())
+      );
     }
-  }
+    return [];
+  }, [recommended, props.search]);
 
-  useEffect(() => {
-    search();
-  }, [props.search]);
+  // useEffect(() => {
+  //   search();
+  // }, [props.search]);
 
-  search();
+  // search();
   function PoolPage(data: any) {
     navigate(`/Pools/${data.id}`, { state: data });
   }
@@ -163,14 +216,12 @@ function Home(props: {
                           <div className="flex items-center gap-[6px]  ">
                             <p className="  text-[#FFF] text-[12px] font-light opacity-75 md:text-[15px] " >{item.address}</p>
                             <div className="w-[3px] h-[3px] bg-[#FFF] opacity-50 rounded-[50%] " />
-                            {/* <img className="w-[12px] h-[12px]  opacity-75"  src={categrory(item.category)} /> */}
                             <p className="  text-[#FFF] text-[12px] font-light opacity-75 md:text-[15px] " >{item.table_count}</p>
                           </div>
                           <h2 className="text-[#FFF] text-[15px] font-medium md:text-[24px]">
                             {item.title}
                           </h2>
                         </div>
-                        {/* <div className="w-[34px] h-[21px] rounded-[10.5px] bg-[#FFF] bg-opacity-20 text-[13px] text-[#FFF] font-light text-center md:w-[45px] md:h-[27px] md:text-[18px]" >{item.rating}</div> */}
                       </div>
                     </div>
                   </div>
@@ -197,7 +248,6 @@ function Home(props: {
                         className="w-[100%] h-[100%] rounded-[8px]"
                         src={`${item.pics[0].image}`}
                       />
-                      {/* <div className="absolute top-[8px] flex justify-center items-center w-[32px] h-[32px] rounded-[50%] bg-[black] bg-opacity-40 ml-[124px] md:top-[16px] md:ml-[172px] lg:ml-[232px]" onClick={() => {item.isBookmarked = !item.isBookmarked , setRecommendedBookMark(!RecommendedBookMark)}} ><img src={item.isBookmarked?"/images/icon-category-bookmark.svg":"/images/icon-bookmark-empty.svg"} /></div> */}
                     </div>
                     <div className="flex flex-col gap-[4px]">
                       <div className="flex flex-col items-start jus gap-[6px]">
@@ -207,7 +257,6 @@ function Home(props: {
                         <div className="flex">
                           <div className="w-[2px] h-[2px] bg-[#FFF] bg-opacity-50 " />
                           <div className="flex items-center gap-[4px]">
-                            {/* <img className="w-[10px] h-[10px] " src={categrory(item.category)} /> */}
                             <p className="  text-[#FFF] text-[11px] font-light opacity-75 md:text-[13px] ">
                               {item.tables.length}
                             </p>
@@ -232,10 +281,10 @@ function Home(props: {
         <section className="flex flex-col min-h-[100vh] bg-[#10141E] px-[16px] md:px-[0]">
           <div>
             <h1 className="text-[#FFF] text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] ">
-              Found {SearchArr?.length} results for ‘{props.search}’
+              Found {filteredSearchResults.length} results for ‘{props.search}’
             </h1>
             <div className="flex flex-wrap gap-x-[15px] gap-y-[16px]  md:w-[718px] md:mb-[39px]  md:gap-y-[29px] md:gap-x-[24px] lg:w-[1330px] lg:gap-x-[60px] lg:gap-y-[32px]">
-              {SearchArr?.map((item, index) => {
+              {filteredSearchResults?.map((item, index) => {
                  
                  return ( 
                     <div
@@ -250,7 +299,6 @@ function Home(props: {
                         className="w-[100%] h-[100%] rounded-[8px]"
                         src={`${item.pics[0].image}`}
                       />
-                      {/* <div className="absolute top-[8px] flex justify-center items-center w-[32px] h-[32px] rounded-[50%] bg-[black] bg-opacity-40 ml-[124px] md:top-[16px] md:ml-[172px] lg:ml-[232px]" onClick={() => {item.isBookmarked = !item.isBookmarked , setRecommendedBookMark(!RecommendedBookMark)}} ><img src={item.isBookmarked?"/images/icon-category-bookmark.svg":"/images/icon-bookmark-empty.svg"} /></div> */}
                     </div>
                     <div className="flex flex-col gap-[4px]">
                       <div className="flex flex-col items-start jus gap-[6px]">
@@ -260,7 +308,6 @@ function Home(props: {
                         <div className="flex">
                           <div className="w-[2px] h-[2px] bg-[#FFF] bg-opacity-50 " />
                           <div className="flex items-center gap-[4px]">
-                            {/* <img className="w-[10px] h-[10px] " src={categrory(item.category)} /> */}
                             <p className="  text-[#FFF] text-[11px] font-light opacity-75 md:text-[13px] ">
                               {item.tables.length}
                             </p>
@@ -287,37 +334,3 @@ function Home(props: {
 }
 
 export default Home;
-
-// const TrendingBox = styled.div`
-//   display: flex;
-//   gap: 15px;
-//   overflow: scroll;
-//   flex-wrap: nowrap;
-//   max-width: 100%;
-//   margin-bottom: 24px;
-//   border-radius: 8px;
-//     padding: 0px;
-
-//   @media (min-width: 768px) {
-//     /* width: 718px; */
-//     margin-bottom: 39px;
-//     gap: 40px;
-//   }
-
-//   @media (min-width: 1024px) {
-//     /* width: 1305px; */
-//     overflow-x: scroll;
-
-//     &::-webkit-scrollbar {
-//       appearance: none;
-//       height: 5px;
-//       width: 300px;
-//     }
-
-//     &::-webkit-scrollbar-thumb {
-//       height: 3px;
-//       border-radius: 5px;
-//       background-color: gray;
-//     }
-//   }
-// `;
