@@ -10,6 +10,7 @@ import "./CSS/matchup.css";
 import { useWebSocketContext } from "./Websocket";
 import PlayerCard from "./MatchMakeMemo/PlayerCard";
 import MatchMakesCard from "./MatchMakeMemo/MatchMakesCard";
+import InvitationsCard from "./MatchMakeMemo/invitationsCard";
 
 interface User {
   id: number;
@@ -369,8 +370,7 @@ const Fetch = useCallback(async () => {
               const index = (i + 10) * 100;
               return (
                 <MatchMakesCard
-                key={index * 100}
-                index={index}
+                key={index}
                 i={i}
                 length={matchMakes.length}
                 item={item}
@@ -385,49 +385,15 @@ const Fetch = useCallback(async () => {
             {invitations?.map((item: Invitation, i: number) => {
               const index = (i + 10) * 100;
               return (
-                <div
-                  key={index}
-                  className={`flex p-[20px] justify-between ${
-                    i != matchMakes.length - 1 || matchMakes.length < 5
-                      ? "border-b-[1px] border-b-[#243257d5]"
-                      : ""
-                  } `}
-                >
-                  <div className="flex flex-col gap-[10px] justify-center items-center pr-[20px] mr-[20px] border-r-[1px] border-r-[#243257d5] max-w-[74px] ">
-                    <img
-                      src={item.player_inviting.profile_image}
-                      className="rounded-[50%] aspect-square "
-                      alt="image"
-                    />
-                    <h1 className="text-[12px] text-[#fff] ">
-                      {item.player_inviting.user.username}
-                    </h1>
-                  </div>
-                  <div className=" flex items-center w-full justify-between ">
-                    <h1 className="text-[20px] text-[#fff] ">
-                      {item.player_inviting.user.username} invited you
-                    </h1>
-                    <div className="flex flex-col gap-[10px] ">
-                      <button
-                        className="bg-[#fab907] px-[8px] py-[4px] text-[#FFF] hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px] "
-                        onClick={() => {
-                          acceptMatchmake(item.player_inviting.user.username);
-                        }}
-                      >
-                        ACCEPT
-                      </button>
-                      <button
-                        className="bg-red-600 px-[8px] py-[4px] text-[#FFF] hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px] "
-                        onClick={() => {
-                          declineMatchmake(item.player_inviting.user.username);
-                        }}
-                      >
-                        DECLINE
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              );
+                <InvitationsCard
+                    key={index}
+                    i={i}
+                    length={invitations.length}
+                    item={item}
+                    acceptMatchMake={acceptMatchmake}
+                    declineMatchMake={declineMatchmake}
+                />
+            );
             })}
           </div>
         </div>

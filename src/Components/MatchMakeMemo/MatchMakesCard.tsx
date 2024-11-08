@@ -31,10 +31,10 @@ interface Message {
     };
   }
 
-const MatchMakesCard = React.memo(({index,i,length,item}:{index:number,i:number,length:number,item:Message}) =>{
+const MatchMakesCard = React.memo(({i,length,item}:{i:number,length:number,item:Message}) =>{
   return (
     <div
-                  key={index}
+                  
                   className={`flex p-[20px] justify-between ${
                     i != length - 1 || length < 5
                       ? "border-b-[1px] border-b-[#243257d5]"
