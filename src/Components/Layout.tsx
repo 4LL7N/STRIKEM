@@ -67,7 +67,7 @@ function Layout(props:{search:string,setSearch:(search:string)=>void,usersSearch
     }, [location.pathname, sendJsonMessage]);
   
     useEffect(() => {
-    //   console.log("Last message:", lastJsonMessage);
+      console.log("Last message:", lastJsonMessage);
     }, [lastJsonMessage]);
   
     const handleClickSendMessage = () => {
@@ -80,7 +80,7 @@ function Layout(props:{search:string,setSearch:(search:string)=>void,usersSearch
     };
     return(
         <>
-        <div className={`w-[100vw] ${location.pathname == '/matchmake'?'h-screen':'min-h-screen'} overflow-hidden bg-[#10141E] flex flex-col md:p-[25px] ${location.pathname == '/user' || location.pathname == '/messenger' || location.pathname.includes('Pools') ?' md:pt-[24px] lg:p-[32px]':' lg:flex-row lg:gap-[39px] lg:p-[32px] lg:pr-[36px] '}`} >
+        <div className={`w-[100vw] ${location.pathname == '/matchmake'?'h-screen':'min-h-screen'} relative overflow-hidden bg-[#10141E] flex flex-col md:p-[25px] ${location.pathname == '/user' || location.pathname == '/messenger' || location.pathname.includes('Pools') ?' md:pt-[24px] lg:p-[32px]':' lg:flex-row lg:gap-[39px] lg:p-[32px] lg:pr-[36px] '}`} >
             <header ref={header} className={`w-[100%] bg-[#161D2F] p-[16px] flex items-center justify-between md:rounded-[10px] md:px-[20px] ${location.pathname == '/user' || location.pathname == '/messenger'  || location.pathname.includes('Pools') ? ' md:mb-[24px] lg:mb-[48px] lg:h-[100px] ':`lg:flex-col  lg:max-w-[96px] ${location.pathname == '/matchmake'?'lg:h-[100%]':'lg:h-[960px]'} lg:px-[28px] lg:pt-[35.4px] lg:pb-[32px] `}`}>
                 <Link to={location.pathname == '/home'?"/login":'/home'} className='w-[25px] h-[25px] bg-[length:25px_25px] bg-[url("/public/images/logo1.png")] md:w-[32px] md:h-[32px] md:bg-[length:32px_32px] ' onClick={() => props.setLogOut(false) } />
                 {/* <div className="w-[133.5px] flex items-center justify-between lg:flex-col lg:w-[20px] gap-y-[40px]">
@@ -95,7 +95,7 @@ function Layout(props:{search:string,setSearch:(search:string)=>void,usersSearch
                 <img className="w-[24px] h-[24px] md:w-[32px] md:h-[32px] lg:min-w-[40px] lg:min-h-[40px]" src="/images/image-avatar.png" onClick={()=>{ navigate('/user') }} />
             </header>
             <div style={{maxWidth:contentW}} className={` ${location.pathname == '/matchmake'?'h-full':''} flex-grow `}  >
-                <div className={` flex ml-[16px] my-[24px] md:ml-[0] md:my-[33px] ${location.pathname == '/user' || location.pathname == '/messenger' || location.pathname.includes('Pools') ?" hidden ":''} `} ><img className="w-[24px] h-[24px] mr-[16px] md:w-[32px] md:h-[32px] md:mr-[24px]" src="/images/icon-search.svg"  /><input className="bg-transparent focus:outline-none text-[#FFF] text-[16px] font-light md:text-[24px] " type="text" placeholder="Search for movies" onChange={(event) =>{location.pathname == '/matchup'? props.setUsersSearch(event.target.value) : props.setSearch(event.target.value)}} /></div>
+                <div className={` flex ml-[16px] my-[24px] md:ml-[0] md:my-[33px] ${location.pathname == '/user' || location.pathname == '/messenger' || location.pathname.includes('Pools') ?" hidden ":''} `} ><img className="w-[24px] h-[24px] mr-[16px] md:w-[32px] md:h-[32px] md:mr-[24px]" src="/images/icon-search.svg"  /><input className="bg-transparent focus:outline-none text-[#FFF] text-[16px] font-light md:text-[24px] " type="text" placeholder="Search for movies" onChange={(event) =>{location.pathname == '/matchmake'? props.setUsersSearch(event.target.value) : props.setSearch(event.target.value)}} /></div>
                 
                     <Outlet />
                 

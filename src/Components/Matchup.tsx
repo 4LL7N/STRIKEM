@@ -229,6 +229,7 @@ const Fetch = useCallback(async () => {
   }, []);
 
   const filteredPlayers = useMemo(() => {
+    console.log('log')
     let newArr = playersData.filter((item: Profile) =>
       item.user.username.startsWith(usersSearch)
     );
@@ -243,6 +244,9 @@ const Fetch = useCallback(async () => {
     return newArr;
   }, [playersData, usersSearch, filter]);
 
+  useEffect(()=>{
+    console.log(usersSearch)
+  },[usersSearch])
 
   const toggleSlider = () => {
     
@@ -280,10 +284,11 @@ const Fetch = useCallback(async () => {
                   className="hidden"
                 />
                 <span
-                  className={`p-[10px] rounded-full border-[1px] borer-[#fff] ${
+                  className={` p-[10px] rounded-[20px] border-[1px] borer-[#fff] ${
                     filter.includes(1) ? "bg-[#fff]" : ""
                   } `}
                 >
+                    <div className=" flex items-center gap-[5px] " >
                   <LuMapPin
                     style={
                       filter.includes(1)
@@ -291,6 +296,9 @@ const Fetch = useCallback(async () => {
                         : { color: "white" }
                     }
                   />
+                  <p className={`text-[16px] ${filter.includes(1) ? "text-[#000]" : "text-[#fff]"} `} >location</p>
+                  </div>
+                  <p className={`text-[8px] ${filter.includes(1) ? "text-[#0000007b]" : "text-[#ffffff86]"} `} >find player 200m radius</p>
                 </span>
               </label>
               <label
@@ -305,10 +313,11 @@ const Fetch = useCallback(async () => {
                   className="hidden"
                 />
                 <div
-                  className={`p-[10px] rounded-full border-[1px] borer-[#fff] ${
+                  className={`p-[10px] rounded-[20px] border-[1px] borer-[#fff] ${
                     filter.includes(2) ? "bg-[#fff]" : ""
                   } `}
                 >
+                    <div className=" flex items-center gap-[5px] " >
                   <CiStar
                     style={
                       filter.includes(2)
@@ -316,12 +325,16 @@ const Fetch = useCallback(async () => {
                         : { color: "white" }
                     }
                   />
+                  <p className={`text-[16px] ${filter.includes(2) ? "text-[#000]" : "text-[#fff]"} `} >Rating</p>
+                  </div>
+                  <p className={`text-[8px] ${filter.includes(2) ? "text-[#0000007b]" : "text-[#ffffff86]"} `} >find player ↑ 200 ↓ rating</p>
                 </div>
               </label>
             </div>
-            <div className="relative w-24 h-8" onClick={() => toggleSlider()}>
+            <div className="flex flex-col gap-[3px] " >
+            <div className="relative w-full h-8 " onClick={() => toggleSlider()}>
               <div
-                className={`absolute top-0 left-0 w-full h-full rounded-full transition-colors duration-300 ${
+                className={`absolute top-0 left-0 w-full h-full rounded-full transition-colors duration-300  ${
                   isOn ? "bg-[#fab907]" : "bg-red-500"
                 }`}
               ></div>
@@ -335,10 +348,13 @@ const Fetch = useCallback(async () => {
                 className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
               />
               <div
-                className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 ${
-                  isOn ? "translate-x-16" : "translate-x-0"
+                className={`absolute top-1 left-1 w-[22.5%] h-6 bg-white rounded-full shadow-md transition-transform duration-300 ${
+                  isOn ? "translate-x-[313%]" : "translate-x-0"
                 }`}
               ></div>
+            </div>
+            <p className={`text-[8px]  text-[#ffffff86] `} >Turn on match making requests</p>
+
             </div>
           </div>
         </div>
