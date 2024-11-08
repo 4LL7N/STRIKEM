@@ -9,6 +9,7 @@ import Cookies from "js-cookie";
 import "./CSS/matchup.css";
 import { useWebSocketContext } from "./Websocket";
 import PlayerCard from "./MatchMakeMemo/PlayerCard";
+import MatchMakesCard from "./MatchMakeMemo/MatchMakesCard";
 
 interface User {
   id: number;
@@ -367,37 +368,13 @@ const Fetch = useCallback(async () => {
             {matchMakes?.map((item: Message, i: number) => {
               const index = (i + 10) * 100;
               return (
-                <div
-                  key={index}
-                  className={`flex p-[20px] justify-between ${
-                    i != matchMakes.length - 1 || matchMakes.length < 5
-                      ? "border-b-[1px] border-b-[#243257d5]"
-                      : ""
-                  } `}
-                >
-                  <div className="flex flex-col gap-[10px] justify-center items-center pr-[20px] border-r-[1px] border-r-[#243257d5] max-w-[74px] ">
-                    <img
-                      src={item.player_accepting.profile_image}
-                      className="rounded-[50%] aspect-square "
-                      alt="image"
-                    />
-                    <h1 className="text-[12px] text-[#fff] ">
-                      {item.player_accepting.user.username}
-                    </h1>
-                  </div>
-                  <div className="flex flex-col gap-[5px] items-center w-[100%] ">
-                  </div>
-                  <div className="flex flex-col gap-[10px] justify-center items-center pl-[20px] border-l-[1px] border-l-[#243257d5] max-w-[74px] ">
-                    <img
-                      src={item.player_inviting.profile_image}
-                      className="rounded-[50%] aspect-square"
-                      alt="image"
-                    />
-                    <h1 className="text-[12px] text-[#fff] ">
-                      {item.player_inviting.user.username}
-                    </h1>
-                  </div>
-                </div>
+                <MatchMakesCard
+                key={index * 100}
+                index={index}
+                i={i}
+                length={matchMakes.length}
+                item={item}
+                />
               );
             })}
           </div>
