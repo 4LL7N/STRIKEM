@@ -9,6 +9,7 @@ import { FiSend } from "react-icons/fi";
 import { useWebSocketContext } from "./Websocket";
 import ChatBubble from "./MessengerMemo/ChatBubble";
 import MessageItem from "./MessengerMemo/MessageItem";
+import { useLocation } from "react-router-dom";
 
 interface chatMessage {
     after_outdated?: boolean;
@@ -81,6 +82,8 @@ function Messenger() {
 
     const {sendJsonMessage, lastJsonMessage} = useWebSocketContext()
 
+    const location = useLocation()
+    
   const [messages, setMessages] = useState<Message[]>();
   const [openChat,setOpenChat] = useState<string>('')
   const [chat,setChat] = useState<chatMessage[]>([])
@@ -112,7 +115,7 @@ function Messenger() {
             setOpponentUsername(otherPlayer.user.username)
       }
       const Chatresponse = await axios(
-        `https://strikem.site/api/matchups/${openChat?openChat:response.data.results[0].id}/chat/`,
+        `https://strikem.site/api/matchups/${location.state.matchUpId?location.state.matchUpId:openChat?openChat:response.data.results[0].id}/chat/`,
         {
           headers: {
             Authorization: `JWT ${token}`,
@@ -188,13 +191,18 @@ function Messenger() {
 
   useEffect(() => {
     Fetch();
+
     setTimeout(() => {
       messengerRef.current.style.height = `${
         window.innerHeight -
         messengerRef.current?.getBoundingClientRect().top -
         32
       }px`;
-      messages?setOpenChat(messages[0].id):null
+      if(location.state?.matchUpId){
+        setOpenChat(location.state.matchUpId)
+      }else{
+      messages?setOpenChat(messages[0]?.id):null
+      }
     }, 100);
   }, []);
 
@@ -202,23 +210,23 @@ function Messenger() {
   useEffect(()=>{
     console.log(lastJsonMessage)
 
-    // let currentUser: any = localStorage?.getItem("currentUser");
-    //       currentUser
-    //         ? (currentUser = JSON.parse(currentUser))
-    //         : (currentUser = null);
-    // const user = {...currentUser.user}
-    // const chatContent = [...chat]
-    // chatContent.push({
-    //     body:chatInput.current.value,
-    //     sender:{
-    //         id:currentUser.id,
-    //         profile_image:currentUser.profile_image,
-    //         total_points:currentUser.total_points,
-    //         user,
-    //     },
-    //     time_sent:getFormattedTime
-    // })
-    // setChat(chatContent)
+    let currentUser: any = localStorage?.getItem("currentUser");
+          currentUser
+            ? (currentUser = JSON.parse(currentUser))
+            : (currentUser = null);
+    const user = {...currentUser.user}
+    const chatContent = [...chat]
+    chatContent.push({
+        body:chatInput.current.value,
+        sender:{
+            id:currentUser.id,
+            profile_image:currentUser.profile_image,
+            total_points:currentUser.total_points,
+            user,
+        },
+        time_sent:getFormattedTime
+    })
+    setChat(chatContent)
   },[lastJsonMessage])
 
   const messagesList = useMemo(() => {

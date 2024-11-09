@@ -10,7 +10,7 @@ import "./CSS/matchup.css";
 import { useWebSocketContext } from "./Websocket";
 import PlayerCard from "./MatchMakeMemo/PlayerCard";
 import MatchMakesCard from "./MatchMakeMemo/MatchMakesCard";
-import InvitationsCard from "./MatchMakeMemo/invitationsCard";
+import InvitationsCard from "./MatchMakeMemo/InvitationsCard";
 
 interface User {
   id: number;
@@ -33,30 +33,30 @@ interface Profile {
 
 interface Message {
   id: string;
-  last_message: {
+  last_message?: {
     body: string;
   };
   player_accepting: {
-    id: number;
+    id?: number;
     profile_image: string;
-    total_points: number;
+    total_points?: number;
     user: {
-      email: string;
-      first_name: string;
-      id: number;
-      last_name: string;
+      email?: string;
+      first_name?: string;
+      id?: number;
+      last_name?: string;
       username: string;
     };
   };
   player_inviting: {
-    id: number;
+    id?: number;
     profile_image: string;
-    total_points: number;
+    total_points?: number;
     user: {
-      email: string;
-      first_name: string;
-      id: number;
-      last_name: string;
+      email?: string;
+      first_name?: string;
+      id?: number;
+      last_name?: string;
       username: string;
     };
   };
@@ -90,7 +90,7 @@ interface Invitation {
 };
 }
 
-function Matchup({ usersSearch }: { usersSearch: string }) {
+function Matchup({ usersSearch,setAcceptInvatation }: { usersSearch: string,setAcceptInvatation:(acceptInvatation:any)=>void }) {
     const { sendJsonMessage, lastJsonMessage } = useWebSocketContext();
     
     const currentUser = useMemo(() => {
@@ -107,7 +107,7 @@ function Matchup({ usersSearch }: { usersSearch: string }) {
     
     const [matchMakes, setMatchMakes] = useState<Message[]>([]);
     const [invitations, setInvitations] = useState<Invitation[]>([]);
-    
+    const [sentInvitations,setSentInvitations] = useState<{id:number,player_invited:number}[]>([])
     const matchupSectionRef = useRef<any>();
     const [isOn, setIsOn] = useState(false);
 
@@ -140,14 +140,19 @@ const Fetch = useCallback(async () => {
             axios.get("https://strikem.site/api/matchups/", {
               headers: { Authorization: `JWT ${token}` },
             }),
-            axios.get("https://strikem.site/api/invitations/", {
+            axios.get(`https://strikem.site/api/player-details/`, {
               headers: { Authorization: `JWT ${token}` },
             }),
           ]);
       
+        
         setPlayersData(playersResponse.data);
+
         setMatchMakes(matchMakesResponse.data.results);
-        setInvitations(invitationsResponse.data);
+          console.log(matchMakesResponse.data.results)
+        setIsOn(invitationsResponse.data[0].inviting_to_play)
+        setInvitations(invitationsResponse.data[0].received_invitations);
+        setSentInvitations(invitationsResponse.data[0].sent_invitations)
     } catch (err) {
       console.log(err);
     }
@@ -156,7 +161,7 @@ const Fetch = useCallback(async () => {
 
   useEffect(() => {
     console.log(lastJsonMessage);
-    if(lastJsonMessage && lastJsonMessage.protocol == 'invite'){
+    if(lastJsonMessage && lastJsonMessage.protocol == 'invited'){
     const newInvites = [...invitations];
     const newInvite:any = {
       player_invited: {
@@ -165,7 +170,7 @@ const Fetch = useCallback(async () => {
         user:currentUser?.user
       },
     player_inviting:{
-        profile_image:'../../public/images/logo1.png',
+        profile_image:lastJsonMessage.inviter_profile_image,
         user:{
             username:lastJsonMessage?.inviteSenderUsername            
         }
@@ -173,10 +178,41 @@ const Fetch = useCallback(async () => {
 
     };
     newInvites.push(newInvite);
+    console.log(newInvite,'newInvite')
+    console.log(newInvites,'newInvites')
     // inviteSenderUsername: "gendalf"
     // protocol: "invited"
     setInvitations(newInvites)
+}else if(lastJsonMessage && lastJsonMessage.protocol == 'handling_invite_response' && lastJsonMessage.invite_response == "ACCEPTED" ){
+  const newMatchUps = [...matchMakes]
+  const newMatchUp = {
+    id:lastJsonMessage.matchup_id,
+    player_accepting:{
+      user:{
+        username:lastJsonMessage.accepterUsername,
+      },
+      profile_image:currentUser.profile_image
+    },
+    player_inviting:{
+      user:{
+        username:lastJsonMessage.inviteSenderUsername,
+      },
+      profile_image:lastJsonMessage.invite_sender_profile_pic
+    }
+  }
+  newMatchUps.push(newMatchUp)
+  setMatchMakes(newMatchUps)
+  setInvitations((prev)=>prev.filter((item)=> item.player_inviting.user.username != lastJsonMessage.inviteSenderUsername))
+  //     accepterUsername:"gurjika"
+  // inviteSenderUsername:"butcher"
+  // invite_response:"ACCEPTED"
+  // invite_sender_profile_pic:"/media/profile-pics/Billy_Butcher.jpg"
+  // matchup_id:"a7d3f82c-1e4f-4bd9-9259-eac539019869"
+  // protocol:"handling_invite_response"
+  // responder_profile_image:null
+  // sub_protocol:"accepter"
 }
+
   }, [lastJsonMessage]);
 
   const sendMatchmake = (username: string) => {
@@ -197,6 +233,26 @@ const Fetch = useCallback(async () => {
       invite_sender_username: username,
       invite_response: "accept",
     });
+    const timer = setInterval(() => {
+     
+      setAcceptInvatation((prev:number):number => {
+        const nextValue = Math.min(prev + 0.1, 100);
+        const roundedValue = Math.round(nextValue * 10) / 10; 
+        if (roundedValue === 100) {
+          clearInterval(timer);
+        }else if(prev == -1){
+          clearInterval(timer);
+          return 0
+        }
+        return roundedValue;
+      });
+    }, 10);
+  
+    setTimeout(() => {
+      clearInterval(timer);
+      setAcceptInvatation(0)
+    }, 10000);
+    
   };
 
   const declineMatchmake = (username: string) => {
@@ -213,6 +269,7 @@ const Fetch = useCallback(async () => {
     const currentUser: Profile  = localStorage.getItem("currentUser") 
     ? JSON.parse(localStorage.getItem("currentUser")!) 
     : null;
+    console
     setIsOn(currentUser.inviting_to_play)
     console.log(currentUser)
       
@@ -250,7 +307,6 @@ const Fetch = useCallback(async () => {
 
   const toggleSlider = () => {
     
-    console.log(currentUser);
 
     sendJsonMessage(
         {
@@ -259,6 +315,9 @@ const Fetch = useCallback(async () => {
             'protocol': 'control_user'
         }
     );
+    
+
+
     console.log(isOn);
     setIsOn(!isOn);
   };
@@ -369,6 +428,7 @@ const Fetch = useCallback(async () => {
                     <PlayerCard
                     key={item.id}
                     player={item}
+                    sentInvitations={sentInvitations}
                     currentUser={currentUser}
                     onMatchmake={sendMatchmake}
                   />

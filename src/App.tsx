@@ -28,11 +28,11 @@ function App() {
   const [search, setSearch] = useState<string>('')
   const [usersSearch,setUsersSearch] = useState<string>('')
   const [logOut, setLogOut] = useState<boolean>(false)
-
+  const [acceptInvatation,setAcceptInvatation] = useState<number>(0)
 
   const router = createBrowserRouter([
     {
-      element:<Layout search={search} setSearch={setSearch} usersSearch={usersSearch} setUsersSearch={setUsersSearch} logOut={logOut} setLogOut={setLogOut} />,
+      element:<Layout search={search} setSearch={setSearch} usersSearch={usersSearch} setUsersSearch={setUsersSearch} logOut={logOut} setLogOut={setLogOut} acceptInvatation={acceptInvatation} setAcceptInvatation={setAcceptInvatation} />,
       children:[
         {
           path:"/home",
@@ -56,7 +56,7 @@ function App() {
         },
         {
           path:'/matchmake',
-          element:<Matchup usersSearch={usersSearch} />
+          element:<Matchup usersSearch={usersSearch} setAcceptInvatation={setAcceptInvatation}  />
         }
       ]
     },

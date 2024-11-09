@@ -23,11 +23,15 @@ interface Profile {
 interface PlayerCardProps {
   player: Profile;
   currentUser: Profile | null;
+  sentInvitations:{
+    id:number,
+    player_invited:number
+  }[];
   onMatchmake: (username: string) => void;
 }
 
 const PlayerCard = React.memo(
-  ({ player, currentUser, onMatchmake }: PlayerCardProps) => (
+  ({ player, sentInvitations,currentUser, onMatchmake }: PlayerCardProps) => (
     <div className="flex justify-between items-center rounded-[20px] bg-[#161D2F] p-[16px] h-[17.4%] w-[100%]">
       <div className="flex gap-[20px] h-[100%]">
         <img
@@ -56,13 +60,14 @@ const PlayerCard = React.memo(
           player.user.id === currentUser?.user.id
             ? "bg-transparent text-transparent"
             : "bg-[#fab907]"
-        } px-[8px] py-[4px] text-[#FFF] hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px]`}
+        } px-[8px] py-[4px] text-[#FFF] hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px]  `}
         onClick={() =>
           player.user.id !== currentUser?.user.id &&
           onMatchmake(player.user.username)
         }
+        // {sentInvitations?.some((item)=> item.player_invited == player.id ) ?disable:'Matchmake'}
       >
-        Matchmake
+        {sentInvitations?.some((item)=> item.player_invited == player.id ) ?'Invited':'Matchmake'}
       </button>
     </div>
   )

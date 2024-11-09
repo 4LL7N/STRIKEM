@@ -148,6 +148,8 @@ function Home(props: {
         })),
       }));
 
+      console.log(recommended)
+
       setRecommended(recommendedData);
 
       const currentUserResponse = await axios.get(

@@ -2,30 +2,30 @@ import React from "react";
 
 interface Message {
   id: string;
-  last_message: {
+  last_message?: {
     body: string;
   };
   player_accepting: {
-    id: number;
+    id?: number;
     profile_image: string;
-    total_points: number;
+    total_points?: number;
     user: {
-      email: string;
-      first_name: string;
-      id: number;
-      last_name: string;
+      email?: string;
+      first_name?: string;
+      id?: number;
+      last_name?: string;
       username: string;
     };
   };
   player_inviting: {
-    id: number;
+    id?: number;
     profile_image: string;
-    total_points: number;
+    total_points?: number;
     user: {
-      email: string;
-      first_name: string;
-      id: number;
-      last_name: string;
+      email?: string;
+      first_name?: string;
+      id?: number;
+      last_name?: string;
       username: string;
     };
   };
