@@ -324,9 +324,7 @@ const Fetch = useCallback(async () => {
 
   const refreshData = useCallback(async () => {
     setIsSpinning(true); 
-
     const token = Cookies.get("token");
-
     try {
       const response = await axios(`https://strikem.site/api/filter-ratings/?${filter.includes(2)?'filter=rating':''}${filter.length==2?"&":""}${filter.includes(1)?"filter_location=true":""}`,{
         headers: { Authorization: `JWT ${token}` },
