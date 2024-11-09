@@ -121,8 +121,9 @@ function Pool() {
   const { coords, isGeolocationAvailable, isGeolocationEnabled } =
         useGeolocated({
             positionOptions: {
-                enableHighAccuracy: true,
+                enableHighAccuracy: false,
             },
+            userDecisionTimeout: 5000,
         });
 
   const location = useLocation();
@@ -217,10 +218,15 @@ function Pool() {
     setWhiteBoxHeight(whiteBoxHeight)
     setWhiteBoxWidth(whiteBoxWidth)
   });
+  setTimeout(()=>{
 
-  console.log(coords?.latitude,coords?.longitude)
+    console.log(coords)
+    },6000)
 
   }, []);
+
+  
+
 
   function handleResize() {
     const sectionNumHorizontal = img.current?.naturalWidth / 1920;
@@ -410,6 +416,10 @@ function Pool() {
       </div>
     );
   };
+
+  useEffect(()=>{
+    !isGeolocationAvailable?console.log('not available'):!isGeolocationEnabled?console.log('not available'):coords?console.log(coords):console.log('wait')
+  },[coords])
 
   return (
     <section className="flex flex-col items-center bg-[#10141E] w-[100%] min-h-screen  pb-[120px]">
@@ -681,6 +691,8 @@ function Pool() {
     ) : !isGeolocationEnabled ? (
       <h1 className="text-[20px] text-[#fff] " >Geolocation is not enabled</h1>
     ) : coords ? (
+      <div className="w-[100%]" >
+        <p className="text-[#fff]" >{coords.latitude};{coords.longitude}</p>
       <MapContainer
       center={[poolInfo?.latitude, poolInfo?.longitude]} 
       zoom={15}
@@ -703,6 +715,7 @@ function Pool() {
         </Tooltip>
       </Marker>
     </MapContainer>
+    </div>
     ) : (
       <h1 className="text-[20px] text-[#fff] " >Getting the location data&hellip; </h1>
     )}
