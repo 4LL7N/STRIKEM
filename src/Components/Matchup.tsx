@@ -106,7 +106,8 @@ function Matchup({ usersSearch,setAcceptInvatation }: { usersSearch: string,setA
     const [filter, setFilter] = useState<number[]>([]);
     
     const [playersData, setPlayersData] = useState<Profile[]>([]);
-    
+    const [playersDataSearch,setPlayersDataSearch] = useState<Profile[]>([])
+
     const [matchMakes, setMatchMakes] = useState<Message[]>([]);
     const [invitations, setInvitations] = useState<Invitation[]>([]);
     const [sentInvitations,setSentInvitations] = useState<{id:number,player_invited:number}[]>([])
@@ -124,17 +125,16 @@ function Matchup({ usersSearch,setAcceptInvatation }: { usersSearch: string,setA
 
     const fetchPlayers = async(newFilter:number[],IsOn:boolean|null)=>{
       const token = Cookies.get("token");
-      console.log(newFilter)
+      
       const url = `https://strikem.site/api/filter-ratings/${newFilter.length !=0?'?':''}${newFilter.includes(2)?'filter=rating':''}${newFilter.length==2?"&":""}${newFilter.includes(1)?"filter_location=true":""}`
-      console.log(url)
       const playersResponse = await axios(url,{
         headers: { Authorization: `JWT ${token}` },
       })
       let PlayersData:Profile[] = [...playersResponse.data]
-      console.log(PlayersData)
         PlayersData = IsOn? [...PlayersData]:PlayersData.filter((item:Profile)=> item.id != currentUser.id)
         console.log(PlayersData)
         setPlayersData(PlayersData);
+        setPlayersDataSearch(PlayersData)
     }
 const Fetch = useCallback(async () => {
     const token = Cookies.get("token");
@@ -154,6 +154,7 @@ const Fetch = useCallback(async () => {
         let PlayersData:Profile[] = [...playersResponse.data]
         PlayersData = !(invitationsResponse?.data?.inviting_to_play)? PlayersData.filter((item:Profile)=> item.id != invitationsResponse?.data.id):[...PlayersData]
         setPlayersData(PlayersData);
+        setPlayersDataSearch(PlayersData)
         setMatchMakes(matchMakesResponse.data.results);
         setIsOn(invitationsResponse?.data?.inviting_to_play)
         setInvitations(invitationsResponse?.data?.received_invitations);
@@ -281,7 +282,7 @@ const Fetch = useCallback(async () => {
   }, []);
 
   const filteredPlayers = useCallback(() => {
-    const newArr = playersData.filter((item: Profile) =>
+    const newArr = playersDataSearch.filter((item: Profile) =>
       item.user.username.startsWith(usersSearch)
     );
   
@@ -331,10 +332,12 @@ const Fetch = useCallback(async () => {
       const response = await axios(`https://strikem.site/api/filter-ratings/?${filter.includes(2)?'filter=rating':''}${filter.length==2?"&":""}${filter.includes(1)?"filter_location=true":""}`,{
         headers: { Authorization: `JWT ${token}` },
       })
-
+      let PlayersData:Profile[] = [...response.data]
+        PlayersData = isOn? [...PlayersData]:PlayersData.filter((item:Profile)=> item.id != currentUser.id)
       
-      if (!deepEqual(playersData, response.data)) { 
-        setPlayersData(response.data);
+      if (!deepEqual(playersData, PlayersData)) { 
+        setPlayersDataSearch(PlayersData)
+        setPlayersData(PlayersData);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
