@@ -42,30 +42,30 @@ const PlayerCard = React.memo(
           className="h-[100%] aspect-square rounded-full"
           alt="profile_image"
         />
-        <div className="flex flex-col items-center justify-start text-left gap-[10px]">
-          <div className="flex gap-[2px] items-end" onClick={()=>{naviagte(`/users/${player.id}`)}} >
-            <h1 className="text-[18px] text-[#fff]">{player.user.username}</h1>
-            <h2 className="text-[12px] text-[#ffffff57]">
+        <div className="flex flex-col h-[100%] items-center justify-start text-left gap-[20%]">
+          <div className="flex gap-[2px] h-[48%] items-end" onClick={()=>{naviagte(`/users/${player.id}`)}} >
+            <h1 className="text-[100%] text-[#fff]">{player.user.username}</h1>
+            <h2 className="text-[80%] text-[#ffffff57]">
               ({player.user.first_name} {player.user.last_name})
             </h2>
           </div>
-          <h3 className="text-[10px] text-[#fff] self-start">
+          <h3 className="text-[60%] text-[#fff] self-start">
             Email:{player.user.email}
           </h3>
         </div>
       </div>
-      <div className="flex gap-[5px]">
-        <CiStar size={28} style={{ color: "white" }} />
-        <p className="text-[18px] text-[#fff]">{player.total_points}</p>
+      <div className="flex items-center h-[100%] gap-[5px]">
+        <CiStar size={28} style={{ color: "white",height:'100%' }} />
+        <p className="text-[100%] text-[#fff]">{player.total_points}</p>
       </div>
       <button
         className={`${
-          player.user.id === currentUser?.user.id
+          player.user.id == currentUser?.user.id
             ? "bg-transparent text-transparent"
             : "bg-[#fab907]"
-        } px-[8px] py-[4px] text-[#FFF] hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px]  `}
+        } flex items-center justify-center w-[18%] h-[100%] text-[#FFF] text-xs  md:text-sm lg:text-base hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px]  `}
         onClick={() =>
-          player.user.id !== currentUser?.user.id &&
+          player.user.id != currentUser?.user.id &&
           onMatchmake(player.user.username)
         }
         // {sentInvitations?.some((item)=> item.player_invited == player.id ) ?disable:'Matchmake'}

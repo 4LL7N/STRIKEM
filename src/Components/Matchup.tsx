@@ -113,19 +113,34 @@ function Matchup({ usersSearch,setAcceptInvatation }: { usersSearch: string,setA
     const matchupSectionRef = useRef<any>();
     const [isOn, setIsOn] = useState(false);
 
-    const handleCheckboxChange = useCallback((num: number) => {
-        setFilter((prevFilter) =>
-          prevFilter.includes(num)
-            ? prevFilter.filter((item) => item !== num)
-            : [...prevFilter, num]
-        );
-      }, []);
+    const handleCheckboxChange = (num: number) => {
+      let newFilter = [...filter]
+      console.log(newFilter)
+      newFilter = newFilter.includes(num)? newFilter.filter((item) => item !== num):[...newFilter,num]
+      console.log(newFilter)
+      setFilter(newFilter);
+      fetchPlayers(newFilter,isOn)
+    };
 
+    const fetchPlayers = async(newFilter:number[],IsOn:boolean|null)=>{
+      const token = Cookies.get("token");
+      console.log(newFilter)
+      const url = `https://strikem.site/api/filter-ratings/${newFilter.length !=0?'?':''}${newFilter.includes(2)?'filter=rating':''}${newFilter.length==2?"&":""}${newFilter.includes(1)?"filter_location=true":""}`
+      console.log(url)
+      const playersResponse = await axios(url,{
+        headers: { Authorization: `JWT ${token}` },
+      })
+      let PlayersData:Profile[] = [...playersResponse.data]
+      console.log(PlayersData)
+        PlayersData = IsOn? [...PlayersData]:PlayersData.filter((item:Profile)=> item.id != currentUser.id)
+        console.log(PlayersData)
+        setPlayersData(PlayersData);
+    }
 const Fetch = useCallback(async () => {
     const token = Cookies.get("token");
     try {
         const [playersResponse, matchMakesResponse, invitationsResponse] = await Promise.all([
-            axios.get("https://strikem.site/api/filter-ratings/?filter=rating&filter_location=true", {
+            axios.get("https://strikem.site/api/filter-ratings/", {
               headers: { Authorization: `JWT ${token}` },
             }),
             axios.get("https://strikem.site/api/matchups/", {
@@ -136,8 +151,9 @@ const Fetch = useCallback(async () => {
             }),
           ]);
       
-        
-        setPlayersData(playersResponse.data);
+        let PlayersData:Profile[] = [...playersResponse.data]
+        PlayersData = !(invitationsResponse?.data?.inviting_to_play)? PlayersData.filter((item:Profile)=> item.id != invitationsResponse?.data.id):[...PlayersData]
+        setPlayersData(PlayersData);
         setMatchMakes(matchMakesResponse.data.results);
         setIsOn(invitationsResponse?.data?.inviting_to_play)
         setInvitations(invitationsResponse?.data?.received_invitations);
@@ -146,6 +162,7 @@ const Fetch = useCallback(async () => {
       console.log(err);
     }
   }, []);
+  
   
 
   useEffect(() => {
@@ -253,28 +270,27 @@ const Fetch = useCallback(async () => {
 
     const windwoHeight = window.innerHeight;
     setTimeout(() => {
+      if(window.innerWidth >= 1024){
       const sectionPosition =
         matchupSectionRef.current?.getBoundingClientRect().top;
       matchupSectionRef.current.style.height = `${
         windwoHeight - sectionPosition - 33
       }px`;
+    }
     }, 100);
   }, []);
 
-  const filteredPlayers = useMemo(() => {
-    let newArr = playersData.filter((item: Profile) =>
+  const filteredPlayers = useCallback(() => {
+    const newArr = playersData.filter((item: Profile) =>
       item.user.username.startsWith(usersSearch)
     );
   
-    if (filter.includes(1)) {
-      console.log("not implemented");
-    }
-  
-    if (filter.includes(2)) {
-      newArr = newArr.sort((a, b) => b.total_points - a.total_points);
-    }
-    return newArr;
-  }, [playersData, usersSearch, filter]);
+    setPlayersData(newArr)
+  }, [playersData, usersSearch]);
+
+  useEffect(()=>{
+    filteredPlayers()
+  },[usersSearch])
 
   const toggleSlider = () => {
     sendJsonMessage(
@@ -284,6 +300,13 @@ const Fetch = useCallback(async () => {
             'protocol': 'control_user'
         }
     );
+    let PlayersData:Profile[] = [...playersData]
+    if(isOn){
+      PlayersData = PlayersData.filter((item:Profile)=> item.id != currentUser.id)
+      setPlayersData(PlayersData)
+    }else{
+      fetchPlayers([...filter],!isOn)
+    }
     setIsOn(!isOn);
   };
 
@@ -305,9 +328,10 @@ const Fetch = useCallback(async () => {
     const token = Cookies.get("token");
 
     try {
-      const response = await axios.get("https://strikem.site/api/filter-ratings/", {
+      const response = await axios(`https://strikem.site/api/filter-ratings/?${filter.includes(2)?'filter=rating':''}${filter.length==2?"&":""}${filter.includes(1)?"filter_location=true":""}`,{
         headers: { Authorization: `JWT ${token}` },
-      });
+      })
+
       
       if (!deepEqual(playersData, response.data)) { 
         setPlayersData(response.data);
@@ -322,7 +346,7 @@ const Fetch = useCallback(async () => {
   }, [playersData]);
 
   return (
-    <section ref={matchupSectionRef} className="flex w-[100%] gap-[2%] ">
+    <section ref={matchupSectionRef} className="flex flex-col lg:flex-row w-[100%] gap-[2%] ">
       <div className=" flex flex-col h-[100%] w-[100%] ">
         <div className=" flex flex-col ">
           <h1 className="text-[48px] text-[#fff] ">Filter</h1>
@@ -424,9 +448,7 @@ const Fetch = useCallback(async () => {
           </div>
           <div className="flex-1 overflow-hidden ">
             <div className="flex flex-col gap-[3.5%] h-[100%] max-h-[100%] overflow-y-auto playersScroll pr-[10px]">
-              {filteredPlayers.map((item: Profile) => {
-                
-
+              {playersData.map((item: Profile) => {
                 return (
                     <PlayerCard
                     key={item.id}
@@ -441,10 +463,10 @@ const Fetch = useCallback(async () => {
           </div>
         </main>
       </div>
-      <div className=" flex flex-col h-[100%] w-[55%] gap-[20px] overflow-hidden ">
-        <div className="flex flex-col gap-[20px] ">
+      <div className=" flex flex-col h-[100%] w-[55%] gap-[6%] overflow-hidden ">
+        <div className="flex flex-col h-[45%] gap-[20px] ">
           <h1 className="text-[48px] text-[#ffffff] ">Matchups</h1>
-          <div className="flex flex-col rounded-[20px]  border-[1px] border-[#243257d5] h-[238px] overflow-y-auto messagesScroll  ">
+          <div className="flex flex- flex-grow rounded-[20px]  border-[1px] border-[#243257d5] h-[238px] overflow-y-auto messagesScroll  ">
             {matchMakes?.map((item: Message, i: number) => {
               const index = (i + 10) * 100;
               return (
@@ -458,9 +480,9 @@ const Fetch = useCallback(async () => {
             })}
           </div>
         </div>
-        <div className="flex flex-col gap-[20px] ">
+        <div className="flex flex-col h-[45%] gap-[20px] ">
           <h1 className="text-[48px] text-[#ffffff] ">invations</h1>
-          <div className="flex flex-col rounded-[20px]  border-[1px] border-[#243257d5] h-[238px] overflow-y-auto messagesScroll  ">
+          <div className="flex flex-col flex-grow rounded-[20px]  border-[1px] border-[#243257d5] h-[238px] overflow-y-auto messagesScroll  ">
             {invitations?.map((item: Invitation, i: number) => {
               const index = (i + 10) * 100;
               return (
