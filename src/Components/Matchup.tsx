@@ -132,7 +132,6 @@ function Matchup({ usersSearch,setAcceptInvatation }: { usersSearch: string,setA
       })
       let PlayersData:Profile[] = [...playersResponse.data]
         PlayersData = IsOn? [...PlayersData]:PlayersData.filter((item:Profile)=> item.id != currentUser.id)
-        console.log(PlayersData)
         setPlayersData(PlayersData);
         setPlayersDataSearch(PlayersData)
     }
@@ -306,7 +305,7 @@ const Fetch = useCallback(async () => {
       PlayersData = PlayersData.filter((item:Profile)=> item.id != currentUser.id)
       setPlayersData(PlayersData)
     }else{
-      fetchPlayers([...filter],!isOn)
+      fetchPlayers([...filter],true)
     }
     setIsOn(!isOn);
   };
@@ -433,7 +432,7 @@ const Fetch = useCallback(async () => {
                 className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
               />
               <div
-                className={`absolute top-1 left-1 w-[22.5%] h-6 bg-white rounded-full shadow-md transition-transform duration-300 ${
+                className={`absolute top-1 left-1 w-[22.5%] h-6 cursor-pointer bg-white rounded-full shadow-md transition-transform duration-300 ${
                   isOn ? "translate-x-[313%]" : "translate-x-0"
                 }`}
               ></div>
