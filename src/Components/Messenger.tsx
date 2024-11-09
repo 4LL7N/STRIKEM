@@ -114,8 +114,9 @@ function Messenger() {
               : response.data.results[0].player_accepting;
             setOpponentUsername(otherPlayer.user.username)
       }
+      const matchUpId = localStorage.getItem('matchUpId')
       const Chatresponse = await axios(
-        `https://strikem.site/api/matchups/${location.state.matchUpId?location.state.matchUpId:openChat?openChat:response.data.results[0].id}/chat/`,
+        `https://strikem.site/api/matchups/${matchUpId?matchUpId:openChat?openChat:response.data.results[0].id}/chat/`,
         {
           headers: {
             Authorization: `JWT ${token}`,
@@ -123,6 +124,7 @@ function Messenger() {
         }
       );
       setChat(Chatresponse.data.results)
+      localStorage.setItem('matchUpId','')
     }
     } catch (err) {
       console.log(err);

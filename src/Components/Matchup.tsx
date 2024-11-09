@@ -203,14 +203,7 @@ const Fetch = useCallback(async () => {
   newMatchUps.push(newMatchUp)
   setMatchMakes(newMatchUps)
   setInvitations((prev)=>prev.filter((item)=> item.player_inviting.user.username != lastJsonMessage.inviteSenderUsername))
-  //     accepterUsername:"gurjika"
-  // inviteSenderUsername:"butcher"
-  // invite_response:"ACCEPTED"
-  // invite_sender_profile_pic:"/media/profile-pics/Billy_Butcher.jpg"
-  // matchup_id:"a7d3f82c-1e4f-4bd9-9259-eac539019869"
-  // protocol:"handling_invite_response"
-  // responder_profile_image:null
-  // sub_protocol:"accepter"
+  // need lastJsonMessage.profile_image
 }
 
   }, [lastJsonMessage]);

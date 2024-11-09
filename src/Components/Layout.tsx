@@ -71,22 +71,14 @@ function Layout(props:{search:string,setSearch:(search:string)=>void,usersSearch
       console.log("Last message layout:", lastJsonMessage);
     }, [lastJsonMessage]);
   
-    const handleClickSendMessage = () => {
-      sendJsonMessage({
-        message: "message",
-        username: "gurjika",
-        opponent_username: "butcher",
-        matchup_id: "f693230067e8412aae2de599a42ce6ac",
-      });
-    };
     return(
         <>
         <div className={`w-[100vw] ${location.pathname == '/matchmake'?'h-screen':'min-h-screen'} relative overflow-hidden bg-[#10141E] flex flex-col md:p-[25px] ${location.pathname == '/user' || location.pathname == '/messenger' || location.pathname.includes('Pools') ?' md:pt-[24px] lg:p-[32px]':' lg:flex-row lg:gap-[39px] lg:p-[32px] lg:pr-[36px] '}`} >
-            <div className={` flex flex-col gap-[3px] py-[8px] px-[16px] rounded-[52px] absolute top-[40px] left-[50%] translate-x-[-50%] w-[60%]  ${props.acceptInvatation?'':'hidden'} bg-[#161d2f] `} >
+            <div className={` flex flex-col gap-[3px] py-[8px] px-[16px] rounded-[52px] absolute top-[40px] left-[50%] translate-x-[-50%] w-[60%] transition-transform duration-1000  ${props.acceptInvatation?' translate-y-[0] ':' translate-y-[-200%] '} bg-[#161d2f] `} >
                 <div className="flex justify-between items-center" >
-                <p className="flex self-center text-[14px] text-[#fff] " >invitation accepted go to chat</p>
+                <p className="flex self-center text-[14px] text-[#fff] ml-2 " >invitation accepted go to chat</p>
                 <div className="flex items-center gap-[10px]" >
-                    <button className=" bg-[#fab907] rounded-[20px] px-[8px] py-[4px] text-[14px] text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] " onClick={lastJsonMessage?.protocol == 'handling_invite_response'?()=>{navigate('/messenger',{state:{matchUpId:lastJsonMessage.matchup_id}});props.setAcceptInvatation(-1)}:()=>{}} >Chat</button>
+                    <button className=" bg-[#fab907] rounded-[20px] px-[8px] py-[4px] text-[14px] text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] " onClick={lastJsonMessage?.protocol == 'handling_invite_response'?()=>{navigate('/messenger');localStorage.setItem('matchupId',lastJsonMessage.matchup_id);props.setAcceptInvatation(-1)}:()=>{}} >Chat</button>
                     <button className=" bg-red-600  rounded-[20px] px-[8px] py-[4px]  text-[14px] text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] " onClick={()=>{props.setAcceptInvatation(-1)}} >Ignore</button>
                 </div>
                 </div>
@@ -100,9 +92,8 @@ function Layout(props:{search:string,setSearch:(search:string)=>void,usersSearch
                     <Link to="series"  className={` w-[16px] h-[16px] bg-no-repeat bg-[length:16px_16px] bg-[url("/images/icon-category-tv.svg")] ${pageSwitch == 3? "opacity-100":"opacity-50"} md:w-[20px] md:h-[20px] md:bg-[length:20px_20px] `} onClick={() => setPageSwitch(3)} />
                     <Link to="bookmarked"  className={` w-[16px] h-[16px] bg-no-repeat bg-[length:16px_16px] bg-[url("/images/icon-category-bookmark.svg")] ${pageSwitch == 4? "opacity-100":"opacity-50"} md:w-[20px] md:h-[20px] md:bg-[length:20px_20px] `} onClick={() => setPageSwitch(4)} />
                 </div> */}
-                <Link to={'/messenger'} className="w-[20px] h-[20px] bg-[#fff] " onClick={()=>{handleClickSendMessage()}}  />
-                <Link to={'/matchmake'} className="w-[20px] h-[20px] bg-[#fff] " onClick={()=>{handleClickSendMessage()}}  />
-                <div className="w-[20px] h-[20px] bg-[#fff] " onClick={()=>{handleClickSendMessage()}}  />
+                <Link to={'/messenger'} className="w-[20px] h-[20px] bg-[#fff] "  />
+                <Link to={'/matchmake'} className="w-[20px] h-[20px] bg-[#fff] "  />
                 <img className="w-[24px] h-[24px] md:w-[32px] md:h-[32px] lg:min-w-[40px] lg:min-h-[40px]" src="/images/image-avatar.png" onClick={()=>{ navigate('/user') }} />
             </header>
             <div style={{maxWidth:contentW}} className={` ${location.pathname == '/matchmake'?'h-full':''} flex-grow `}  >
