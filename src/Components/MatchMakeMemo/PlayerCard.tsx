@@ -1,5 +1,6 @@
 import React from "react";
 import { CiStar } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
 
 interface User {
   id: number;
@@ -31,7 +32,9 @@ interface PlayerCardProps {
 }
 
 const PlayerCard = React.memo(
-  ({ player, sentInvitations,currentUser, onMatchmake }: PlayerCardProps) => (
+  ({ player, sentInvitations,currentUser, onMatchmake }: PlayerCardProps) => {
+    const naviagte = useNavigate()
+    return (
     <div className="flex justify-between items-center rounded-[20px] bg-[#161D2F] p-[16px] h-[17.4%] w-[100%]">
       <div className="flex gap-[20px] h-[100%]">
         <img
@@ -40,7 +43,7 @@ const PlayerCard = React.memo(
           alt="profile_image"
         />
         <div className="flex flex-col items-center justify-start text-left gap-[10px]">
-          <div className="flex gap-[2px] items-end">
+          <div className="flex gap-[2px] items-end" onClick={()=>{naviagte(`/users/${player.id}`)}} >
             <h1 className="text-[18px] text-[#fff]">{player.user.username}</h1>
             <h2 className="text-[12px] text-[#ffffff57]">
               ({player.user.first_name} {player.user.last_name})
@@ -70,7 +73,7 @@ const PlayerCard = React.memo(
         {sentInvitations?.some((item)=> item.player_invited == player.id ) ?'Invited':'Matchmake'}
       </button>
     </div>
-  )
+  )}
 );
 
 export default PlayerCard;

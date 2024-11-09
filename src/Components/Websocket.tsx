@@ -7,24 +7,6 @@ import Cookies from "js-cookie";
 import useWebSocket from "react-use-websocket";
 
 
-// interface User {
-//     id: number;
-//     email: string;
-//     first_name: string;
-//     last_name: string;
-//     username:string;
-//   }
-  
-//   interface Profile {
-//     games_played: number;
-//     games_won: number;
-//     id: number;
-//     inviting_to_play: boolean;
-//     opponents_met: number;
-//     profile_image: string;
-//     total_points: number;
-//     user:User
-//   }
 
 const WebSocketContext = createContext<any>(null);
 
@@ -59,7 +41,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   );
 
-  // Provide the WebSocket context to children
   return (
     <WebSocketContext.Provider value={{ sendJsonMessage, lastJsonMessage,invitationAccept,setInvitationAccept}}>
       {children}

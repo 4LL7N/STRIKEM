@@ -11,6 +11,7 @@ import { useWebSocketContext } from "./Websocket";
 import PlayerCard from "./MatchMakeMemo/PlayerCard";
 import MatchMakesCard from "./MatchMakeMemo/MatchMakesCard";
 import InvitationsCard from "./MatchMakeMemo/InvitationsCard";
+import { IoRefreshSharp } from "react-icons/io5";
 
 interface User {
   id: number;
@@ -98,12 +99,13 @@ function Matchup({ usersSearch,setAcceptInvatation }: { usersSearch: string,setA
           ? JSON.parse(localStorage.getItem("currentUser")!) 
           : null;
       }, []);
-      
+    
+
+      const [isSpinning, setIsSpinning] = useState(false);
 
     const [filter, setFilter] = useState<number[]>([]);
     
     const [playersData, setPlayersData] = useState<Profile[]>([]);
-    // const [players, setPlayers] = useState<Profile[]>([]);
     
     const [matchMakes, setMatchMakes] = useState<Message[]>([]);
     const [invitations, setInvitations] = useState<Invitation[]>([]);
@@ -119,22 +121,11 @@ function Matchup({ usersSearch,setAcceptInvatation }: { usersSearch: string,setA
         );
       }, []);
 
-//   const handleCheckboxChange = (num: number) => {
-//     let filterArr = [...filter];
-//     if (filterArr.includes(num)) {
-//       filterArr = filterArr.filter((item) => item !== num);
-//       setFilter([...filterArr]);
-//     } else {
-//       filterArr.push(num);
-//       setFilter(filterArr);
-//     }
-//   };
-
 const Fetch = useCallback(async () => {
     const token = Cookies.get("token");
     try {
         const [playersResponse, matchMakesResponse, invitationsResponse] = await Promise.all([
-            axios.get("https://strikem.site/api/filter-ratings/", {
+            axios.get("https://strikem.site/api/filter-ratings/?filter=rating&filter_location=true", {
               headers: { Authorization: `JWT ${token}` },
             }),
             axios.get("https://strikem.site/api/matchups/", {
@@ -147,12 +138,10 @@ const Fetch = useCallback(async () => {
       
         
         setPlayersData(playersResponse.data);
-
         setMatchMakes(matchMakesResponse.data.results);
-          console.log(matchMakesResponse.data.results)
-        setIsOn(invitationsResponse.data[0].inviting_to_play)
-        setInvitations(invitationsResponse.data[0].received_invitations);
-        setSentInvitations(invitationsResponse.data[0].sent_invitations)
+        setIsOn(invitationsResponse?.data?.inviting_to_play)
+        setInvitations(invitationsResponse?.data?.received_invitations);
+        setSentInvitations(invitationsResponse?.data?.sent_invitations)
     } catch (err) {
       console.log(err);
     }
@@ -160,7 +149,6 @@ const Fetch = useCallback(async () => {
   
 
   useEffect(() => {
-    console.log(lastJsonMessage);
     if(lastJsonMessage && lastJsonMessage.protocol == 'invited'){
     const newInvites = [...invitations];
     const newInvite:any = {
@@ -178,10 +166,7 @@ const Fetch = useCallback(async () => {
 
     };
     newInvites.push(newInvite);
-    console.log(newInvite,'newInvite')
-    console.log(newInvites,'newInvites')
-    // inviteSenderUsername: "gendalf"
-    // protocol: "invited"
+     
     setInvitations(newInvites)
 }else if(lastJsonMessage && lastJsonMessage.protocol == 'handling_invite_response' && lastJsonMessage.invite_response == "ACCEPTED" ){
   const newMatchUps = [...matchMakes]
@@ -191,7 +176,8 @@ const Fetch = useCallback(async () => {
       user:{
         username:lastJsonMessage.accepterUsername,
       },
-      profile_image:currentUser.profile_image
+      profile_image:lastJsonMessage.responder_profile_image
+
     },
     player_inviting:{
       user:{
@@ -203,14 +189,12 @@ const Fetch = useCallback(async () => {
   newMatchUps.push(newMatchUp)
   setMatchMakes(newMatchUps)
   setInvitations((prev)=>prev.filter((item)=> item.player_inviting.user.username != lastJsonMessage.inviteSenderUsername))
-  // need lastJsonMessage.profile_image
 }
 
   }, [lastJsonMessage]);
 
   const sendMatchmake = (username: string) => {
     
-    console.log(currentUser);
     sendJsonMessage({
       action: "matchmake",
       matchmaker_username: username,
@@ -264,7 +248,6 @@ const Fetch = useCallback(async () => {
     : null;
     console
     setIsOn(currentUser.inviting_to_play)
-    console.log(currentUser)
       
     Fetch();
 
@@ -279,7 +262,6 @@ const Fetch = useCallback(async () => {
   }, []);
 
   const filteredPlayers = useMemo(() => {
-    console.log('log')
     let newArr = playersData.filter((item: Profile) =>
       item.user.username.startsWith(usersSearch)
     );
@@ -294,13 +276,7 @@ const Fetch = useCallback(async () => {
     return newArr;
   }, [playersData, usersSearch, filter]);
 
-  useEffect(()=>{
-    console.log(usersSearch)
-  },[usersSearch])
-
   const toggleSlider = () => {
-    
-
     sendJsonMessage(
         {
             'action': 'matchmake',
@@ -308,12 +284,42 @@ const Fetch = useCallback(async () => {
             'protocol': 'control_user'
         }
     );
-    
-
-
-    console.log(isOn);
     setIsOn(!isOn);
   };
+
+  function deepEqual(obj1:any, obj2:any) {
+    if (obj1 === obj2) return true;
+    if (typeof obj1 !== "object" || typeof obj2 !== "object" || obj1 == null || obj2 == null) return false;
+    const keys1 = Object.keys(obj1);
+    const keys2 = Object.keys(obj2);
+    if (keys1.length !== keys2.length) return false;
+    for (const key of keys1) {
+      if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) return false;
+    }
+    return true;
+  }
+
+  const refreshData = useCallback(async () => {
+    setIsSpinning(true); 
+
+    const token = Cookies.get("token");
+
+    try {
+      const response = await axios.get("https://strikem.site/api/filter-ratings/", {
+        headers: { Authorization: `JWT ${token}` },
+      });
+      
+      if (!deepEqual(playersData, response.data)) { 
+        setPlayersData(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setTimeout(()=>{
+        setIsSpinning(false);
+      },500)
+    }
+  }, [playersData]);
 
   return (
     <section ref={matchupSectionRef} className="flex w-[100%] gap-[2%] ">
@@ -350,7 +356,7 @@ const Fetch = useCallback(async () => {
                   />
                   <p className={`text-[16px] ${filter.includes(1) ? "text-[#000]" : "text-[#fff]"} `} >location</p>
                   </div>
-                  <p className={`text-[8px] ${filter.includes(1) ? "text-[#0000007b]" : "text-[#ffffff86]"} `} >find player 200m radius</p>
+                  <p className={`text-[8px] ${filter.includes(1) ? "text-[#0000007b]" : "text-[#ffffff86]"} `} >find player 4km radius</p>
                 </span>
               </label>
               <label
@@ -411,7 +417,11 @@ const Fetch = useCallback(async () => {
           </div>
         </div>
         <main className="flex flex-col gap-[20px] mt-[24px] md:mt-[32px] h-[100%] overflow-hidden ">
+          <div className="flex items-end justify-between" >
           <h1 className="text-[48px] text-[#fff] ">Players</h1>
+          <div className={`flex items-center justify-center h-[30px] aspect-square mr-[26px] ${isSpinning ? "spin" : ""} `} onClick={()=>{refreshData()}} >
+            <IoRefreshSharp style={{height:'100%',width:'100%',color:'white'}} /></div>
+          </div>
           <div className="flex-1 overflow-hidden ">
             <div className="flex flex-col gap-[3.5%] h-[100%] max-h-[100%] overflow-y-auto playersScroll pr-[10px]">
               {filteredPlayers.map((item: Profile) => {

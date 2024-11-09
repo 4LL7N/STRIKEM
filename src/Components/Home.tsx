@@ -42,79 +42,6 @@ function Home(props: {
   const [nearby, setNearby] = useState<PoolHall[]>([]);
     const [recommended,setRecommended] = useState<PoolHall[]>([])
 
-  // const Fetch = async () => {
-  //   const token = Cookies.get('token')
-  //   // console.log(token)
-  //   try {
-  //     const response = await axios.get(
-  //       "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316",
-  //       {
-  //         headers: {
-  //           Authorization:
-  //             `JWT ${token}`,
-  //         },
-  //       }
-  //     );
-  //     const data = response.data;
-  //     const newData: any = [];
-  //     data?.forEach((item: PoolHall) => {
-  //       const pool = item;
-  //       const imageData: any = [];
-  //       pool.pics.forEach((element) => {
-  //         let image = {};
-  //         image = {
-  //           id: element.id,
-  //           image: `/${element.image.split("/").splice(3).join("/")}`,
-  //         };
-  //         imageData.push(image);
-  //       });
-  //       pool.pics = [...imageData];
-  //       newData.push(pool);
-  //     });
-  //     setNearby(newData);
-
-  //     const PoolHousesResponse = await axios.get("https://strikem.site/api/poolhouses/",{
-  //       headers:{
-  //         'Authorization':`JWT ${token}`
-  //       }
-  //     });
-  //   // console.log(PoolHousesResponse.data);
-    
-  //   const Recommended = [... PoolHousesResponse.data];
-   
-  //   const PoolHousesNewData: any = [];
-  //   Recommended?.forEach((item) => {
-  //     const pool = item;
-  //     const imageData: any = [];
-  //     pool.pics.forEach((element:ImageObject) => {
-  //       let image = {};
-  //       image = {
-  //         id: element.id,
-  //         image: `/${element.image.split("/").splice(3).join("/")}`,
-  //       };
-  //       imageData.push(image);
-  //     });
-  //     pool.pics = [...imageData];
-  //     PoolHousesNewData.push(pool);
-  //   });
-  //   // console.log(PoolHousesNewData)
-  //   setRecommended(PoolHousesNewData);
-
-  //   const currentUserResponse = await axios.get(
-  //     "https://strikem.site/users/current-user",
-  //     {
-  //       headers: {
-  //         Authorization:
-  //           `JWT ${token}`,
-  //       },
-  //     }
-  //   );
-  //   // console.log(currentUserResponse.data)
-  //   localStorage.setItem('currentUser',JSON.stringify(currentUserResponse.data))
-  // } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
 
   const fetchData = useCallback(async () => {
     const token = Cookies.get('token');
@@ -126,15 +53,15 @@ function Home(props: {
         }
       );
 
-      const data = response.data.map((item: PoolHall) => ({
-        ...item,
-        pics: item.pics.map((pic: Picture) => ({
-          ...pic,
-          image: `/${pic.image.split("/").splice(3).join("/")}`,
-        })),
-      }));
-
-      setNearby(data);
+      // const data = response.data.map((item: PoolHall) => ({
+      //   ...item,
+      //   pics: item.pics.map((pic: Picture) => ({
+      //     ...pic,
+      //     image: `/${pic.image.split("/").splice(3).join("/")}`,
+      //   })),
+      // }));
+      console.log(response.data)
+      setNearby(response.data);
 
       const PoolHousesResponse = await axios.get("https://strikem.site/api/poolhouses/", {
         headers: { Authorization: `JWT ${token}` },
@@ -160,6 +87,8 @@ function Home(props: {
       );
 
       localStorage.setItem('currentUser', JSON.stringify(currentUserResponse.data));
+
+
     } catch (err) {
       console.error(err);
     }
@@ -179,11 +108,7 @@ function Home(props: {
     return [];
   }, [recommended, props.search]);
 
-  // useEffect(() => {
-  //   search();
-  // }, [props.search]);
 
-  // search();
   function PoolPage(data: any) {
     navigate(`/Pools/${data.id}`, { state: data });
   }
@@ -191,7 +116,7 @@ function Home(props: {
   return (
     <>
       {!props.search ? (
-        <section className="flex flex-col w-[100%] bg-[#10141E] px-[16px] md:px-[0]">
+        <section className="flex flex-col w-[100%] bg-[#10141E] px-[16px] pb-[16px] md:pb-[0] md:px-[0]">
           <div className="max-w-[100%]" >
             <h1 className="text-[#FFF] text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] ">
               Nearby

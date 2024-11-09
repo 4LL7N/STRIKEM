@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -54,8 +55,6 @@ function Signup(props:{users:any}) {
     if (!password.current?.value) {
       setEmptyPassword(true);
       emptyPasswordChk = true;
-      // console.log(password.current.value);
-      // console.log(repPassword.current.value);
     } else {
       setEmptyPassword(false);
       emptyPasswordChk = false;
@@ -82,7 +81,7 @@ function Signup(props:{users:any}) {
     }
     
 
-    let checkUser = props.users.current.filter((item:usersObj) => item.email == email.current?.value)
+    const checkUser = props.users.current.filter((item:usersObj) => item.email == email.current?.value)
     console.log(props.users);
     if(checkUser.length > 1){
         setUsedEmail(true)
@@ -144,6 +143,29 @@ function Signup(props:{users:any}) {
             type="email"
             name="email"
             id="email"
+            placeholder="Username"
+            autoComplete="off"
+            // ref={email}
+          />
+          <a className="text-[13px] text-[#FC4747] font-light">
+            {emailerr
+              ? "wrong Email form"
+              : emptyEmail
+              ? "Can’t be empty"
+              : null}
+          </a>
+        </div>
+
+        <div
+          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[16px] pb-[18px]  hover:border-b-[#FFF] ${
+            emptyEmail || emailerr || usedEmail ? "border-b-[#FC4747]" : null
+          } `}
+        >
+          <input
+            className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
+            type="email"
+            name="email"
+            id="email"
             placeholder="Email address"
             autoComplete="off"
             ref={email}
@@ -193,6 +215,50 @@ function Signup(props:{users:any}) {
               ? "Can’t be empty"
               : repPassErr
               ? "Must repet password"
+              : null}
+          </a>
+        </div>
+        <div
+          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[16px] pb-[18px]  hover:border-b-[#FFF] ${
+            emptyEmail || emailerr || usedEmail ? "border-b-[#FC4747]" : null
+          } `}
+        >
+          <input
+            className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
+            type="email"
+            name="email"
+            id="email"
+            placeholder="First name"
+            autoComplete="off"
+            // ref={email}
+          />
+          <a className="text-[13px] text-[#FC4747] font-light">
+            {emailerr
+              ? "wrong Email form"
+              : emptyEmail
+              ? "Can’t be empty"
+              : null}
+          </a>
+        </div>
+        <div
+          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[16px] pb-[18px]  hover:border-b-[#FFF] ${
+            emptyEmail || emailerr || usedEmail ? "border-b-[#FC4747]" : null
+          } `}
+        >
+          <input
+            className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
+            type="email"
+            name="email"
+            id="email"
+            placeholder="Last name"
+            autoComplete="off"
+            // ref={email}
+          />
+          <a className="text-[13px] text-[#FC4747] font-light">
+            {emailerr
+              ? "wrong Email form"
+              : emptyEmail
+              ? "Can’t be empty"
               : null}
           </a>
         </div>

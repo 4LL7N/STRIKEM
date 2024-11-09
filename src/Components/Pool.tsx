@@ -54,7 +54,7 @@ interface PoolHall {
 
 interface Table {
   id: number;
-  current_session: any; // Use a specific type if you have more information about what this should be
+  current_session: any;
 }
 
 interface Picture {
@@ -67,8 +67,8 @@ const Star = ({ fillPercentage }: { fillPercentage: number }) => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      width="2.7rem" // Use viewport width for responsiveness
-      height="2.7rem" // Use viewport width for responsiveness
+      width="2.7rem" 
+      height="2.7rem" 
       style={{ position: "relative" }}
     >
       <path
@@ -78,7 +78,7 @@ const Star = ({ fillPercentage }: { fillPercentage: number }) => {
       <path
         d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
         fill="#ffd700"
-        style={{ clipPath: `inset(0 ${100 - fillPercentage}% 0 0)` }} // clip based on fillPercentage
+        style={{ clipPath: `inset(0 ${100 - fillPercentage}% 0 0)` }} 
       />
     </svg>
   );
@@ -121,9 +121,8 @@ function Pool() {
   const { coords, isGeolocationAvailable, isGeolocationEnabled } =
         useGeolocated({
             positionOptions: {
-                enableHighAccuracy: false,
+                enableHighAccuracy: true,
             },
-            userDecisionTimeout: 5000,
         });
 
   const location = useLocation();
@@ -218,6 +217,8 @@ function Pool() {
     setWhiteBoxHeight(whiteBoxHeight)
     setWhiteBoxWidth(whiteBoxWidth)
   });
+
+  console.log(coords?.latitude,coords?.longitude)
 
   }, []);
 
@@ -681,10 +682,10 @@ function Pool() {
       <h1 className="text-[20px] text-[#fff] " >Geolocation is not enabled</h1>
     ) : coords ? (
       <MapContainer
-      center={[poolInfo?.latitude, poolInfo?.longitude]} // Initial center of the map
+      center={[poolInfo?.latitude, poolInfo?.longitude]} 
       zoom={15}
-      minZoom={13}            
-      maxZoom={18}
+      // minZoom={13}            
+      // maxZoom={18}
       style={{ height: '400px', width: '100%' }}
     >
       <TileLayer

@@ -24,7 +24,7 @@ function App() {
   const Filmdata = data
   
 
-  const users= useRef<usersObj[]>([]) //useRef
+  const users= useRef<usersObj[]>([]) 
   const [search, setSearch] = useState<string>('')
   const [usersSearch,setUsersSearch] = useState<string>('')
   const [logOut, setLogOut] = useState<boolean>(false)
@@ -48,7 +48,7 @@ function App() {
         },
         {
           element:<User/>,
-          path:'/user'
+          path:'/users/:currentUser'
         },
         {
           path:'/messenger',

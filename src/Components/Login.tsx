@@ -24,7 +24,6 @@ function Login(props: { users: any; setLogOut: any }) {
   let emptyLogPassErrChk = false;
   let userErrorChk = false;
   
-  // console.log(props.users);
   
   function HandleLogin() {
       
@@ -77,13 +76,11 @@ console.log('')
           password: logPassword.current.value,
         }
       );
-    //   console.log(response.data.access);
       console.log(response.data)
       Cookies.set('token',response.data.access
         ,{
         // secure: true,
-        // sameSite: 'Strict',
-         
+        // sameSite: 'Strict',         
       }
     )
 

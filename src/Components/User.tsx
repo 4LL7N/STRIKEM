@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Cookies from 'js-cookie';
+import { useLocation } from "react-router-dom";
 
 
 interface User {
@@ -22,12 +24,6 @@ interface Profile {
   user:User
 }
 
-// interface User {
-//     first_name: string;
-//     last_name: string;
-//     email: string;
-//     id: number;
-//   }
   
   interface Player {
     user: User;
@@ -49,14 +45,13 @@ interface Profile {
     points_given: number;
     penalty_points: number;
     tie: boolean;
-    timestamp: string; // You might also consider using Date if you're parsing this
+    timestamp: string; 
     poolhouse: Poolhouse;
   }
   
 
 function User() {
-//   const navigate = useNavigate();
-
+  const location = useLocation()
   const [userInfo, setUserInfo] = useState<Profile>();
   const [gameHistory,setGameHistory] = useState<GameResult[]>()
   const [winHistory,setWinHistory] = useState<GameResult[]>()
@@ -64,10 +59,12 @@ function User() {
 
   const Fetch = async () => {
     const token = Cookies.get('token')
-    // console.log(token,'token')
+    
+    const dataUrl = location.pathname.split('/')[2] == 'me'?"https://strikem.site/users/current-user":`https://strikem.site/api/players/${location.pathname.split('/')[2]}`
+    console.log(dataUrl)
     try {
       const response = await axios.get(
-        `https://strikem.site/users/current-user`,
+        dataUrl,
         {
           headers: {
             Authorization:
@@ -76,8 +73,6 @@ function User() {
         }
       );
       const data = response.data;
-      // data.profile_image = data.profile_image.split("/").splice(3).join("/");
-      console.log(data,'data')
       setUserInfo(data);
       
       const historyResponse = await axios.get(
@@ -91,14 +86,10 @@ function User() {
       );
 
       const historyData = historyResponse.data
-      // console.log(historyData,'historyData')
       setGameHistory(historyData)
       const wins = historyData.filter((item:GameResult)=> {if(item.winner_player.user.first_name == data?.user.first_name && item.winner_player.user.last_name == data?.user.last_name)return item} )
-      // console.log(wins,'wins')
         setWinHistory(wins)
-      const loses = historyData.filter((item:GameResult)=> {if(item.loser_player.user.first_name == data?.user.first_name && item.loser_player.user.last_name == data?.user.last_name)return item} )
-      // console.log(loses,'loses');
-      
+      const loses = historyData.filter((item:GameResult)=> {if(item.loser_player.user.first_name == data?.user.first_name && item.loser_player.user.last_name == data?.user.last_name)return item} )      
         setLoseHistory(loses)
     } catch (err) {
       console.error(err);

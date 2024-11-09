@@ -23,3 +23,16 @@
     border-radius: 5px;
     background-color: #243257d5;
   }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .spin {
+    animation: spin 500ms linear;
+  }
