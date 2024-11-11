@@ -279,7 +279,9 @@ const Fetch = useCallback(async () => {
     }
     }, 100);
 
-    window.addEventListener('resize',()=>{window.location.reload()})
+    // window.addEventListener('resize',()=>{
+    //   window.location.reload()
+    // })
   }, []);
 
   const filteredPlayers = useCallback(() => {
