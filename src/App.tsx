@@ -56,7 +56,7 @@ function App() {
         },
         {
           path:'/matchmake',
-          element:<Matchup usersSearch={usersSearch} setAcceptInvatation={setAcceptInvatation}  />
+          element:<Matchup usersSearch={usersSearch} setUsersSearch={setUsersSearch} setAcceptInvatation={setAcceptInvatation}  />
         }
       ]
     },
