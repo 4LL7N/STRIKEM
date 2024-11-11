@@ -346,12 +346,12 @@ const Fetch = useCallback(async () => {
   }, [playersData]);
 
   return (
-    <section ref={matchupSectionRef} className="flex flex-col lg:flex-row w-[100%] gap-[2%] ">
-      <div className=" flex flex-col h-[100%] w-[100%] ">
-        <div className=" flex flex-col ">
-          <h1 className="text-[48px] text-[#fff] ">Filter</h1>
-          <div className="flex mt-[20px] justify-between ">
-            <div className="flex gap-[20px] ">
+    <section ref={matchupSectionRef} className="flex flex-col-reverse lg:flex-row w-[100%] gap-[2%] px-[10px] py-[24px] lg:pb-[0] ">
+      <div className=" flex flex-col  w-[100%]  ">
+        <div className={` flex flex-col ${window.innerWidth < 768?" mt-[24px] ":window.innerWidth < 1024 ?"mt-[32px]":""} `}>
+          <h1 className=" text-[20px] md:text-[32px] lg:text-[48px] text-[#fff] ">Filter</h1>
+          <div className="flex mt-[8px] md:mt-[16px] lg:mt-[20px] justify-between ">
+            <div className="flex gap-[10px] md:gap-[20px] ">
               <label
                 htmlFor="location"
                 className="flex items-center cursor-pointer"
@@ -366,21 +366,23 @@ const Fetch = useCallback(async () => {
                   className="hidden"
                 />
                 <span
-                  className={` p-[10px] rounded-[20px] border-[1px] borer-[#fff] ${
+                  className={` flex flex-col gap-[4px] p-[8px] md:p-[12px] rounded-[20px]  border-[1px] borer-[#fff] ${
                     filter.includes(1) ? "bg-[#fff]" : ""
                   } `}
                 >
                     <div className=" flex items-center gap-[5px] " >
                   <LuMapPin
+                  
+                  size={window.innerWidth < 768?17:window.innerWidth < 1024?24:20}
                     style={
                       filter.includes(1)
                         ? { color: "black" }
                         : { color: "white" }
                     }
                   />
-                  <p className={`text-[16px] ${filter.includes(1) ? "text-[#000]" : "text-[#fff]"} `} >location</p>
+                  <p className={`text-[14px] leading-[17px] md:text-[20px] md:leading-6 lg:text-[18px] lg:leading-5   ${filter.includes(1) ? "text-[#000]" : "text-[#fff]"} `} >location</p>
                   </div>
-                  <p className={`text-[8px] ${filter.includes(1) ? "text-[#0000007b]" : "text-[#ffffff86]"} `} >find player 4km radius</p>
+                  <p className={`text-[8px] md:text-[12px] lg:text-[10px] ${filter.includes(1) ? "text-[#0000007b]" : "text-[#ffffff86]"} `} >find player 4km radius</p>
                 </span>
               </label>
               <label
@@ -395,26 +397,27 @@ const Fetch = useCallback(async () => {
                   className="hidden"
                 />
                 <div
-                  className={`p-[10px] rounded-[20px] border-[1px] borer-[#fff] ${
+                  className={` flex flex-col gap-[4px] p-[8px] md:p-[12px] rounded-[20px] border-[1px] borer-[#fff] ${
                     filter.includes(2) ? "bg-[#fff]" : ""
                   } `}
                 >
                     <div className=" flex items-center gap-[5px] " >
                   <CiStar
+                  size={window.innerWidth < 768?17:window.innerWidth < 1024?24:20}
                     style={
                       filter.includes(2)
                         ? { color: "black" }
                         : { color: "white" }
                     }
                   />
-                  <p className={`text-[16px] ${filter.includes(2) ? "text-[#000]" : "text-[#fff]"} `} >Rating</p>
+                  <p className={`text-[14px] leading-[17px] md:text-[20px] md:leading-6 lg:text-[18px] lg:leading-5 ${filter.includes(2) ? "text-[#000]" : "text-[#fff]"} `} >Rating</p>
                   </div>
-                  <p className={`text-[8px] ${filter.includes(2) ? "text-[#0000007b]" : "text-[#ffffff86]"} `} >find player ↑ 200 ↓ rating</p>
+                  <p className={`text-[8px] md:text-[12px] lg:text-[10px] ${filter.includes(2) ? "text-[#0000007b]" : "text-[#ffffff86]"} `} >find player ↑ 200 ↓ rating</p>
                 </div>
               </label>
             </div>
-            <div className="flex flex-col gap-[3px] " >
-            <div className="relative w-full h-8 " onClick={() => toggleSlider()}>
+            <div className="flex flex-col items-center gap-[4px] " onClick={() => toggleSlider()} >
+            <div className=" relative w-24 md:w-36 lg:w-32  h-6 md:h-9 lg:h-8 " >
               <div
                 className={`absolute top-0 left-0 w-full h-full rounded-full transition-colors duration-300  ${
                   isOn ? "bg-[#fab907]" : "bg-red-500"
@@ -428,26 +431,71 @@ const Fetch = useCallback(async () => {
                 value={isOn ? 1 : 0}
                 readOnly
                 className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+                
               />
               <div
-                className={`absolute top-1 left-1 w-[22.5%] h-6 cursor-pointer bg-white rounded-full shadow-md transition-transform duration-300 ${
-                  isOn ? "translate-x-[313%]" : "translate-x-0"
+                className={`absolute top-[50%] translate-y-[-50%] left-[3%] w-[20%] aspect-square cursor-pointer bg-white rounded-full shadow-md transition-transform duration-300 ${
+                  isOn ? "translate-x-[375%]" : "translate-x-0"
                 }`}
               ></div>
             </div>
-            <p className={`text-[8px]  text-[#ffffff86] `} >Turn on match making requests</p>
+            <p className={`text-[8px] md:text-[12px] lg:text-[10px] text-[#ffffff86] `} >Turn on match making requests</p>
 
             </div>
           </div>
         </div>
-        <main className="flex flex-col gap-[20px] mt-[24px] md:mt-[32px] h-[100%] overflow-hidden ">
+        <main className="flex flex-col gap-[20px] mt-[24px] mb-[24px] md:mt-[32px] lg:h-[100%] lg:mb-0 overflow-hidden ">
           <div className="flex items-end justify-between" >
-          <h1 className="text-[48px] text-[#fff] ">Players</h1>
-          <div className={`flex items-center justify-center h-[30px] aspect-square mr-[26px] ${isSpinning ? "spin" : ""} `} onClick={()=>{refreshData()}} >
-            <IoRefreshSharp style={{height:'100%',width:'100%',color:'white'}} /></div>
+          <h1 className="text-[20px] md:text-[32px] lg:text-[48px] text-[#fff] ">Players</h1>
+          <div className={`flex items-end justify-center h-[30px] aspect-square mr-[26px] ${isSpinning ? "spin" : ""} `} onClick={()=>{refreshData()}} >
+            <IoRefreshSharp className="w-[24px] h-[24px] " style={{color:'white'}} /></div>
           </div>
-          <div className="flex-1 overflow-hidden ">
-            <div className="flex flex-col gap-[3.5%] h-[100%] max-h-[100%] overflow-y-auto playersScroll pr-[10px]">
+          <div className="lg:flex-1 min-h-[360px] max-h-[360px]  md:min-h-[480px] md:max-h-[480px] lg:min-h-[100%] lg:max-h-[100%]  lg:h-[100%]  ">
+            <div className="flex flex-col gap-[10px] h-[100%]  overflow-y-auto playersScroll lg:pr-[10px]">
+              {playersData.map((item: Profile) => {
+                return (
+                    <PlayerCard
+                    key={item.id}
+                    player={item}
+                    sentInvitations={sentInvitations}
+                    currentUser={currentUser}
+                    onMatchmake={sendMatchmake}
+                  />
+                );
+              })}
+              {playersData.map((item: Profile) => {
+                return (
+                    <PlayerCard
+                    key={item.id}
+                    player={item}
+                    sentInvitations={sentInvitations}
+                    currentUser={currentUser}
+                    onMatchmake={sendMatchmake}
+                  />
+                );
+              })}
+              {playersData.map((item: Profile) => {
+                return (
+                    <PlayerCard
+                    key={item.id}
+                    player={item}
+                    sentInvitations={sentInvitations}
+                    currentUser={currentUser}
+                    onMatchmake={sendMatchmake}
+                  />
+                );
+              })}
+              {playersData.map((item: Profile) => {
+                return (
+                    <PlayerCard
+                    key={item.id}
+                    player={item}
+                    sentInvitations={sentInvitations}
+                    currentUser={currentUser}
+                    onMatchmake={sendMatchmake}
+                  />
+                );
+              })}
               {playersData.map((item: Profile) => {
                 return (
                     <PlayerCard
@@ -463,10 +511,10 @@ const Fetch = useCallback(async () => {
           </div>
         </main>
       </div>
-      <div className=" flex flex-col h-[100%] w-[55%] gap-[6%] overflow-hidden ">
-        <div className="flex flex-col h-[45%] gap-[20px] ">
-          <h1 className="text-[48px] text-[#ffffff] ">Matchups</h1>
-          <div className="flex flex- flex-grow rounded-[20px]  border-[1px] border-[#243257d5] h-[238px] overflow-y-auto messagesScroll  ">
+      <div className=" flex flex-col w-[100%] lg:w-[55%] gap-[6%] mb-[24px] lg:max-h-[100%] lg:mb-0 ">
+        <div className="flex flex-col lg:h-[47%] gap-[20px] ">
+          <h1 className="text-[20px] md:text-[32px] lg:text-[48px] text-[#fff] ">Matchups</h1>
+          <div className="flex flex-col flex-grow rounded-[20px]  border-[1px] border-[#243257d5] h-[238px] md:h-[358px] overflow-y-auto messagesScroll  ">
             {matchMakes?.map((item: Message, i: number) => {
               const index = (i + 10) * 100;
               return (
@@ -480,9 +528,9 @@ const Fetch = useCallback(async () => {
             })}
           </div>
         </div>
-        <div className="flex flex-col h-[45%] gap-[20px] ">
-          <h1 className="text-[48px] text-[#ffffff] ">invations</h1>
-          <div className="flex flex-col flex-grow rounded-[20px]  border-[1px] border-[#243257d5] h-[238px] overflow-y-auto messagesScroll  ">
+        <div className="flex flex-col lg:h-[47%] gap-[20px] ">
+          <h1 className="text-[20px] md:text-[32px] lg:text-[48px] text-[#fff] ">invations</h1>
+          <div className="flex flex-col flex-grow rounded-[20px]  border-[1px] border-[#243257d5] h-[238px] md:h-[358px] overflow-y-auto messagesScroll  ">
             {invitations?.map((item: Invitation, i: number) => {
               const index = (i + 10) * 100;
               return (

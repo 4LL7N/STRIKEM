@@ -44,29 +44,29 @@ const InvitationsCard = React.memo(
   }) => {
     return (
       <div
-        className={`flex p-[20px] justify-between ${
+        className={`flex h-[50%] p-[20px] justify-between ${
           i != length - 1 || length < 5
             ? "border-b-[1px] border-b-[#243257d5]"
             : ""
         } `}
       >
-        <div className="flex flex-col gap-[10px] justify-center items-center pr-[20px] mr-[20px] border-r-[1px] border-r-[#243257d5] max-w-[74px] ">
+        <div className="flex flex-col h-[100%] gap-[10%] justify-center items-center pr-[20px] mr-[20px] border-r-[1px] border-r-[#243257d5] min-w-[94px] md:min-w-[116px] ">
           <img
             src={item.player_inviting.profile_image}
-            className="rounded-[50%] aspect-square "
+            className="rounded-[50%] aspect-square h-[70%] "
             alt="image"
           />
-          <h1 className="text-[12px] text-[#fff] ">
+          <h1 className="text-[12px] md:text-[16px] text-[#fff] ">
             {item.player_inviting.user.username}
           </h1>
         </div>
         <div className=" flex items-center w-full justify-between ">
-          <h1 className="text-[20px] text-[#fff] ">
+          <h1 className=" text-[14px] md:text-[24px] lg:text-[20px] text-[#fff] ">
             {item.player_inviting.user.username} invited you
           </h1>
-          <div className="flex flex-col gap-[10px] ">
+          <div className="flex flex-col justify-center h-[100%] gap-[10%] ">
             <button
-              className="bg-[#fab907] px-[8px] py-[4px] text-[#FFF] hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px] "
+              className="bg-[#fab907] px-[6px] py-[2px] md:px-[8px] md:py-[4px] lg:px-[6px] lg:py-[2px] text-[14px] md:text-[20px] lg:text-[17px] text-[#FFF] hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px] "
               onClick={() => {
                 acceptMatchMake(item.player_inviting.user.username);
               }}
@@ -74,7 +74,7 @@ const InvitationsCard = React.memo(
               ACCEPT
             </button>
             <button
-              className="bg-red-600 px-[8px] py-[4px] text-[#FFF] hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px] "
+              className="bg-red-600 px-[6px] py-[2px] md:px-[8px] md:py-[4px] lg:px-[6px] lg:py-[2px] text-[14px] md:text-[20px] lg:text-[17px] text-[#FFF] hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px] "
               onClick={() => {
                 declineMatchMake(item.player_inviting.user.username);
               }}

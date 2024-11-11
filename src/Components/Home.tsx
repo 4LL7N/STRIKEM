@@ -96,7 +96,7 @@ function Home(props: {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  },[fetchData]);
 
   
   const filteredSearchResults = useMemo(() => {
