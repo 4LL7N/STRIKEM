@@ -91,7 +91,7 @@ interface Invitation {
 };
 }
 
-function Matchup({ usersSearch,setAcceptInvatation }: { usersSearch: string,setAcceptInvatation:(acceptInvatation:any)=>void }) {
+function Matchup({ usersSearch,setUsersSearch,setAcceptInvatation }: { usersSearch: string,setUsersSearch:(userSearch:string)=>void,setAcceptInvatation:(acceptInvatation:any)=>void }) {
     const { sendJsonMessage, lastJsonMessage } = useWebSocketContext();
     
     const currentUser = useMemo(() => {
@@ -278,6 +278,8 @@ const Fetch = useCallback(async () => {
       }px`;
     }
     }, 100);
+
+    window.addEventListener('resize',()=>{window.location.reload()})
   }, []);
 
   const filteredPlayers = useCallback(() => {
@@ -348,7 +350,9 @@ const Fetch = useCallback(async () => {
   return (
     <section ref={matchupSectionRef} className="flex flex-col-reverse lg:flex-row w-[100%] gap-[2%] px-[10px] py-[24px] lg:pb-[0] ">
       <div className=" flex flex-col  w-[100%]  ">
-        <div className={` flex flex-col ${window.innerWidth < 768?" mt-[24px] ":window.innerWidth < 1024 ?"mt-[32px]":""} `}>
+      <div className={` flex ml-[16px] my-[16px] md:my-[24px] md:ml-[0] md:mb-[33px] `} ><img className="w-[24px] h-[24px] mr-[16px] md:w-[32px] md:h-[32px] md:mr-[24px]" src="/images/icon-search.svg"  /><input className="bg-transparent focus:outline-none text-[#FFF] text-[16px] font-light md:text-[24px] " type="text" placeholder="Search for movies" onChange={(event) =>{setUsersSearch(event.target.value)}} /></div>
+
+        <div className={` flex flex-col `}>
           <h1 className=" text-[20px] md:text-[32px] lg:text-[48px] text-[#fff] ">Filter</h1>
           <div className="flex mt-[8px] md:mt-[16px] lg:mt-[20px] justify-between ">
             <div className="flex gap-[10px] md:gap-[20px] ">
@@ -467,7 +471,7 @@ const Fetch = useCallback(async () => {
           </div>
         </main>
       </div>
-      <div className=" flex flex-col w-[100%] lg:w-[55%] gap-[6%] mb-[24px] lg:max-h-[100%] lg:mb-0 ">
+      <div className=" flex flex-col mt-[16px] md:mt-[24px] w-[100%] lg:w-[55%] gap-[6%] mb-[24px] lg:max-h-[100%] lg:mb-0 ">
         <div className="flex flex-col lg:h-[47%] gap-[20px] ">
           <h1 className="text-[20px] md:text-[32px] lg:text-[48px] text-[#fff] ">Matchups</h1>
           <div className="flex flex-col flex-grow rounded-[20px]  border-[1px] border-[#243257d5] h-[238px] md:h-[358px] overflow-y-auto messagesScroll  ">

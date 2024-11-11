@@ -82,12 +82,19 @@ function Messenger() {
 
     const {sendJsonMessage, lastJsonMessage} = useWebSocketContext()
 
+    const currentUser = useMemo(() => {
+      return localStorage.getItem("currentUser") 
+        ? JSON.parse(localStorage.getItem("currentUser")!) 
+        : null;
+    }, []);
+
     const location = useLocation()
     
   const [messages, setMessages] = useState<Message[]>();
   const [openChat,setOpenChat] = useState<string>('')
   const [chat,setChat] = useState<chatMessage[]>([])
-    const [opponentUsername,setOpponentUsername] = useState<string>('')
+
+    const [messageTo,setMessageTo] = useState<any>()
 
   const messengerRef = useRef<any>();
     const chatInput = useRef<any>()
@@ -104,15 +111,12 @@ function Messenger() {
       if(response.data.results.length > 0 ){
       if(!openChat){
         setOpenChat(response.data.results[0].id)
-        let currentUser: any = localStorage?.getItem("currentUser");
-          currentUser
-            ? (currentUser = JSON.parse(currentUser))
-            : (currentUser = null);
+       
           const otherPlayer =
           response.data.results[0].player_accepting.id == currentUser?.id
               ? response.data.results[0].player_inviting
               : response.data.results[0].player_accepting;
-            setOpponentUsername(otherPlayer.user.username)
+            setMessageTo(otherPlayer)
       }
       const matchUpId = localStorage.getItem('matchUpId')
       const Chatresponse = await axios(
@@ -162,16 +166,13 @@ function Messenger() {
   
 
   const sendMessage = () =>{
-    let currentUser: any = localStorage?.getItem("currentUser");
-          currentUser
-            ? (currentUser = JSON.parse(currentUser))
-            : (currentUser = null);
+    
     if(currentUser && chatInput.current && chatInput.current.value){
     sendJsonMessage({
         'action': 'matchup',
        'message': chatInput.current.value,
        'username': currentUser.user.username,
-       'opponent_username': opponentUsername,
+       'opponent_username': messageTo.user.username,
        'matchup_id': openChat,
     })
     const user = {...currentUser.user}
@@ -193,7 +194,7 @@ function Messenger() {
 
   useEffect(() => {
     Fetch();
-
+    if(window.innerWidth >= 1024){
     setTimeout(() => {
       messengerRef.current.style.height = `${
         window.innerHeight -
@@ -206,16 +207,26 @@ function Messenger() {
       messages?setOpenChat(messages[0]?.id):null
       }
     }, 100);
+  }else{
+    setTimeout(() => {
+      messengerRef.current.style.height = `${
+        window.innerHeight -
+        messengerRef.current?.getBoundingClientRect().top -
+        10
+      }px`;
+      if(location.state?.matchUpId){
+        setOpenChat(location.state.matchUpId)
+      }else{
+      messages?setOpenChat(messages[0]?.id):null
+      }
+    }, 100);
+  }
   }, []);
 
 
   useEffect(()=>{
     console.log(lastJsonMessage)
 
-    let currentUser: any = localStorage?.getItem("currentUser");
-          currentUser
-            ? (currentUser = JSON.parse(currentUser))
-            : (currentUser = null);
     const user = {...currentUser.user}
     const chatContent = [...chat]
     chatContent.push({
@@ -249,8 +260,7 @@ function Messenger() {
 
 const chatMessages = useMemo(() => {
     
-    let currentUser: any = localStorage?.getItem("currentUser");
-    currentUser = currentUser ? JSON.parse(currentUser) : null;
+    
     return chat?.map((item: chatMessage, i: number) => {
 
         const author = item?.sender.id === currentUser.id
@@ -295,18 +305,26 @@ const chatMessages = useMemo(() => {
   return (
     <section
       ref={messengerRef}
-      className="flex-grow flex    border-[1px] border-[#243257d5]  rounded-[20px] overflow-hidden "
+      className="lg:flex-grow flex flex-col m-[10px] w-[100%] border-[1px] border-[#243257d5]  rounded-[20px] overflow-hidden "
     >
-      <div className=" w-[35%] border-r border-r-[#243257d5]  h-[100%] overflow-y-auto chatScroll ">
+      <div className=" hidden w-[35%] border-r border-r-[#243257d5]  h-[100%] overflow-y-auto chatScroll ">
         {messagesList}
       </div>
-      <main className="flex flex-col w-[65%] overflow-hidden p-[10px] h-[100%] gap-[10px]">
+      <div className="flex gap-[10px] w-[100%] h-[84px] border-b-[1px] border-b-[#243257d5] p-[10px] lg:hidden " >
+        <div className="h-[100%]" >
+          <img src={messageTo?.profile_image} className="h-[64px] aspect-square rounded-[50%] " alt="" />
+        </div>
+        <div className=" flex flex-col h-[100%] justify-evenly " >
+          <h1 className="text-[#fff] text-[16px] " >{messageTo?.user.username}</h1>
+          <h2 className="text-[#ffffff57] text-[16px] " >({messageTo?.user.first_name} {messageTo?.user.last_name})</h2>
+        </div>
+      </div>      <main className="flex flex-col w-[100%] lg:w-[65%] overflow-hidden p-[10px] h-[100%] gap-[10px]">
         <section className="flex flex-col flex-grow justify-end w-[100%] h-[100%]  relative overflow-y-auto " >
             {chatMessages}
         </section>
         <div className="flex gap-[1%]  " >
-            <div className="bg-slate-300 rounded-[40px] px-[16px] py-[8px] flex-grow " >
-                <input ref={chatInput} className="w-[100%] bg-transparent outline-none text-neutral-900 text-[20px] " type="text" />
+            <div className="bg-slate-300 rounded-[40px]  px-[16px] py-[8px] flex-grow " >
+                <input ref={chatInput} className="w-[100%] bg-transparent outline-none text-neutral-900 text-[16px] lg:text-[20px] " type="text" />
             </div>
             <button className="flex items-center justify-center rounded-[40px] w-[48px] h-[40px]  " onClick={()=>{sendMessage()}} >
                 <FiSend style={{color:'#fab907',width:'33px',height:'33px'}} />

@@ -111,8 +111,8 @@ function Layout(props:{search:string,setSearch:(search:string)=>void,usersSearch
                 </div>
                 <img className="w-[24px] h-[24px] md:w-[32px] md:h-[32px] lg:min-w-[40px] lg:min-h-[40px]" src="/images/image-avatar.png" onClick={()=>{ navigate('/users/me') }} />
             </header>
-            <div style={{width:contentW}} className={` ${location.pathname == '/matchmake'?'h-full':''} flex flex-col `}  >
-                <div className={` flex ml-[16px] my-[24px] md:ml-[0] md:my-[33px] ${location.pathname.includes('users') || location.pathname == '/messenger' || location.pathname.includes('Pools') ?" hidden ":''} `} ><img className="w-[24px] h-[24px] mr-[16px] md:w-[32px] md:h-[32px] md:mr-[24px]" src="/images/icon-search.svg"  /><input className="bg-transparent focus:outline-none text-[#FFF] text-[16px] font-light md:text-[24px] " type="text" placeholder="Search for movies" onChange={(event) =>{location.pathname == '/matchmake'? props.setUsersSearch(event.target.value) : props.setSearch(event.target.value)}} /></div>
+            <div style={location.pathname == '/messenger' && window.innerWidth < 768?{width:contentW,height:window.innerHeight-57}:{width:contentW}}  className={` ${location.pathname == '/matchmake' ?'h-full':''} flex flex-col `}  >
+                <div className={` flex ml-[16px] my-[24px] md:ml-[0] md:my-[33px] ${location.pathname.includes('users') || location.pathname == '/messenger' || location.pathname.includes('Pools') || location.pathname == '/matchmake' ?" hidden ":''} `} ><img className="w-[24px] h-[24px] mr-[16px] md:w-[32px] md:h-[32px] md:mr-[24px]" src="/images/icon-search.svg"  /><input className="bg-transparent focus:outline-none text-[#FFF] text-[16px] font-light md:text-[24px] " type="text" placeholder="Search for movies" onChange={(event) =>{location.pathname == '/matchmake'? props.setUsersSearch(event.target.value) : props.setSearch(event.target.value)}} /></div>
                 <div className="flex flex-grow" >
                     <Outlet />
                     </div>
