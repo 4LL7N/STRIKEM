@@ -463,50 +463,6 @@ const Fetch = useCallback(async () => {
                   />
                 );
               })}
-              {playersData.map((item: Profile) => {
-                return (
-                    <PlayerCard
-                    key={item.id}
-                    player={item}
-                    sentInvitations={sentInvitations}
-                    currentUser={currentUser}
-                    onMatchmake={sendMatchmake}
-                  />
-                );
-              })}
-              {playersData.map((item: Profile) => {
-                return (
-                    <PlayerCard
-                    key={item.id}
-                    player={item}
-                    sentInvitations={sentInvitations}
-                    currentUser={currentUser}
-                    onMatchmake={sendMatchmake}
-                  />
-                );
-              })}
-              {playersData.map((item: Profile) => {
-                return (
-                    <PlayerCard
-                    key={item.id}
-                    player={item}
-                    sentInvitations={sentInvitations}
-                    currentUser={currentUser}
-                    onMatchmake={sendMatchmake}
-                  />
-                );
-              })}
-              {playersData.map((item: Profile) => {
-                return (
-                    <PlayerCard
-                    key={item.id}
-                    player={item}
-                    sentInvitations={sentInvitations}
-                    currentUser={currentUser}
-                    onMatchmake={sendMatchmake}
-                  />
-                );
-              })}
             </div>
           </div>
         </main>
