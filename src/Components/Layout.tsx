@@ -17,7 +17,6 @@ function Layout(props:{search:string,setSearch:(search:string)=>void,usersSearch
     const location = useLocation();
     const header = useRef<any>();
     const [contentW, setContentW] = useState<string>();
-    const [resize,setResize]=useState(false)
     const [headerHeight,setHeaderHeight] = useState<number>(100)
 
     const divSize = () => {
@@ -32,7 +31,7 @@ function Layout(props:{search:string,setSearch:(search:string)=>void,usersSearch
         }
       }
       window.addEventListener('resize',()=>{
-        setResize(!resize)
+        headerResize()
       })
     };
   
@@ -41,7 +40,11 @@ function Layout(props:{search:string,setSearch:(search:string)=>void,usersSearch
       if(location.pathname.includes('users')  || location.pathname == '/messenger'  || location.pathname.includes('Pools') || location.pathname == '/matchmake'){
           setHeaderHeight(100)
       }else{
-        setHeaderHeight(headerheight)
+        if(window.innerWidth >= 1024){
+          setHeaderHeight(headerheight)
+        }else{
+          setHeaderHeight(100)
+        }
       }
     }
     

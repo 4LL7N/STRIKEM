@@ -73,10 +73,11 @@ function User() {
         }
       );
       const data = response.data;
+      console.log(data)
       setUserInfo(data);
-      
+
       const historyResponse = await axios.get(
-        `https://strikem.site/api/history/`,
+        `https://strikem.site/api/players/${data.id}/history/`,
         {
           headers: {
             Authorization:

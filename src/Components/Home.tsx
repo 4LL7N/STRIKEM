@@ -29,10 +29,6 @@ interface Picture {
   image: string;
 }
 
-interface ImageObject {
-  id: number;
-  image: string;
-}
 
 function Home(props: {
   
@@ -53,31 +49,14 @@ function Home(props: {
         }
       );
 
-      // const data = response.data.map((item: PoolHall) => ({
-      //   ...item,
-      //   pics: item.pics.map((pic: Picture) => ({
-      //     ...pic,
-      //     image: `/${pic.image.split("/").splice(3).join("/")}`,
-      //   })),
-      // }));
-      console.log(response.data)
       setNearby(response.data);
 
       const PoolHousesResponse = await axios.get("https://strikem.site/api/poolhouses/", {
         headers: { Authorization: `JWT ${token}` },
       });
 
-      const recommendedData = PoolHousesResponse.data.map((item: PoolHall) => ({
-        ...item,
-        pics: item.pics.map((pic: ImageObject) => ({
-          ...pic,
-          image: `/${pic.image.split("/").splice(3).join("/")}`,
-        })),
-      }));
 
-      console.log(recommended)
-
-      setRecommended(recommendedData);
+      setRecommended(PoolHousesResponse.data);
 
       const currentUserResponse = await axios.get(
         "https://strikem.site/users/current-user",
@@ -121,7 +100,7 @@ function Home(props: {
             <h1 className="text-[#FFF] text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] ">
               Nearby
             </h1>
-            <div className="imageScroll flex gap-[15px] overflow-x-scroll flex-nowrap max-w-[91%] mb-[24px] rounded-[8px] p-0 md:mb-[39px] md:gap-[40px] lg:overflow-x-scroll" >
+            <div className="imageScroll flex gap-[15px] overflow-x-scroll flex-nowrap max-w-[100%] mb-[24px] rounded-[8px] p-0 md:mb-[39px] md:gap-[40px] lg:overflow-x-scroll" >
               {nearby?.map((item: PoolHall, index: number) => {
 
                 return (
