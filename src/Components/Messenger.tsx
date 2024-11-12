@@ -10,6 +10,7 @@ import { useWebSocketContext } from "./Websocket";
 import ChatBubble from "./MessengerMemo/ChatBubble";
 import MessageItem from "./MessengerMemo/MessageItem";
 import { useLocation } from "react-router-dom";
+import { useSwipeable } from "react-swipeable";
 
 interface chatMessage {
     after_outdated?: boolean;
@@ -82,6 +83,16 @@ function Messenger() {
 
     const {sendJsonMessage, lastJsonMessage} = useWebSocketContext()
 
+    const handlers = useSwipeable({
+      onSwipedLeft: () => {window.innerWidth < 1024?setIsSwiped(false):null},  // Slide out on left swipe
+      onSwipedRight: () => {window.innerWidth < 1024?setIsSwiped(true):null},  // Slide in on right swipe
+      trackTouch: true,
+      trackMouse: false,
+    });
+
+    const [isSwiped, setIsSwiped] = useState(false);
+
+
     const currentUser = useMemo(() => {
       return localStorage.getItem("currentUser") 
         ? JSON.parse(localStorage.getItem("currentUser")!) 
@@ -96,7 +107,6 @@ function Messenger() {
 
     const [messageTo,setMessageTo] = useState<any>()
 
-  const messengerRef = useRef<any>();
     const chatInput = useRef<any>()
 
     const token = Cookies.get("token");
@@ -194,11 +204,14 @@ function Messenger() {
 
   useEffect(() => {
     Fetch();
+    const messengerBox = document.getElementById("messengerBox")
+    
     if(window.innerWidth >= 1024){
     setTimeout(() => {
-      messengerRef.current.style.height = `${
+      if(messengerBox)
+      messengerBox.style.height = `${
         window.innerHeight -
-        messengerRef.current?.getBoundingClientRect().top -
+        messengerBox?.getBoundingClientRect().top -
         32
       }px`;
       if(location.state?.matchUpId){
@@ -209,9 +222,10 @@ function Messenger() {
     }, 100);
   }else{
     setTimeout(() => {
-      messengerRef.current.style.height = `${
+      if(messengerBox)
+      messengerBox.style.height = `${
         window.innerHeight -
-        messengerRef.current?.getBoundingClientRect().top -
+        messengerBox?.getBoundingClientRect().top -
         10
       }px`;
       if(location.state?.matchUpId){
@@ -220,6 +234,23 @@ function Messenger() {
       messages?setOpenChat(messages[0]?.id):null
       }
     }, 100);
+    window.addEventListener('resize',()=>{
+      if(window.innerWidth >= 1024){
+        if(messengerBox)
+          messengerBox.style.height = `${
+            window.innerHeight -
+            messengerBox?.getBoundingClientRect().top -
+            32
+          }px`;
+          
+      }else{
+        if(messengerBox)
+        messengerBox.style.height = `${
+          window.innerHeight -
+          messengerBox?.getBoundingClientRect().top -
+          10
+        }px`;
+      }})
   }
   }, []);
 
@@ -252,6 +283,7 @@ function Messenger() {
         onClick={() => {
           setOpenChat(item.id);
           messagesFetch(item.id);
+          window.innerWidth < 1024?setIsSwiped(false):null
         }}
       />
         );
@@ -304,10 +336,19 @@ const chatMessages = useMemo(() => {
 
   return (
     <section
-      ref={messengerRef}
-      className="lg:flex-grow flex flex-col m-[10px] w-[100%] border-[1px] border-[#243257d5]  rounded-[20px] overflow-hidden "
+      // ref={messengerRef}
+      {...handlers}
+      id="messengerBox"
+      className="lg:flex-grow flex flex-col lg:flex-row m-[10px] w-[100%] border-[1px] border-[#243257d5]  rounded-[20px] overflow-hidden relative "
     >
-      <div className=" hidden w-[35%] border-r border-r-[#243257d5]  h-[100%] overflow-y-auto chatScroll ">
+      <div
+        className={` lg:hidden absolute top-0 left-0 z-50 transition-transform duration-1000 ease-in-out ${
+          isSwiped ? 'translate-x-0' : '-translate-x-full'
+        } w-full h-full bg-[#10141E] text-white `}
+      >
+        {messagesList}
+      </div>
+      <div className="lg:flex lg:flex-col hidden w-[35%] border-r border-r-[#243257d5]  h-[100%] overflow-y-auto chatScroll ">
         {messagesList}
       </div>
       <div className="flex gap-[10px] w-[100%] h-[84px] border-b-[1px] border-b-[#243257d5] p-[10px] lg:hidden " >
@@ -318,7 +359,8 @@ const chatMessages = useMemo(() => {
           <h1 className="text-[#fff] text-[16px] " >{messageTo?.user.username}</h1>
           <h2 className="text-[#ffffff57] text-[16px] " >({messageTo?.user.first_name} {messageTo?.user.last_name})</h2>
         </div>
-      </div>      <main className="flex flex-col w-[100%] lg:w-[65%] overflow-hidden p-[10px] h-[100%] gap-[10px]">
+      </div>      
+      <main className="flex flex-col w-[100%] lg:w-[65%] overflow-hidden p-[10px] h-[100%] gap-[10px]">
         <section className="flex flex-col flex-grow justify-end w-[100%] h-[100%]  relative overflow-y-auto " >
             {chatMessages}
         </section>
