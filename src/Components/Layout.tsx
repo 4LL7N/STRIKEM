@@ -25,7 +25,7 @@ function Layout(props:{search:string,setSearch:(search:string)=>void,usersSearch
         setContentW(`100%`);
       } else {
         if (viewportWidth >= 1024) {
-          setContentW(`${viewportWidth - 96 - 39}px`);
+          setContentW(`${viewportWidth - 167}px`);
         } else {
           setContentW(`100%`);
         }

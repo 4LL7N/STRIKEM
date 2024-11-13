@@ -101,7 +101,7 @@ function Home(props: {
     <>
       {!props.search ? (
         <section className="flex flex-col w-[100%] bg-[#10141E] px-[16px] pb-[16px] md:pb-[0] md:px-[0]">
-          <div className="max-w-[100%]" >
+          <div className="max-w-[100%] lg:pr-[32px]" >
             <h1 className="text-[#FFF] text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] ">
               Nearby
             </h1>
@@ -144,7 +144,7 @@ function Home(props: {
             <h1 className="text-[#FFF] text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] lg:mb-[32px]">
               Recommended for you
             </h1>
-            <div className="flex flex-wrap gap-x-[15px] gap-y-[16px] md:gap-y-[29.5px] md:gap-x-[24px] lg:gap-x-[60px] lg:gap-y-[32px]">
+            <div className=" max-w-[100%] flex flex-wrap gap-x-[15px] gap-y-[16px] md:gap-y-[29.5px] md:gap-x-[24px] lg:gap-x-[60px] lg:gap-y-[32px]">
               {recommended?.map((item, index) => {
                 return ( 
                   <div

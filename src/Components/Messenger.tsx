@@ -111,6 +111,7 @@ function Messenger() {
 
     const token = Cookies.get("token");
   const Fetch = async () => {
+    const matchUpId = localStorage.getItem('matchUpId')
     try {
       const response = await axios("https://strikem.site/api/matchups/", {
         headers: {
@@ -121,14 +122,33 @@ function Messenger() {
       if(response.data.results.length > 0 ){
       if(!openChat){
         setOpenChat(response.data.results[0].id)
-       
-          const otherPlayer =
+        console.log(response.data)
+          let otherPlayer =
           response.data.results[0].player_accepting.id == currentUser?.id
               ? response.data.results[0].player_inviting
               : response.data.results[0].player_accepting;
+          if(matchUpId){
+            const findMatuchUp = response.data.results.find((item:any)=>item.id == matchUpId)
+            otherPlayer =
+            findMatuchUp.player_accepting.id == currentUser?.id
+              ? findMatuchUp.player_inviting
+              : findMatuchUp.player_accepting;
+          }else if(openChat){
+            const findMatuchUp = response.data.results.find((item:any)=>item.id == openChat)
+            otherPlayer =
+            findMatuchUp.player_accepting.id == currentUser?.id
+              ? findMatuchUp.player_inviting
+              : findMatuchUp.player_accepting;
+          }else{
+            otherPlayer =
+          response.data.results[0].player_accepting.id == currentUser?.id
+              ? response.data.results[0].player_inviting
+              : response.data.results[0].player_accepting;
+          }
+            
+
             setMessageTo(otherPlayer)
       }
-      const matchUpId = localStorage.getItem('matchUpId')
       const Chatresponse = await axios(
         `https://strikem.site/api/matchups/${matchUpId?matchUpId:openChat?openChat:response.data.results[0].id}/chat/`,
         {
@@ -275,6 +295,11 @@ function Messenger() {
 
   const messagesList = useMemo(() => {
     return messages?.map((item: Message) => {
+      const otherPlayer =
+            item.player_accepting.id == currentUser?.id
+              ? item.player_inviting
+              : item.player_accepting;
+      console.log(item)
         return (
             <MessageItem
         key={item.id}
@@ -283,6 +308,7 @@ function Messenger() {
         onClick={() => {
           setOpenChat(item.id);
           messagesFetch(item.id);
+          setMessageTo(otherPlayer)
           window.innerWidth < 1024?setIsSwiped(false):null
         }}
       />
