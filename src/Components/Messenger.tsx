@@ -9,7 +9,7 @@ import { FiSend } from "react-icons/fi";
 import { useWebSocketContext } from "./Websocket";
 import ChatBubble from "./MessengerMemo/ChatBubble";
 import MessageItem from "./MessengerMemo/MessageItem";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSwipeable } from "react-swipeable";
 
 interface chatMessage {
@@ -82,6 +82,8 @@ interface Message {
 function Messenger() {
 
     const {sendJsonMessage, lastJsonMessage} = useWebSocketContext()
+
+    const naviagte = useNavigate()
 
     const handlers = useSwipeable({
       onSwipedLeft: () => {window.innerWidth < 1024?setIsSwiped(false):null},  // Slide out on left swipe
@@ -311,6 +313,11 @@ function Messenger() {
           setMessageTo(otherPlayer)
           window.innerWidth < 1024?setIsSwiped(false):null
         }}
+        goToProfile={(e)=>{
+          e.stopPropagation()
+          localStorage.setItem('matchUpId','')
+          naviagte(`/users/${otherPlayer.id}`)
+        }}
       />
         );
     });
@@ -382,7 +389,7 @@ const chatMessages = useMemo(() => {
           <img src={messageTo?.profile_image} className="h-[64px] aspect-square rounded-[50%] " alt="" />
         </div>
         <div className=" flex flex-col h-[100%] justify-evenly " >
-          <h1 className="text-[#fff] text-[16px] " >{messageTo?.user.username}</h1>
+          <h1 className="text-[#fff] text-[16px] cursor-pointer " onClick={()=>{naviagte(`/users/${messageTo.id}`);localStorage.setItem('matchUpId','')}} >{messageTo?.user.username}</h1>
           <h2 className="text-[#ffffff57] text-[16px] " >({messageTo?.user.first_name} {messageTo?.user.last_name})</h2>
         </div>
       </div>      

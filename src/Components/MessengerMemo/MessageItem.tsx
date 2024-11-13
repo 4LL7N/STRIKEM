@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // MessageItem.tsx
 import React from 'react';
 
@@ -49,9 +50,10 @@ interface MessageItemProps {
   item: Message;
   isSelected: boolean;
   onClick: () => void;
+  goToProfile: (e:any) => void;
 }
 
-const MessageItem = React.memo(({ item, isSelected, onClick }: MessageItemProps) => {
+const MessageItem = React.memo(({ item, isSelected, onClick,goToProfile }: MessageItemProps) => {
   const currentUser = JSON.parse(localStorage?.getItem("currentUser") || '{}');
   const otherPlayer = item.player_accepting.id === currentUser.id ? item.player_inviting : item.player_accepting;
 
@@ -63,7 +65,7 @@ const MessageItem = React.memo(({ item, isSelected, onClick }: MessageItemProps)
       <img src={otherPlayer.profile_image} className="h-[100%] aspect-square rounded-[50%]" alt="Profile" />
       <div className="flex flex-col gap-[10px] justify-center items-start">
         <div className="flex items-end">
-          <h1 className="text-[20px] text-[#fff] mr-[2px]">{otherPlayer.user.username}</h1>
+          <h1 className="text-[20px] text-[#fff] mr-[2px] cursor-pointer " onClick={goToProfile} >{otherPlayer.user.username}</h1>
           <h2 className="text-[14px] text-[#ffffff57]">
             ({otherPlayer.user.first_name} {otherPlayer.user.last_name})
           </h2>
