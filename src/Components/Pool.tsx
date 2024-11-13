@@ -218,11 +218,6 @@ function Pool() {
     setWhiteBoxHeight(whiteBoxHeight)
     setWhiteBoxWidth(whiteBoxWidth)
   });
-  setTimeout(()=>{
-
-    console.log(coords)
-    },6000)
-
   }, []);
 
   
@@ -231,19 +226,21 @@ function Pool() {
   function handleResize() {
     const sectionNumHorizontal = img.current?.naturalWidth / 1920;
     const sectionNumVertical = img.current?.naturalHeight / 1080;
-
+    if(overlayDiv.current){
     overlayDiv.current.style.width = `${
       imgContainer.current.getBoundingClientRect().width * sectionNumHorizontal
     }px`;
+  }
 
     const rect = img.current.getBoundingClientRect();
-
+  if(overlayDiv.current){
     overlayDiv.current.style.height = `${rect.height}px`;
     imgContainer.current.style.height = `${
       img.current.getBoundingClientRect().height / sectionNumVertical
     }px`;
     navigate("", true);
   }
+}
 
   function navigate(direction: string, resizing: boolean) {
     const sectionNumHorizontal = img.current?.naturalWidth / 1920;
@@ -417,13 +414,9 @@ function Pool() {
     );
   };
 
-  useEffect(()=>{
-    !isGeolocationAvailable?console.log('not available'):!isGeolocationEnabled?console.log('not available'):coords?console.log(coords):console.log('wait')
-  },[coords])
-
   return (
     <section className="flex flex-col items-center bg-[#10141E] w-[100%] min-h-screen  pb-[120px]">
-      <main className="w-[100%] ">
+      <main className="w-[100%] px-[16px] mt-[24px] lg:p-0 lg:mt-0 ">
         <div className="container-fluid max-w-[90%] p-0  ">
           <div className="row justify-content-center  ">
             <div className="col-lg-10 col-12 p-0 rounded-[10px] relative ">
@@ -692,12 +685,11 @@ function Pool() {
       <h1 className="text-[20px] text-[#fff] " >Geolocation is not enabled</h1>
     ) : coords ? (
       <div className="w-[100%]" >
-        <p className="text-[#fff]" >{coords.latitude};{coords.longitude}</p>
       <MapContainer
       center={[poolInfo?.latitude, poolInfo?.longitude]} 
       zoom={15}
-      // minZoom={13}            
-      // maxZoom={18}
+      minZoom={13}            
+      maxZoom={18}
       style={{ height: '400px', width: '100%' }}
     >
       <TileLayer

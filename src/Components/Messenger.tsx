@@ -256,7 +256,7 @@ function Messenger() {
 
 
   useEffect(()=>{
-    console.log(lastJsonMessage)
+    // console.log(lastJsonMessage)
 
     const user = {...currentUser.user}
     const chatContent = [...chat]

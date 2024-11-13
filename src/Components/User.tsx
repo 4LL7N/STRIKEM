@@ -63,7 +63,6 @@ function User() {
     const token = Cookies.get('token')
     
     const dataUrl = location.pathname.split('/')[2] == 'me'?"https://strikem.site/users/current-user":`https://strikem.site/api/players/${location.pathname.split('/')[2]}`
-    console.log(dataUrl)
     try {
       const response = await axios.get(
         dataUrl,
@@ -75,7 +74,6 @@ function User() {
         }
       );
       const data = response.data;
-      console.log(data)
       setUserInfo(data);
 
       const historyResponse = await axios.get(

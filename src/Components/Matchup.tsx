@@ -116,9 +116,7 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvatation }: { usersSear
 
     const handleCheckboxChange = (num: number) => {
       let newFilter = [...filter]
-      console.log(newFilter)
       newFilter = newFilter.includes(num)? newFilter.filter((item) => item !== num):[...newFilter,num]
-      console.log(newFilter)
       setFilter(newFilter);
       fetchPlayers(newFilter,isOn)
     };

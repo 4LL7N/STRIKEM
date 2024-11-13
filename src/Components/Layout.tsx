@@ -37,15 +37,12 @@ function Layout(props:{search:string,setSearch:(search:string)=>void,usersSearch
   
     const headerResize = () =>{
       const headerheight = window.innerHeight - 64
-      console.log(location.pathname.includes('users'))
       if(location.pathname.includes('users')  || location.pathname == '/messenger'  || location.pathname.includes('Pools') || location.pathname == '/matchmake'){
           setHeaderHeight(100)
       }else{
-        if(window.innerWidth >= 1024){
-          console.log(1024)
+        if(window.innerWidth >= 1024 && !location.pathname.includes('Pools') ){
           setHeaderHeight(headerheight)
         }else{
-          console.log('<'+1024)
           setHeaderHeight(100)
         }
       }
