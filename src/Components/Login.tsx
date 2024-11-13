@@ -27,7 +27,6 @@ function Login(props: { users: any; setLogOut: any }) {
   
   function HandleLogin() {
       
-      
       Fetch();
       setTimeout(()=>{
       logNavigation("/home");

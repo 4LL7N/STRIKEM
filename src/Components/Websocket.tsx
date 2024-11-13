@@ -19,6 +19,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   // Fetch the WebSocket token
   useEffect(() => {
+    console.log(token)
     const fetchWsToken = async () => {
       try {
         const response = await axios("https://strikem.site/users/auth_for_ws_connection/", {

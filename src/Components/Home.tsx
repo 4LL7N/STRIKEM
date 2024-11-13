@@ -39,20 +39,25 @@ function Home(props: {
     const [recommended,setRecommended] = useState<PoolHall[]>([])
 
 
+    useEffect(()=>{
+      // window.location.reload()
+    },[])
+
   const fetchData = useCallback(async () => {
     const token = Cookies.get('token');
+    console.log(token)
     try {
       const response = await axios.get(
         "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316",
-        {
-          headers: { Authorization: `JWT ${token}` },
-        }
+        // {
+        //   headers: { Authorization: `JWT ${token}` },
+        // }
       );
 
       setNearby(response.data);
 
       const PoolHousesResponse = await axios.get("https://strikem.site/api/poolhouses/", {
-        headers: { Authorization: `JWT ${token}` },
+        // headers: { Authorization: `JWT ${token}` },
       });
 
 

@@ -1,38 +1,32 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import axios from "axios";
-import { useEffect, useMemo, useState } from "react";
-import Cookies from 'js-cookie';
-import { useLocation } from "react-router-dom";
-import ProfileInfo from "./UsersMemo/ProfileInfo";
-import TabsNavigation from "./UsersMemo/TabsNavigation";
+import React from 'react'
+import History from './History';
 
 
 interface User {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  username:string;
-}
+    id: number;
+    email: string;
+    first_name: string;
+    last_name: string;
+    username:string;
+  }
 
-interface Profile {
-  games_played: number;
-  games_won: number;
-  id: number;
-  inviting_to_play: boolean;
-  opponents_met: number;
-  profile_image: string;
-  total_points: number;
-  user:User
-}
-
-  
-  interface Player {
+interface Player {
     user: User;
     profile_image: string;
     total_points: number;
   }
-  
+
+  interface Profile {
+    games_played: number;
+    games_won: number;
+    id: number;
+    inviting_to_play: boolean;
+    opponents_met: number;
+    profile_image: string;
+    total_points: number;
+    user:User
+  }
+
   interface Poolhouse {
     id: number;
     title: string;
@@ -50,82 +44,25 @@ interface Profile {
     timestamp: string; 
     poolhouse: Poolhouse;
   }
-  
 
-function User() {
-  const location = useLocation()
-  const [userInfo, setUserInfo] = useState<Profile|null>(null);
-  const [gameHistory,setGameHistory] = useState<GameResult[]>()
-  // const [winHistory,setWinHistory] = useState<GameResult[]>()
-  // const [loseHistory,setLoseHistory] = useState<GameResult[]>()
+  interface GameResult {
+    winner_player: Player;
+    loser_player: Player;
+    result_winner: number;
+    result_loser: number;
+    points_given: number;
+    penalty_points: number;
+    tie: boolean;
+    timestamp: string; 
+    poolhouse: Poolhouse;
+  }
 
-  const Fetch = async () => {
-    const token = Cookies.get('token')
-    
-    const dataUrl = location.pathname.split('/')[2] == 'me'?"https://strikem.site/users/current-user":`https://strikem.site/api/players/${location.pathname.split('/')[2]}`
-    console.log(dataUrl)
-    try {
-      const response = await axios.get(
-        dataUrl,
-        {
-          headers: {
-            Authorization:
-              `JWT ${token}`,
-          },
-        }
-      );
-      const data = response.data;
-      console.log(data)
-      setUserInfo(data);
 
-      const historyResponse = await axios.get(
-        `https://strikem.site/api/players/${data.id}/history/`,
-        {
-          headers: {
-            Authorization:
-              `JWT ${token}`,
-          },
-        }
-      );
-
-      const historyData = historyResponse.data
-      setGameHistory(historyData)
-      // const wins = historyData.filter((item:GameResult)=> {if(item.winner_player.user.first_name == data?.user.first_name && item.winner_player.user.last_name == data?.user.last_name)return item} )
-        // setWinHistory(wins)
-      // const loses = historyData.filter((item:GameResult)=> {if(item.loser_player.user.first_name == data?.user.first_name && item.loser_player.user.last_name == data?.user.last_name)return item} )      
-        // setLoseHistory(loses)
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const winHistory = useMemo(
-    () => gameHistory?.filter(
-      (item) => item.winner_player.user.id === userInfo?.user.id
-    ),
-    [gameHistory, userInfo]
-  );
-
-  const loseHistory = useMemo(
-    () => gameHistory?.filter(
-      (item) => item.loser_player.user.id === userInfo?.user.id
-    ),
-    [gameHistory, userInfo]
-  );
-
-  useEffect(() => {
-    Fetch();
-  }, []);
-
-  return (
-    <section className="flex flex-col items-center bg-[#10141E] min-w-[100%] min-h-screen mt-[24px] md:pb-[120px]">
-      <main className="w-[100%] flex flex-col justify-center">
-        <ProfileInfo userInfo={userInfo} />
-        <TabsNavigation gameHistory={gameHistory} winHistory={winHistory} loseHistory={loseHistory} userInfo={userInfo}/>
-        {/* <div className="mt-[48px] max-w-[100%] " >
-          <nav>
-            <div className="nav nav-tabs" id="nav-tab" role="tablist">
-              <button
+const TabsNavigation = React.memo(({ gameHistory, winHistory, loseHistory, userInfo }:{gameHistory:GameResult[]|undefined, winHistory:GameResult[]|undefined, loseHistory:GameResult[]|undefined, userInfo:Profile|null}) => (
+    <div className="mt-[48px] max-w-[100%]">
+      <nav>
+        <div className="nav nav-tabs" id="nav-tab" role="tablist">
+        <button
                 className="nav-link active  "
                 id="nav-home-tab"
                 data-bs-toggle="tab"
@@ -161,9 +98,10 @@ function User() {
               >
                 Loses
               </button>
-            </div>
-          </nav> */}
-          {/* <div className="tab-content" id="nav-tabContent">
+        </div>
+      </nav>
+      <div className="tab-content" id="nav-tabContent">
+      <div className="tab-content" id="nav-tabContent">
             <div
               className="tab-pane fade show active px-2 "
               id="nav-home"
@@ -285,11 +223,9 @@ function User() {
                 )
               })}
             </div>
-          </div> */}
-        {/* </div> */}
-      </main>
-    </section>
-  );
-}
+          </div>
+      </div>
+    </div>
+  ));
 
-export default User;
+export default TabsNavigation
