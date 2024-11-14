@@ -395,7 +395,7 @@ function Pool() {
           <img
             ref={mapImage}
             className="max-w-[100%] max-h-[100%] "
-            src="/images/test2.jpg"
+            src="/public/images/testPool.jpg"
             alt=""
           />
 
@@ -537,7 +537,7 @@ function Pool() {
 
                     <img
                       ref={img}
-                      src="/images/test2.jpg"
+                      src="/public/images/testPool.jpg"
                       id="largeImage"
                       className="img-fluid"
                     />
