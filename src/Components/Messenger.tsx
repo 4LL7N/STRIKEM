@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Cookies from "js-cookie";
 
 import "./CSS/messenger.css";
@@ -94,6 +94,7 @@ function Messenger() {
 
     const [isSwiped, setIsSwiped] = useState(false);
 
+    const messageChat = useRef<any>()
 
     const currentUser = useMemo(() => {
       return localStorage.getItem("currentUser") 
@@ -159,7 +160,8 @@ function Messenger() {
           },
         }
       );
-      setChat(Chatresponse.data.results)
+      const chatData = Chatresponse.data.results.reverse()
+      setChat(chatData)
       localStorage.setItem('matchUpId','')
     }
     } catch (err) {
@@ -173,7 +175,8 @@ function Messenger() {
             `https://strikem.site/api/matchups/${id}/chat/`,
             { headers: { Authorization: `JWT ${token}` } }
         );
-        setChat(Chatresponse.data.results);
+        const chatData = Chatresponse.data.results.reverse()
+        setChat(chatData);
     } catch (err) {
         console.log(err);
     }
@@ -199,7 +202,7 @@ function Messenger() {
 
   const sendMessage = () =>{
     
-    if(currentUser && chatInput.current && chatInput.current.value){
+    if(currentUser && chatInput.current && chatInput.current.value && chatInput.current.value.trim()){
     sendJsonMessage({
         'action': 'matchup',
        'message': chatInput.current.value,
@@ -228,6 +231,8 @@ function Messenger() {
     Fetch();
     const messengerBox = document.getElementById("messengerBox")
     
+    
+
     if(window.innerWidth >= 1024){
     setTimeout(() => {
       if(messengerBox)
@@ -274,6 +279,14 @@ function Messenger() {
         }px`;
       }})
   }
+  if(messageChat.current){
+    messageChat.current.scrollTop = messageChat.current.scrollHeight
+}
+  }, []);
+  useLayoutEffect(() => {
+    if (messageChat.current) {
+      messageChat.current.scrollTop = messageChat.current.scrollHeight;
+    }
   }, []);
 
 
@@ -335,23 +348,23 @@ const chatMessages = useMemo(() => {
         if (chat[i + 1] && chat[i]?.sender.id === chat[i + 1]?.sender.id) {
             rounded = chat[i - 1] && chat[i]?.sender.id === chat[i - 1]?.sender.id
                 ? "rounded-[40px_0px_0px_40px]"
-                : "rounded-[40px_40px_0px_40px]";
+                : "rounded-[40px_0px_40px_40px]";
         } else if (chat[i - 1] && chat[i].sender?.id === chat[i - 1]?.sender.id) {
-            rounded = "rounded-[40px_0px_40px_40px]";
+            rounded = "rounded-[40px_40px_0px_40px]";
         }
         }else{
             if (chat[i + 1] && chat[i]?.sender.id === chat[i + 1]?.sender.id) {
                 rounded = chat[i - 1] && chat[i]?.sender.id === chat[i - 1]?.sender.id
                     ? "rounded-[0px_40px_40px_0px]"
-                    : "rounded-[40px_40px_40px_0px]";
+                    : "rounded-[0px_40px_40px_40px]";
             } else if (chat[i - 1] && chat[i].sender?.id === chat[i - 1]?.sender.id) {
-                rounded = "rounded-[0px_40px_40px_40px]";
+                rounded = "rounded-[40px_40px_40px_0px]";
             }
         }
 
-        const margin = i === 0
+        const margin = i === chat.length
             ? "mt-[0px]"
-            : chat[i - 1] && chat[i]?.sender.id === chat[i - 1]?.sender.id
+            : chat[i + 1] && chat[i]?.sender.id === chat[i + 1]?.sender.id
                 ? "mt-[2px]"
                 : "mt-[7px]";
 
@@ -394,7 +407,7 @@ const chatMessages = useMemo(() => {
         </div>
       </div>      
       <main className="flex flex-col w-[100%] lg:w-[65%] overflow-hidden p-[10px] h-[100%] gap-[10px]">
-        <section className="flex flex-col flex-grow  w-[100%] h-[500px] relative overflow-y-auto chatScroll " >
+        <section ref={messageChat} className="flex flex-col-reverse flex-grow  w-[100%] h-[500px] relative overflow-y-auto chatScroll " >
             {chatMessages}
         </section>
         <div className="flex gap-[1%]  " >
