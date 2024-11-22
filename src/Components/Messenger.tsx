@@ -394,7 +394,7 @@ const chatMessages = useMemo(() => {
         </div>
       </div>      
       <main className="flex flex-col w-[100%] lg:w-[65%] overflow-hidden p-[10px] h-[100%] gap-[10px]">
-        <section className="flex flex-col flex-grow justify-end w-[100%] h-[100%]  relative overflow-y-auto " >
+        <section className="flex flex-col flex-grow  w-[100%] h-[500px] relative overflow-y-auto chatScroll " >
             {chatMessages}
         </section>
         <div className="flex gap-[1%]  " >

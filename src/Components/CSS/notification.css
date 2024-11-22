@@ -1,14 +1,12 @@
-.chatScroll::-webkit-scrollbar{
+.notificationsScroll::-webkit-scrollbar{
     appearance: none;
-    width: 10px;
+    width: 5px;
     margin-top: 10px;
   }
 
 
-.chatScroll::-webkit-scrollbar-thumb{
+.notificationsScroll::-webkit-scrollbar-thumb{
     height:3px;
     border-radius: 5px;
     background-color: #243257d5;
   }
-
-
