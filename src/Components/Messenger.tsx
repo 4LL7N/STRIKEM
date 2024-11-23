@@ -10,7 +10,7 @@ import { useWebSocketContext } from "./Websocket";
 import ChatBubble from "./MessengerMemo/ChatBubble";
 import MessageItem from "./MessengerMemo/MessageItem";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSwipeable } from "react-swipeable";
+import { FaArrowLeft } from "react-icons/fa6";
 
 interface chatMessage {
     after_outdated?: boolean;
@@ -85,12 +85,12 @@ function Messenger() {
 
     const naviagte = useNavigate()
 
-    const handlers = useSwipeable({
-      onSwipedLeft: () => {window.innerWidth < 1024?setIsSwiped(false):null},  // Slide out on left swipe
-      onSwipedRight: () => {window.innerWidth < 1024?setIsSwiped(true):null},  // Slide in on right swipe
-      trackTouch: true,
-      trackMouse: false,
-    });
+    // const handlers = useSwipeable({
+    //   onSwipedLeft: () => {window.innerWidth < 1024?setIsSwiped(false):null},  // Slide out on left swipe
+    //   onSwipedRight: () => {window.innerWidth < 1024?setIsSwiped(true):null},  // Slide in on right swipe
+    //   trackTouch: true,
+    //   trackMouse: false,
+    // });
 
     const [isSwiped, setIsSwiped] = useState(false);
 
@@ -386,7 +386,6 @@ const chatMessages = useMemo(() => {
   return (
     <section
       // ref={messengerRef}
-      {...handlers}
       id="messengerBox"
       className="lg:flex-grow flex flex-col lg:flex-row m-[10px] w-[100%] border-[1px] border-[#243257d5]  rounded-[20px] overflow-hidden relative "
     >
@@ -400,13 +399,18 @@ const chatMessages = useMemo(() => {
       <div className="lg:flex lg:flex-col hidden w-[35%] border-r border-r-[#243257d5]  h-[100%] overflow-y-auto chatScroll ">
         {messagesList}
       </div>
-      <div className="flex gap-[10px] w-[100%] h-[84px] border-b-[1px] border-b-[#243257d5] p-[10px] lg:hidden " >
+      <div className="flex justify-between items-center w-[100%] h-[84px] border-b-[1px] border-b-[#243257d5] p-[10px] lg:hidden " >
+          <div className="flex items-center text-[#fff] h-full  " >
+          <FaArrowLeft style={{color:'white',width:'32px',height:'32px'}} onClick={()=>{setIsSwiped((i)=>!i)}} />
+          </div>
+        <div className="flex gap-[10px] h-[100%] " >
+        <div className=" flex flex-col h-[100%] justify-evenly items-end " >
+          <h1 className="text-[#fff] text-[16px] cursor-pointer " onClick={()=>{naviagte(`/users/${messageTo.id}`);localStorage.setItem('matchUpId','')}} >{messageTo?.user.username}</h1>
+          <h2 className="text-[#ffffff57] text-[16px] " >({messageTo?.user.first_name} {messageTo?.user.last_name})</h2>
+        </div>
         <div className="h-[100%]" >
           <img src={messageTo?.profile_image} className="h-[64px] aspect-square rounded-[50%] " alt="" />
         </div>
-        <div className=" flex flex-col h-[100%] justify-evenly " >
-          <h1 className="text-[#fff] text-[16px] cursor-pointer " onClick={()=>{naviagte(`/users/${messageTo.id}`);localStorage.setItem('matchUpId','')}} >{messageTo?.user.username}</h1>
-          <h2 className="text-[#ffffff57] text-[16px] " >({messageTo?.user.first_name} {messageTo?.user.last_name})</h2>
         </div>
       </div>      
       <main className="flex flex-col w-[100%] lg:w-[65%] overflow-hidden p-[10px] h-[100%] gap-[10px]">
