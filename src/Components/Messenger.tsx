@@ -399,17 +399,17 @@ const chatMessages = useMemo(() => {
       <div className="lg:flex lg:flex-col hidden w-[35%] border-r border-r-[#243257d5]  h-[100%] overflow-y-auto chatScroll ">
         {messagesList}
       </div>
-      <div className="flex justify-between items-center w-[100%] h-[84px] border-b-[1px] border-b-[#243257d5] p-[10px] lg:hidden " >
+      <div className="flex justify-between items-center w-[100%] h-[84px] md:h-[128px] border-b-[1px] border-b-[#243257d5] p-[10px] md:p-[16px] lg:hidden " >
           <div className="flex items-center text-[#fff] h-full  " >
-          <FaArrowLeft style={{color:'white',width:'32px',height:'32px'}} onClick={()=>{setIsSwiped((i)=>!i)}} />
+          <FaArrowLeft style={{color:'white'}} className="w-[32px] h-[32px] md:w-[40px] md:h-[40px]" onClick={()=>{setIsSwiped((i)=>!i)}} />
           </div>
         <div className="flex gap-[10px] h-[100%] " >
         <div className=" flex flex-col h-[100%] justify-evenly items-end " >
-          <h1 className="text-[#fff] text-[16px] cursor-pointer " onClick={()=>{naviagte(`/users/${messageTo.id}`);localStorage.setItem('matchUpId','')}} >{messageTo?.user.username}</h1>
-          <h2 className="text-[#ffffff57] text-[16px] " >({messageTo?.user.first_name} {messageTo?.user.last_name})</h2>
+          <h1 className="text-[#fff] text-[16px] md:text-[24px] cursor-pointer " onClick={()=>{naviagte(`/users/${messageTo.id}`);localStorage.setItem('matchUpId','')}} >{messageTo?.user.username}</h1>
+          <h2 className="text-[#ffffff57] text-[16px] md:text-[24px] " >({messageTo?.user.first_name} {messageTo?.user.last_name})</h2>
         </div>
         <div className="h-[100%]" >
-          <img src={messageTo?.profile_image} className="h-[64px] aspect-square rounded-[50%] " alt="" />
+          <img src={messageTo?.profile_image} className="h-[64px] md:h-[96px] aspect-square rounded-[50%] " alt="" />
         </div>
         </div>
       </div>      
