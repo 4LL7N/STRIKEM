@@ -11,9 +11,9 @@ interface User {
 
 interface Sender {
     id?: number;
-    profile_image: string;
-    total_points: number;
-    user: User;
+    profile_image?: string;
+    total_points?: number;
+    user?: User;
   }
 
 interface chatMessage {

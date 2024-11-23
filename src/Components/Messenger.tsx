@@ -22,9 +22,9 @@ interface chatMessage {
   
   interface Sender {
     id?: number;
-    profile_image: string;
-    total_points: number;
-    user: User;
+    profile_image?: string;
+    total_points?: number;
+    user?: User;
   }
   
   interface User {
@@ -160,7 +160,9 @@ function Messenger() {
           },
         }
       );
-      const chatData = Chatresponse.data.results.reverse()
+      const chatData = Chatresponse.data.results
+      console.log(chatData)
+
       setChat(chatData)
       localStorage.setItem('matchUpId','')
     }
@@ -185,7 +187,6 @@ function Messenger() {
   const getFormattedTime = useMemo(() => {
     const date = new Date();
   
-    // Format date to `YYYY-MM-DDTHH:MM:SS.ssssss`
     const formattedDate = date.toISOString().slice(0, -1); // Remove trailing "Z"
   
     // Get timezone offset in `+HH:MM` format
@@ -203,6 +204,7 @@ function Messenger() {
   const sendMessage = () =>{
     
     if(currentUser && chatInput.current && chatInput.current.value && chatInput.current.value.trim()){
+      console.log('senddddd')
     sendJsonMessage({
         'action': 'matchup',
        'message': chatInput.current.value,
@@ -292,20 +294,17 @@ function Messenger() {
 
   useEffect(()=>{
     // console.log(lastJsonMessage)
-
-    const user = {...currentUser.user}
-    const chatContent = [...chat]
-    chatContent.push({
-        body:chatInput.current.value,
+    if(lastJsonMessage){
+      const lastMessage = {
+        body:lastJsonMessage.message,
         sender:{
-            id:currentUser.id,
-            profile_image:currentUser.profile_image,
-            total_points:currentUser.total_points,
-            user,
+          id:lastJsonMessage.sender_player_id,
         },
-        time_sent:getFormattedTime
-    })
+        time_sent:lastJsonMessage?.getFormattedTime
+      }
+      const chatContent = [lastMessage,...chat]
     setChat(chatContent)
+  }
   },[lastJsonMessage])
 
   const messagesList = useMemo(() => {
@@ -314,7 +313,7 @@ function Messenger() {
             item.player_accepting.id == currentUser?.id
               ? item.player_inviting
               : item.player_accepting;
-      console.log(item)
+      // console.log(item)
         return (
             <MessageItem
         key={item.id}
@@ -325,6 +324,10 @@ function Messenger() {
           messagesFetch(item.id);
           setMessageTo(otherPlayer)
           window.innerWidth < 1024?setIsSwiped(false):null
+          sendJsonMessage({
+            'action': 'change_matchup',
+           'matchup_id': item.id,
+        })
         }}
         goToProfile={(e)=>{
           e.stopPropagation()
