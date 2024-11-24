@@ -60,13 +60,13 @@ const MessageItem = React.memo(({ item, isSelected, onClick,goToProfile }: Messa
   return (
     <div
       onClick={onClick}
-      className={`flex h-[20%] p-[20px] gap-[20px] hover:bg-[#161d2f8e] ${isSelected ? "bg-[#0a173a8e]" : ""}`}
+      className={`flex h-[124px] lg:h-[132px] p-[20px] gap-[20px] hover:bg-[#161d2f8e] ${isSelected ? "bg-[#0a173a8e]" : ""}`}
     >
       <img src={otherPlayer.profile_image} className="h-[100%] aspect-square rounded-[50%]" alt="Profile" />
       <div className="flex flex-col gap-[10px] justify-center items-start">
         <div className="flex items-end">
           <h1 className="text-[20px] md:text-[28px] text-[#fff] mr-[2px] cursor-pointer " onClick={goToProfile} >{otherPlayer.user.username}</h1>
-          <h2 className="text-[14px] md:text-[22px] text-[#ffffff57]">
+          <h2 className="text-[14px]  text-[#ffffff57]">
             ({otherPlayer.user.first_name} {otherPlayer.user.last_name})
           </h2>
         </div>
