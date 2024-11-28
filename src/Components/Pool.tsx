@@ -232,7 +232,7 @@ function Pool() {
     }px`;
   }
 
-    const rect = img.current.getBoundingClientRect();
+    const rect = img.current?.getBoundingClientRect();
   if(overlayDiv.current){
     overlayDiv.current.style.height = `${rect.height}px`;
     imgContainer.current.style.height = `${

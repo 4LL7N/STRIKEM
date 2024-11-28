@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -39,6 +39,26 @@ interface Message {
   extra: string;
 }
 
+interface User {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  username: string;
+}
+
+interface Player {
+  id: number;
+  games_played: number;
+  games_won: number;
+  inviting_to_play: boolean;
+  opponents_met: number;
+  profile_image: string;
+  total_points: number;
+  user: User;
+}
+
+
 function Layout(props: {
   search: string;
   setSearch: (search: string) => void;
@@ -55,15 +75,13 @@ function Layout(props: {
 
   const [notificationsOpen, setNotificationsOpen] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<Message[]>();
+  const [unReadNotifications,setUnReadNotifications] = useState<number>()
 
-  const currentUser = useMemo(() => {
-    return localStorage.getItem("currentUser")
-      ? JSON.parse(localStorage.getItem("currentUser")!)
-      : null;
-  }, []);
+  const [currentUser,setCurrentUser] = useState<Player>()
 
   const header = useRef<any>();
   const [contentW, setContentW] = useState<string>();
+  const [contentH, setContentH] = useState<string>()
   const [headerHeight, setHeaderHeight] = useState<number>(100);
 
   const timeAgo = useCallback((timestamp: string): string => {
@@ -99,9 +117,26 @@ function Layout(props: {
   //     headerResize()
   //   })
   // };
+  const FetchCurrentUser = async ()=>{
+    const token = Cookies.get('token');
 
+    try{
+  const currentUserResponse = await axios.get(
+    "https://strikem.site/users/current-user",
+    {
+      headers: { Authorization: `JWT ${token}` },
+    }
+  );
+  console.log(currentUserResponse.data)
+  setCurrentUser(currentUserResponse.data)
+  localStorage.setItem('currentUser', JSON.stringify(currentUserResponse.data));
+  }catch(err){
+    console.error(err)
+  }
+}
   const updateLayout = useCallback(() => {
     const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
     const isSpecialPage =
       location.pathname.includes("users") ||
       location.pathname === "/messenger" ||
@@ -113,6 +148,19 @@ function Layout(props: {
         ? `${viewportWidth - 167}px`
         : "100%"
     );
+
+    if(viewportWidth < 768){
+      
+      setContentH(`${viewportHeight - 77}px`)
+      console.log(`${viewportHeight - 57}px`)
+    }else if(viewportWidth < 1024){
+      setContentH(`${viewportHeight - 137}px`)
+      console.log(`${viewportHeight - 137}px`)
+    }else{
+      setContentH(`${viewportHeight - 204}px`)
+    }
+
+    `${window.innerHeight - 137}px`
     setHeaderHeight(
       isSpecialPage || viewportWidth < 1024 ? 100 : window.innerHeight - 64
     );
@@ -151,11 +199,26 @@ function Layout(props: {
         }
       );
       setNotifications(response.data.results);
-      console.log(response.data.results);
+
+      
     } catch (err) {
       console.error(err);
     }
   }, []);
+
+  const FetchUnreadNotifications = useCallback(async()=>{
+    const token = Cookies.get("token");
+    try{
+      const unreadResponse = await axios.get("https://strikem.site/api/unread-matchups/",
+        {
+          headers: { Authorization: `JWT ${token}` },
+        })
+        setUnReadNotifications(unreadResponse.data.unread)
+      console.log(unreadResponse.data.unread);
+    }catch(err){
+      console.error(err)
+    }
+  },[])
 
   const goProfile = (e: any, id: number) => {
     setNotificationsOpen(false);
@@ -166,11 +229,14 @@ function Layout(props: {
   useEffect(() => {
     // divSize();
     // headerResize()
+    FetchCurrentUser()
     updateLayout();
     window.addEventListener("resize", () => {
       console.log("windown eventlistener");
       headerResize();
+      updateLayout()
     });
+    FetchUnreadNotifications()
   }, []);
 
   useEffect(() => {
@@ -368,7 +434,7 @@ function Layout(props: {
             />
             <img
               className="w-[24px] h-[24px] md:w-[32px] md:h-[32px] lg:min-w-[40px] lg:min-h-[40px] rounded-[50%] "
-              src={currentUser.profile_image}
+              src={currentUser?.profile_image}
               onClick={() => {
                 navigate("/users/me");
                 localStorage.setItem("matchUpId", "");
@@ -402,28 +468,6 @@ function Layout(props: {
                     return "contacted you";
                 }
               };
-              // const timeAgo = (timestamp: string): string => {
-              //   const now = new Date();
-              //   const past = new Date(timestamp);
-              //   const diffInMs = now.getTime() - past.getTime();
-
-              //   const minutes = Math.floor(diffInMs / 1000 / 60);
-              //   const hours = Math.floor(minutes / 60);
-              //   const days = Math.floor(hours / 24);
-
-              //   if (days > 0) return `${days}d`;
-              //   if (hours > 0) return `${hours}h`;
-              //   return `${minutes}m`;
-              // };
-
-              // const body = (body:string) : string =>{
-              //   if(body?.length > 22){
-              //     return `${body.slice(0,22)}...`
-              //   }else{
-              //     return body
-              //   }
-              // }
-              console.log(item);
 
               return (
                 <div
@@ -485,10 +529,10 @@ function Layout(props: {
           style={
             location.pathname == "/messenger"
               ? window.innerWidth < 768
-                ? { width: contentW, maxHeight: window.innerHeight - 57 }
+                ? { width: contentW, height: contentH }
                 : window.innerWidth < 1024
-                ? { width: contentW, maxHeight: window.innerHeight - 137 }
-                : { width: contentW }
+                ? { width: contentW, height: contentH } // content fix
+                : { width: contentW, height:'100%' }
               : { width: contentW }
           }
           className={` ${

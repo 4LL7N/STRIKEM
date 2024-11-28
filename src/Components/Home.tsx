@@ -5,7 +5,6 @@ import { useCallback, useEffect
   , useMemo, useState
  } from "react";
 import {  useNavigate } from "react-router-dom";
-import Cookies from 'js-cookie';
 import './CSS/home.css'
 
 
@@ -44,8 +43,6 @@ function Home(props: {
     },[])
 
   const fetchData = useCallback(async () => {
-    const token = Cookies.get('token');
-    console.log(token)
     try {
       const response = await axios.get(
         "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316",
@@ -63,14 +60,7 @@ function Home(props: {
 
       setRecommended(PoolHousesResponse.data);
 
-      const currentUserResponse = await axios.get(
-        "https://strikem.site/users/current-user",
-        {
-          headers: { Authorization: `JWT ${token}` },
-        }
-      );
-
-      localStorage.setItem('currentUser', JSON.stringify(currentUserResponse.data));
+     
 
 
     } catch (err) {

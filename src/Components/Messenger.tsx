@@ -83,6 +83,7 @@ interface Message {
       username: string;
     };
   };
+  read:boolean
 }
 
 function Messenger() {
@@ -276,6 +277,7 @@ function Messenger() {
   useEffect(() => {
     if (lastJsonMessage) {
       if(lastJsonMessage.matchup_id == openChat ){
+        console.log(lastJsonMessage," lastJsonMessage")
       const lastMessage = {
         body: lastJsonMessage.message,
         sender: {
@@ -286,14 +288,31 @@ function Messenger() {
       const chatContent = [lastMessage, ...chat];
       setChat(chatContent);
 
-    }else{
-      console.log(lastJsonMessage,' lastJsonMessage')
-      console.log(messages,' messages')
       if(!messages) return
+      console.log(messages,' messages 2')
       const MessagesList:any = [...messages]
       console.log(MessagesList,' 1')
       for(let i=0;i<MessagesList?.length;i++){
         if(MessagesList[i].id == lastJsonMessage.matchup_id){
+          // console.log(MessagesList.splice(i,1))
+          const [chat] = MessagesList.splice(i,1)
+          chat.last_message.body = lastJsonMessage.message
+          console.log(chat)
+          MessagesList.splice(0,0,chat)
+        }
+      }
+      setMessages(MessagesList)
+
+    }else{
+      console.log(lastJsonMessage,' lastJsonMessage')
+      console.log(messages,' messages')
+      if(!messages) return
+      console.log(messages,' messages 2')
+      const MessagesList:any = [...messages]
+      console.log(MessagesList,' 1')
+      for(let i=0;i<MessagesList?.length;i++){
+        if(MessagesList[i].id == lastJsonMessage.matchup_id){
+          // console.log(MessagesList.splice(i,1))
           const [chat] = MessagesList.splice(i,1)
           chat.last_message.body = lastJsonMessage.message
           console.log(chat)
@@ -306,12 +325,14 @@ function Messenger() {
   }, [lastJsonMessage]);
 
   const messagesList = useMemo(() => {
+    console.log(messages)
     return messages?.map((item: Message) => {
       const otherPlayer =
         item.player_accepting?.id == currentUser?.id
           ? item.player_inviting
           : item.player_accepting;
       // console.log(item)
+
       return (
         <MessageItem
           key={item.id}
@@ -370,12 +391,16 @@ function Messenger() {
       }
 
       const margin =
-        i === chat.length
+        i === (chat.length -1)
           ? "mt-[0px]"
           : chat[i + 1] && chat[i]?.sender.id === chat[i + 1]?.sender.id
           ? "mt-[2px]"
           : "mt-[7px]";
-
+          console.log(chat)
+      console.log(i === chat.length,' i === chat.length')
+      console.log(chat[i],' chat[i]')
+      console.log(chat[i + 1],"  chat[i + 1]")
+      console.log(chat[i]?.sender.id === chat[i + 1]?.sender.id," chat[i]?.sender.id === chat[i + 1]?.sender.id")
       return (
         <ChatBubble
           key={i}
@@ -439,7 +464,7 @@ function Messenger() {
       </div>
       <main
         ref={chatBox}
-        className="flex flex-col w-[100%] lg:w-[65%] overflow-hidden p-[10px] max-h-[100%] gap-[10px]"
+        className="flex flex-col w-[100%] lg:w-[65%] overflow-hidden p-[10px] h-[100%] gap-[10px]"
       >
         <section
           ref={messageChat}
