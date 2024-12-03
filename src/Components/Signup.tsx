@@ -1,31 +1,39 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import axios from "axios";
 import { useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 
-function Signup({setSignUpBox}:any) {
-  const navigation = useNavigate();
+function Signup({setSignUpBox,setLoginBox}:any) {
 
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
 
+  const userName = useRef<any>(null)
+  const firstName = useRef<any>(null)
+  const lastName = useRef<any>(null)
+
   const email = useRef<any>(null); // type error
   const password = useRef<any>(null);
-  const repPassword = useRef<any>(null);
+  // const repPassword = useRef<any>(null);
 
-  const [emptyEmail, setEmptyEmail] = useState(false);
-  const [emptyPassword, setEmptyPassword] = useState(false);
+  const [emptyUsername, setEmptyUsername] = useState<boolean>(false);
+  const [emptyEmail, setEmptyEmail] = useState<boolean>(false);
+  const [emptyPassword, setEmptyPassword] = useState<boolean>(false);
   // const [repemptyPassword, setrepEmptyPassword] = useState(false);
-  const [emailerr, setEmailerr] = useState(false);
-  // const [repPassErr, setRepPassErr] = useState(false);
-  const [usedEmail, setUsedEmail] = useState(false)
+  const [emptyFirstName, setEmptyFirstName] = useState<boolean>(false);
+  const [emptyLastName, setEmptyLastName] = useState<boolean>(false);
 
+  const [emailerr, setEmailerr] = useState<boolean>(false);
+  const [axiosError,setAxiosError] = useState<string>('')
+  // const [repPassErr, setRepPassErr] = useState(false);
+
+  let emptyUsernameChk = false;
+  let emptyFirstNameChk = false;
+  let emptyLastNameChk = false;
   let emptyEmailChk = false;
   let emptyPasswordChk = false;
-  let repEmptyPasswordChk = false;
   let emailErrChk = false;
-  let repPassErrChk = false;
-  const usedEmailChk = false
 
   function HandleSignup() {
     // console.log(email?.current.value);
@@ -57,6 +65,30 @@ function Signup({setSignUpBox}:any) {
       emptyPasswordChk = false;
     }
 
+    if (!userName.current?.value) {
+      setEmptyUsername(true);
+      emptyUsernameChk = true;
+    } else {
+      setEmptyUsername(false);
+      emptyUsernameChk = false;
+    }
+    
+    if (!firstName.current?.value) {
+      setEmptyFirstName(true);
+      emptyFirstNameChk = true;
+    } else {
+      setEmptyFirstName(false);
+      emptyFirstNameChk = false;
+    }
+
+    if (!lastName.current?.value) {
+      setEmptyLastName(true);
+      emptyLastNameChk = true;
+    } else {
+      setEmptyLastName(false);
+      emptyLastNameChk = false;
+    }
+
     // if (!repPassword.current?.value) {
     //   setrepEmptyPassword(true);
     //   repEmptyPasswordChk = true;
@@ -65,36 +97,86 @@ function Signup({setSignUpBox}:any) {
     //   repEmptyPasswordChk = false;
     // }
 
-    if (
-      password.current &&
-      repPassword.current &&
-      password.current.value !== repPassword.current.value
-    ) {
-      setRepPassErr(true);
-      repPassErrChk = true;
-    } else {
-      setRepPassErr(false);
-      repPassErrChk = false;
-    }
+    // if (
+    //   password.current &&
+    //   repPassword.current &&
+    //   password.current.value !== repPassword.current.value
+    // ) {
+    //   setRepPassErr(true);
+    //   repPassErrChk = true;
+    // } else {
+    //   setRepPassErr(false);
+    //   repPassErrChk = false;
+    // }
     
 
-   
+    if (
+      !emptyUsernameChk &&
+      !emailErrChk &&
+      // !repPassErrChk &&
+      !emptyEmailChk &&
+      !emptyPasswordChk &&
+      !emptyFirstNameChk &&
+      !emptyLastNameChk
+      // !repEmptyPasswordChk &&
+    ) {
+      signUp()
+    }
     
-    // Switch();
+    Switch();
   }
   function Switch() {
     if (
+      !emptyUsernameChk &&
       !emailErrChk &&
-      !repPassErrChk &&
+      // !repPassErrChk &&
       !emptyEmailChk &&
       !emptyPasswordChk &&
-      !repEmptyPasswordChk &&
-      !usedEmailChk
+      !emptyFirstNameChk &&
+      !emptyLastNameChk
+      // !repEmptyPasswordChk &&
     ) {
-      setUsedEmail(false)
-       navigation("/login")
+       console.log('register')
     }
   }
+
+  const signUp = async () => {
+    try {
+      const response = await axios.post(
+        "https://strikem.site/auth/users/",
+        {
+          username: userName.current?.value,
+          password: password.current?.value,
+          email:email.current?.value,
+          first_name:firstName.current?.value,
+          last_name:lastName.current?.value
+        }
+      );
+      console.log(response)
+      setEmptyEmail(false);
+      setEmailerr(false);
+      setEmptyPassword(false);
+      setEmptyUsername(false);
+      setEmptyFirstName(false);
+      setEmptyLastName(false);
+
+      password.current.value = ''
+      userName.current.value = ''
+      email.current.value = ''
+      firstName.current.value = ''
+      lastName.current.value = ''
+      setSignUpBox(false)
+      setLoginBox(true)
+
+
+    } catch (err:any) {  
+      const errorArr = Object.values(err?.response.data)
+      let error:string = '' ;
+      errorArr.forEach((item)=>{error += item})
+      setAxiosError(error)  
+      console.log(errorArr);
+    }
+  };
 
   return (
     <>
@@ -108,7 +190,7 @@ function Signup({setSignUpBox}:any) {
         </div>
         <div
           className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
-            emptyEmail || emailerr || usedEmail ? "border-b-[#FC4747]" : null
+            emptyUsername ? "border-b-[#FC4747]" : null
           } `}
         >
           <input
@@ -118,12 +200,10 @@ function Signup({setSignUpBox}:any) {
             id="SignUpUsername"
             placeholder="Username"
             autoComplete="off"
-            // ref={email}
+            ref={userName}
           />
           <a className="text-[13px] text-[#FC4747] font-light">
-            {emailerr
-              ? "wrong Email form"
-              : emptyEmail
+            {emptyUsername
               ? "Can’t be empty"
               : null}
           </a>
@@ -131,7 +211,7 @@ function Signup({setSignUpBox}:any) {
 
         <div
           className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
-            emptyEmail || emailerr || usedEmail ? "border-b-[#FC4747]" : null
+            emptyEmail || emailerr ? "border-b-[#FC4747]" : null
           } `}
         >
           <input
@@ -193,7 +273,7 @@ function Signup({setSignUpBox}:any) {
         </div> */}
         <div
           className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
-            emptyEmail || emailerr || usedEmail ? "border-b-[#FC4747]" : null
+            emptyFirstName ? "border-b-[#FC4747]" : null
           } `}
         >
           <input
@@ -203,19 +283,17 @@ function Signup({setSignUpBox}:any) {
             id="FirstName"
             placeholder="First name"
             autoComplete="off"
-            // ref={email}
+            ref={firstName}
           />
           <a className="text-[13px] text-[#FC4747] font-light">
-            {emailerr
-              ? "wrong Email form"
-              : emptyEmail
+            {emptyFirstName
               ? "Can’t be empty"
               : null}
           </a>
         </div>
         <div
-          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
-            emptyEmail || emailerr || usedEmail ? "border-b-[#FC4747]" : null
+          className={` relative w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
+            emptyLastName ? "border-b-[#FC4747]" : null
           } `}
         >
           <input
@@ -225,24 +303,23 @@ function Signup({setSignUpBox}:any) {
             id="LastName"
             placeholder="Last name"
             autoComplete="off"
-            // ref={email}
+            ref={lastName}
           />
           <a className="text-[13px] text-[#FC4747] font-light">
-            {emailerr
-              ? "wrong Email form"
-              : emptyEmail
+            {emptyLastName
               ? "Can’t be empty"
               : null}
           </a>
         </div>
-        <p className={`${usedEmail?"text-[13px] text-[#FC4747] font-light":"hidden"} mb-[40px] `} >This email is already registered</p>
+        <div className=" w-[100%] pt-[24px] relative " >
+          <p className="text-red-500 text-[12px] absolute top-0 " >{axiosError}</p>
         <button
           className="w-[100%] bg-[#fab907] rounded-[6px] py-[15px] text-[15px] text-[#FFF] font-light mb-[24px] hover:bg-[#8b7127] hover:text-[#161D2F]"
           onClick={() => HandleSignup()}
         >
           Create an account
         </button>
-
+        </div>
         <span className=" flex">
           <a className="w-[166px] text-[15px] text-[#FFF] font-light mr-[9px]">
             Do you have an account?

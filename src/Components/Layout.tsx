@@ -290,7 +290,7 @@ function Layout(props: {
           signUpBox ? "" : "hidden"
         } `}
       >
-        <Signup setSignUpBox={setSignUpBox} />
+        <Signup setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />
       </div>
       <div
         className={`w-[100vw] ${

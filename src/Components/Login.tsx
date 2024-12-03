@@ -45,10 +45,10 @@ function Login({setLoginBox}:any) {
       console.log('err')
     }else{
       setUserError(false)
-      Fetch();
+      Login();
     }
   }
-  const Fetch = async () => {
+  const Login = async () => {
     try {
       const response = await axios.post(
         "https://strikem.site/auth/jwt/create",
