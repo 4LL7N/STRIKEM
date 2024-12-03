@@ -283,7 +283,7 @@ function Layout(props: {
           loginBox ? "" : "hidden"
         } `}
       >
-        <Login setLoginBox={setLoginBox} />
+        <Login setLoginBox={setLoginBox} setSignUpBox={setSignUpBox} />
       </div>
       <div
         className={` flex flex-col items-center justify-center  w-[100vw] h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
@@ -441,6 +441,10 @@ function Layout(props: {
           <div
             className={`flex items-center gap-[12px] ${!logedIn && "hidden"} `}
           >
+            <div className="relative" >
+              <div className=" flex items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 " >
+                <p className="text-[12px] text-white " >{unReadNotifications}</p>
+              </div>
             <FaBell
               style={{ color: "#fab907" }}
               className={` w-[20px] h-[20px] md:w-[32px] md:h-[32px] ${
@@ -453,6 +457,7 @@ function Layout(props: {
                 fetchNoti(), setNotificationsOpen(!notificationsOpen);
               }}
             />
+            </div>
             <img
               className="w-[24px] h-[24px] md:w-[32px] md:h-[32px] lg:min-w-[40px] lg:min-h-[40px] rounded-[50%] "
               src={currentUser?.profile_image}

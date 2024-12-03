@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import { useRef, useState } from "react";
-import { Link,
+import {
      useNavigate
      } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { IoMdClose } from "react-icons/io";
 
 
-function Login({setLoginBox}:any) {
+function Login({setLoginBox,setSignUpBox}:any) {
   const logNavigation = useNavigate();
 
   const logEmail = useRef<any>(null);
@@ -158,9 +158,9 @@ function Login({setLoginBox}:any) {
           <a className="w-[156px] text-[15px] text-[#FFF] font-light mr-[9px]">
             Don’t have an account?
           </a>
-          <Link className="text-[15px] text-[#fab907] font-light " to="/signup">
+          <p className="text-[15px] text-[#fab907] font-light " onClick={()=>{setSignUpBox(true),setLoginBox(false)}} >
             Sign Up
-          </Link>
+          </p>
         </span>
       </div>
     </>
