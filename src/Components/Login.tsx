@@ -96,9 +96,9 @@ function Login({setLoginBox}:any) {
         >
           <input
             className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none  md:w-[200px] lg:w-[230px]"
-            type="email"
-            name="email"
-            id="email"
+            type="text"
+            name="LoginUsername"
+            id="LoginUsername"
             placeholder="Username"
             autoComplete="off"
             ref={logEmail}
@@ -123,8 +123,8 @@ function Login({setLoginBox}:any) {
           <input
             className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none  md:w-[200px] lg:w-[230px]"
             type="password"
-            name="password"
-            id="password"
+            name="LoginPassword"
+            id="LoginPassword"
             placeholder="Password"
             ref={logPassword}
           />

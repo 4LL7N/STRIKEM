@@ -81,6 +81,8 @@ function Layout(props: {
   const [unReadNotifications, setUnReadNotifications] = useState<number>();
 
   const [loginBox, setLoginBox] = useState<boolean>(false);
+  const [signUpBox, setSignUpBox] = useState<boolean>(false);
+
 
   const [currentUser, setCurrentUser] = useState<Player>();
 
@@ -282,6 +284,13 @@ function Layout(props: {
         } `}
       >
         <Login setLoginBox={setLoginBox} />
+      </div>
+      <div
+        className={` flex flex-col items-center justify-center  w-[100vw] h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+          signUpBox ? "" : "hidden"
+        } `}
+      >
+        <Signup setSignUpBox={setSignUpBox} />
       </div>
       <div
         className={`w-[100vw] ${
@@ -502,6 +511,9 @@ function Layout(props: {
                   ? ""
                   : " lg:w-[32px] lg:h-[32px] lg:flex lg:p-0 lg:rounded-[6px] "
               }  lg:items-center lg:justify-center `}
+              onClick={() => {
+                setSignUpBox(true);
+              }}
             >
               <p
                 className={` text-white text-[12px] md:text-[16px]  ${

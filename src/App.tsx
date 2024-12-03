@@ -1,7 +1,5 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import data from "./../data.json";
-import AuthLayout from './Components/AuthLayout';
-import Signup from './Components/Signup';
 import Layout from './Components/Layout';
 import Home from './Components/Home';
 import Page from './Components/Page';
@@ -14,16 +12,10 @@ import { WebSocketProvider } from './Components/Websocket';
 
 
 
-interface usersObj{
-    email:string
-    password:string
-}
-
 function App() {
   const Filmdata = data
   
 
-  const users= useRef<usersObj[]>([]) 
   const [search, setSearch] = useState<string>('')
   const [usersSearch,setUsersSearch] = useState<string>('')
   const [logOut, setLogOut] = useState<boolean>(false)

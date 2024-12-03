@@ -1,13 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useRef, useState } from "react";
+import { IoMdClose } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
 
-interface usersObj{
-    email:string
-    password:string
-}
 
-function Signup(props:{users:any}) {
+function Signup({setSignUpBox}:any) {
   const navigation = useNavigate();
 
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -18,9 +15,9 @@ function Signup(props:{users:any}) {
 
   const [emptyEmail, setEmptyEmail] = useState(false);
   const [emptyPassword, setEmptyPassword] = useState(false);
-  const [repemptyPassword, setrepEmptyPassword] = useState(false);
+  // const [repemptyPassword, setrepEmptyPassword] = useState(false);
   const [emailerr, setEmailerr] = useState(false);
-  const [repPassErr, setRepPassErr] = useState(false);
+  // const [repPassErr, setRepPassErr] = useState(false);
   const [usedEmail, setUsedEmail] = useState(false)
 
   let emptyEmailChk = false;
@@ -28,7 +25,7 @@ function Signup(props:{users:any}) {
   let repEmptyPasswordChk = false;
   let emailErrChk = false;
   let repPassErrChk = false;
-  let usedEmailChk = false
+  const usedEmailChk = false
 
   function HandleSignup() {
     // console.log(email?.current.value);
@@ -60,13 +57,13 @@ function Signup(props:{users:any}) {
       emptyPasswordChk = false;
     }
 
-    if (!repPassword.current?.value) {
-      setrepEmptyPassword(true);
-      repEmptyPasswordChk = true;
-    } else {
-      setrepEmptyPassword(false);
-      repEmptyPasswordChk = false;
-    }
+    // if (!repPassword.current?.value) {
+    //   setrepEmptyPassword(true);
+    //   repEmptyPasswordChk = true;
+    // } else {
+    //   setrepEmptyPassword(false);
+    //   repEmptyPasswordChk = false;
+    // }
 
     if (
       password.current &&
@@ -81,24 +78,9 @@ function Signup(props:{users:any}) {
     }
     
 
-    const checkUser = props.users.current.filter((item:usersObj) => item.email == email.current?.value)
-    console.log(props.users);
-    if(checkUser.length > 1){
-        setUsedEmail(true)
-        usedEmailChk = true
-        console.log(usedEmailChk);
-        
-        console.log("true "+checkUser.length);
-
-    }else{
-        setUsedEmail(false)
-        usedEmailChk = false
-        console.log("false "+checkUser.length);
-        
-        
-        
-    }
-    Switch();
+   
+    
+    // Switch();
   }
   function Switch() {
     if (
@@ -109,17 +91,7 @@ function Signup(props:{users:any}) {
       !repEmptyPasswordChk &&
       !usedEmailChk
     ) {
-        // console.log(email.current.value);
-        // console.log(password.current.value);
-        
-       props.users.current =[...props.users.current,{
-        email:email.current?.value,
-        password:password.current?.value
-       }]
-        
-    
-    
-       
+      setUsedEmail(false)
        navigation("/login")
     }
   }
@@ -128,21 +100,22 @@ function Signup(props:{users:any}) {
     <>
      
       <div className="w-[100%] p-[24px] pb-[32] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px]">
-
-        <h1 className="text-[32px] text-[#FFF] font-light tarcking-[-0.5px] mb-[40px] self-start	">
+    <div className="w-[100%] flex justify-between items-center mb-[40px] " >
+        <h1 className="text-[32px] text-[#FFF] font-light tarcking-[-0.5px] self-start	">
           Sign Up
         </h1>
-
+        <IoMdClose style={{color:'white',width:'24px',height:'24px'}} onClick={()=>{setSignUpBox(false)}} />
+        </div>
         <div
-          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[16px] pb-[18px]  hover:border-b-[#FFF] ${
+          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
             emptyEmail || emailerr || usedEmail ? "border-b-[#FC4747]" : null
           } `}
         >
           <input
             className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
-            type="email"
-            name="email"
-            id="email"
+            type="text"
+            name="SignUpUsername"
+            id="SignUpUsername"
             placeholder="Username"
             autoComplete="off"
             // ref={email}
@@ -157,15 +130,15 @@ function Signup(props:{users:any}) {
         </div>
 
         <div
-          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[16px] pb-[18px]  hover:border-b-[#FFF] ${
+          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
             emptyEmail || emailerr || usedEmail ? "border-b-[#FC4747]" : null
           } `}
         >
           <input
             className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
             type="email"
-            name="email"
-            id="email"
+            name="SignUpEmail"
+            id="SignUpEmail"
             placeholder="Email address"
             autoComplete="off"
             ref={email}
@@ -180,7 +153,7 @@ function Signup(props:{users:any}) {
         </div>
 
         <div
-          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[16px] pb-[18px]  hover:border-b-[#FFF] ${
+          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
             emptyPassword ? "border-b-[#FC4747]" : null
           } `}
         >
@@ -197,8 +170,8 @@ function Signup(props:{users:any}) {
           </a>
         </div>
 
-        <div
-          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F]  hover:border-b-[#FFF] ${usedEmail?"mb-[24px]" :"mb-[40px]"} pl-[16px] pb-[18px]  ${
+        {/* <div
+          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F]  hover:border-b-[#FFF] ${usedEmail?"mb-[24px]" :"mb-[40px]"} pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  ${
             repemptyPassword || repPassErr ? "border-b-[#FC4747]" : null
           } `}
         >
@@ -217,17 +190,17 @@ function Signup(props:{users:any}) {
               ? "Must repet password"
               : null}
           </a>
-        </div>
+        </div> */}
         <div
-          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[16px] pb-[18px]  hover:border-b-[#FFF] ${
+          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
             emptyEmail || emailerr || usedEmail ? "border-b-[#FC4747]" : null
           } `}
         >
           <input
             className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
-            type="email"
-            name="email"
-            id="email"
+            type="text"
+            name="FirstName"
+            id="FirstName"
             placeholder="First name"
             autoComplete="off"
             // ref={email}
@@ -241,15 +214,15 @@ function Signup(props:{users:any}) {
           </a>
         </div>
         <div
-          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[16px] pb-[18px]  hover:border-b-[#FFF] ${
+          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
             emptyEmail || emailerr || usedEmail ? "border-b-[#FC4747]" : null
           } `}
         >
           <input
             className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
-            type="email"
-            name="email"
-            id="email"
+            type="text"
+            name="LastName"
+            id="LastName"
             placeholder="Last name"
             autoComplete="off"
             // ref={email}
@@ -271,8 +244,8 @@ function Signup(props:{users:any}) {
         </button>
 
         <span className=" flex">
-          <a className="w-[156px] text-[15px] text-[#FFF] font-light mr-[9px]">
-            Don’t have an account?
+          <a className="w-[166px] text-[15px] text-[#FFF] font-light mr-[9px]">
+            Do you have an account?
           </a>
           <Link className="text-[15px] text-[#fab907] font-light " to="/login">
             Log In
