@@ -19,17 +19,10 @@ function Login({setLoginBox}:any) {
   
   let emptyLogEmailErrChk = false;
   let emptyLogPassErrChk = false;
-  const userErrorChk = false;
   
   
   function HandleLogin() {
       
-      Fetch();
-      setTimeout(()=>{
-      logNavigation("/home");
-    },1000)
-    
-
     if(!logEmail.current?.value){
         setEmptyLogEmailErr(true)
         emptyLogEmailErrChk = true
@@ -48,9 +41,11 @@ function Login({setLoginBox}:any) {
 
 
    
-    if(!emptyLogEmailErrChk && !emptyLogPassErrChk && !userErrorChk){
-console.log('')
-setUserError(false)
+    if(emptyLogEmailErrChk || emptyLogPassErrChk ){
+      console.log('err')
+    }else{
+      setUserError(false)
+      Fetch();
     }
   }
   const Fetch = async () => {
@@ -65,13 +60,23 @@ setUserError(false)
       console.log(response.data)
       Cookies.set('token',response.data.access
         ,{
-        // secure: true,
-        // sameSite: 'Strict',         
+        secure: true,
+        sameSite: 'Strict',         
       }
     )
 
-    } catch (err) {
-      console.log(err);
+    setLoginBox(false)
+    logNavigation("/home");
+    window.location.reload()
+
+    } catch (err:any) {
+      
+        if(err?.response?.status == 401){
+          console.log('error')
+          setUserError(true)
+        }
+          
+      console.log(err?.response);
     }
   };
 
@@ -94,7 +99,7 @@ setUserError(false)
             type="email"
             name="email"
             id="email"
-            placeholder="Email address"
+            placeholder="Username"
             autoComplete="off"
             ref={logEmail}
           />{" "}
@@ -137,9 +142,7 @@ setUserError(false)
           className={`${
             userError ? "text-[13px] text-[#FC4747] font-light" : "hidden"
           } mb-[40px]  `}
-          onClick={() => {
-            HandleLogin();
-          }}
+          
         >
           Email or password is not correct
         </p>

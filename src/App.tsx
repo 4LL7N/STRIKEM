@@ -63,17 +63,6 @@ function App() {
         }
       ]
     },
-    {
-      element:<AuthLayout/>,
-      children:[
-        
-        {
-          path:"/signup",
-          element:<Signup users={users} />
-        }
-      ]
-    },
-  
   ])
 
   

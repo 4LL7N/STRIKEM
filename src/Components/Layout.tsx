@@ -12,8 +12,9 @@ import { IoLogoGameControllerB } from "react-icons/io";
 import "./CSS/notification.css";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { CiLogin } from "react-icons/ci";
+import { CiLogin, CiLogout } from "react-icons/ci";
 import Login from "./Login";
+import Signup from "./Signup";
 
 interface User {
   email: string;
@@ -79,7 +80,7 @@ function Layout(props: {
   const [notifications, setNotifications] = useState<Message[]>();
   const [unReadNotifications, setUnReadNotifications] = useState<number>();
 
-  const [loginBox,setLoginBox] = useState<boolean>(false)
+  const [loginBox, setLoginBox] = useState<boolean>(false);
 
   const [currentUser, setCurrentUser] = useState<Player>();
 
@@ -106,21 +107,6 @@ function Layout(props: {
     return body.length > 22 ? `${body.slice(0, 22)}...` : body;
   }, []);
 
-  // const divSize = () => {
-  //   const viewportWidth = window.innerWidth;
-  //   if (location.pathname.includes('users') || location.pathname === "/messenger" || location.pathname.includes("Pools") || location.pathname === "/matchmake") {
-  //     setContentW(`100%`);
-  //   } else {
-  //     if (viewportWidth >= 1024) {
-  //       setContentW(`${viewportWidth - 167}px`);
-  //     } else {
-  //       setContentW(`100%`);
-  //     }
-  //   }
-  //   window.addEventListener('resize',()=>{
-  //     headerResize()
-  //   })
-  // };
   const FetchCurrentUser = async () => {
     const token = Cookies.get("token");
 
@@ -187,16 +173,6 @@ function Layout(props: {
     setHeaderHeight(
       isSpecialPage || viewportWidth < 1024 ? 100 : window.innerHeight - 64
     );
-    // const headerheight = window.innerHeight - 64
-    // if(location.pathname.includes('users')  || location.pathname == '/messenger'  || location.pathname.includes('Pools') || location.pathname == '/matchmake'){
-    //     setHeaderHeight(100)
-    // }else{
-    //   if(window.innerWidth >= 1024 && !location.pathname.includes('Pools') ){
-    //     setHeaderHeight(headerheight)
-    //   }else{
-    //     setHeaderHeight(100)
-    //   }
-    // }
   }, [location.pathname]);
 
   const fetchNoti = useCallback(async () => {
@@ -234,6 +210,16 @@ function Layout(props: {
     setNotificationsOpen(false);
     e.stopPropagation();
     navigate(`/users/${id}`);
+  };
+
+  const logOut = () => {
+    setLogedIn(false);
+    Cookies.set("token", "logout", {
+      secure: true,
+      sameSite: "Strict",
+    });
+    navigate("/home");
+    window.location.reload();
   };
 
   useEffect(() => {
@@ -290,14 +276,19 @@ function Layout(props: {
 
   return (
     <>
-      <div className={` flex flex-col items-center justify-center  w-[100vw] h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${loginBox?'':'hidden'} `}>              
-            <Login setLoginBox={setLoginBox} />
-          </div>
+      <div
+        className={` flex flex-col items-center justify-center  w-[100vw] h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+          loginBox ? "" : "hidden"
+        } `}
+      >
+        <Login setLoginBox={setLoginBox} />
+      </div>
       <div
         className={`w-[100vw] ${
           ((location.pathname == "/matchmake" ||
             location.pathname == "/messenger") &&
-          window.innerWidth > 1024) || loginBox
+            window.innerWidth > 1024) ||
+          loginBox
             ? "h-screen"
             : "min-h-screen"
         } relative overflow-hidden md:overflow-auto bg-[#10141E] flex flex-col md:p-[25px] ${
@@ -461,19 +452,73 @@ function Layout(props: {
                 localStorage.setItem("matchUpId", "");
               }}
             />
+            <button
+              className={`   bg-[#243257d5] rounded-[6px] w-[24px] h-[24px] lg:w-[32px] lg:h-[32px] flex items-center justify-center `}
+              onClick={logOut}
+            >
+              <CiLogout
+                style={{ color: "white", width: "80%", height: "80%" }}
+                className={``}
+              />
+            </button>
           </div>
-          <div className={` flex ${ location.pathname.includes('Pool')? 'lg:gap-[20px] items-center':'lg:flex-col justify-center '} gap-[10px] md:gap-[14px] `}>
-            
-            <button className={` px-[10px] py-[5px]  bg-[#243257d5] rounded-[20px]  ${ location.pathname.includes('Pool')? '':' lg:w-[32px] lg:h-[32px] lg:flex lg:p-0 lg:rounded-[6px] '}  lg:items-center lg:justify-center `} onClick={()=>{setLoginBox(true)}} >
-              <p className={` text-white text-[12px] md:text-[16px]  ${ location.pathname.includes('Pool')? 'lg:text-[20px]':' lg:hidden  '} `}>Log In</p>
-              <CiLogin style={{color:'white',width:'80%',height:'80%' }} className={`hidden ${ location.pathname.includes('Pool')? '':' lg:block '} `} />
+          <div
+            className={` flex ${
+              location.pathname.includes("Pool")
+                ? "lg:gap-[20px] items-center"
+                : "lg:flex-col justify-center "
+            } gap-[10px] md:gap-[14px] ${logedIn && "hidden"} `}
+          >
+            <button
+              className={` px-[10px] py-[5px]  bg-[#243257d5] rounded-[20px]  ${
+                location.pathname.includes("Pool")
+                  ? ""
+                  : " lg:w-[32px] lg:h-[32px] lg:flex lg:p-0 lg:rounded-[6px] "
+              }  lg:items-center lg:justify-center `}
+              onClick={() => {
+                setLoginBox(true);
+              }}
+            >
+              <p
+                className={` text-white text-[12px] md:text-[16px]  ${
+                  location.pathname.includes("Pool")
+                    ? "lg:text-[20px]"
+                    : " lg:hidden  "
+                } `}
+              >
+                Log In
+              </p>
+              <CiLogin
+                style={{ color: "white", width: "80%", height: "80%" }}
+                className={`hidden ${
+                  location.pathname.includes("Pool") ? "" : " lg:block "
+                } `}
+              />
             </button>
 
-            <button className={` px-[10px] py-[5px]  bg-[#243257d5] rounded-[20px]  ${ location.pathname.includes('Pool')? '':' lg:w-[32px] lg:h-[32px] lg:flex lg:p-0 lg:rounded-[6px] '}  lg:items-center lg:justify-center `}>
-              <p className={` text-white text-[12px] md:text-[16px]  ${ location.pathname.includes('Pool')? 'lg:text-[20px]':' lg:hidden  '} `}>Sign Up</p>
-              <FaRegIdCard style={{color:'white',width:'80%',height:'80%' }} className={`hidden ${ location.pathname.includes('Pool')? '':' lg:block '} `}  />
+            <button
+              className={` px-[10px] py-[5px]  bg-[#243257d5] rounded-[20px]  ${
+                location.pathname.includes("Pool")
+                  ? ""
+                  : " lg:w-[32px] lg:h-[32px] lg:flex lg:p-0 lg:rounded-[6px] "
+              }  lg:items-center lg:justify-center `}
+            >
+              <p
+                className={` text-white text-[12px] md:text-[16px]  ${
+                  location.pathname.includes("Pool")
+                    ? "lg:text-[20px]"
+                    : " lg:hidden  "
+                } `}
+              >
+                Sign Up
+              </p>
+              <FaRegIdCard
+                style={{ color: "white", width: "80%", height: "80%" }}
+                className={`hidden ${
+                  location.pathname.includes("Pool") ? "" : " lg:block "
+                } `}
+              />
             </button>
-            
           </div>
         </header>
         <div
