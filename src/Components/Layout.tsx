@@ -13,6 +13,7 @@ import "./CSS/notification.css";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { CiLogin } from "react-icons/ci";
+import Login from "./Login";
 
 interface User {
   email: string;
@@ -77,6 +78,8 @@ function Layout(props: {
   const [notificationsOpen, setNotificationsOpen] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<Message[]>();
   const [unReadNotifications, setUnReadNotifications] = useState<number>();
+
+  const [loginBox,setLoginBox] = useState<boolean>(false)
 
   const [currentUser, setCurrentUser] = useState<Player>();
 
@@ -287,11 +290,14 @@ function Layout(props: {
 
   return (
     <>
+      <div className={` flex flex-col items-center justify-center  w-[100vw] h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${loginBox?'':'hidden'} `}>              
+            <Login setLoginBox={setLoginBox} />
+          </div>
       <div
         className={`w-[100vw] ${
-          (location.pathname == "/matchmake" ||
+          ((location.pathname == "/matchmake" ||
             location.pathname == "/messenger") &&
-          window.innerWidth > 1024
+          window.innerWidth > 1024) || loginBox
             ? "h-screen"
             : "min-h-screen"
         } relative overflow-hidden md:overflow-auto bg-[#10141E] flex flex-col md:p-[25px] ${
@@ -361,7 +367,7 @@ function Layout(props: {
                 : { height: `${headerHeight}px` }
               : {}
           }
-          className={`w-[100%] bg-[#161D2F] p-[16px] flex items-center justify-between md:rounded-[10px] md:px-[20px] z-50 ${
+          className={`w-[100%] bg-[#161D2F] p-[16px] flex items-center justify-between md:rounded-[10px] md:px-[20px] z-40 ${
             location.pathname.includes("users") ||
             location.pathname == "/messenger" ||
             location.pathname.includes("Pools")
@@ -458,7 +464,7 @@ function Layout(props: {
           </div>
           <div className={` flex ${ location.pathname.includes('Pool')? 'lg:gap-[20px] items-center':'lg:flex-col justify-center '} gap-[10px] md:gap-[14px] `}>
             
-            <button className={` px-[10px] py-[5px]  bg-[#243257d5] rounded-[20px]  ${ location.pathname.includes('Pool')? '':' lg:w-[32px] lg:h-[32px] lg:flex lg:p-0 lg:rounded-[6px] '}  lg:items-center lg:justify-center `}>
+            <button className={` px-[10px] py-[5px]  bg-[#243257d5] rounded-[20px]  ${ location.pathname.includes('Pool')? '':' lg:w-[32px] lg:h-[32px] lg:flex lg:p-0 lg:rounded-[6px] '}  lg:items-center lg:justify-center `} onClick={()=>{setLoginBox(true)}} >
               <p className={` text-white text-[12px] md:text-[16px]  ${ location.pathname.includes('Pool')? 'lg:text-[20px]':' lg:hidden  '} `}>Log In</p>
               <CiLogin style={{color:'white',width:'80%',height:'80%' }} className={`hidden ${ location.pathname.includes('Pool')? '':' lg:block '} `} />
             </button>

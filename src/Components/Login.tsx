@@ -5,9 +5,10 @@ import { Link,
      useNavigate
      } from "react-router-dom";
 import Cookies from 'js-cookie';
+import { IoMdClose } from "react-icons/io";
 
 
-function Login() {
+function Login({setLoginBox}:any) {
   const logNavigation = useNavigate();
 
   const logEmail = useRef<any>(null);
@@ -76,10 +77,13 @@ setUserError(false)
 
   return (
     <>
-      <div className="w-[100%] p-[24px] pb-[32] flex flex-col items-center bg-[#161D2F] bg-opacity-50 rounded-[10px] md:rounded-[20px] ">
-        <h1 className="text-[32px] text-[#FFF] font-light tracking-[-0.5px] mb-[40px] self-start	">
+      <div className="w-[100%] p-[24px] pb-[32] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px] ">
+        <div className="w-[100%] flex justify-between items-center mb-[40px] " >
+        <h1 className="text-[32px] text-[#FFF] font-light tracking-[-0.5px]  self-start	">
           Login
         </h1>
+        <IoMdClose style={{color:'white',width:'24px',height:'24px'}} onClick={()=>{setLoginBox(false)}} />
+        </div>
         <div
           className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[16px] pb-[18px] hover:border-b-[#FFF] ${
             emptyLogEmailErr || userError ? "border-b-[#FC4747]" : null
