@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react'
 import data from "./../data.json";
 import AuthLayout from './Components/AuthLayout';
-import Login from './Components/Login'
 import Signup from './Components/Signup';
 import Layout from './Components/Layout';
 import Home from './Components/Home';
@@ -35,6 +34,10 @@ function App() {
       element:<Layout search={search} setSearch={setSearch} usersSearch={usersSearch} setUsersSearch={setUsersSearch} logOut={logOut} setLogOut={setLogOut} acceptInvatation={acceptInvatation} setAcceptInvatation={setAcceptInvatation} />,
       children:[
         {
+          path:"/",
+          element:<Navigate to="/home" />
+        },
+        {
           path:"/home",
           element:<Home  search={search} />
         },
@@ -63,14 +66,7 @@ function App() {
     {
       element:<AuthLayout/>,
       children:[
-        {
-          path:"/",
-          element:<Navigate to="/login" />
-        },
-        {
-          path:"/login",
-          element:<Login users={users} setLogOut={setLogOut} />
-        },
+        
         {
           path:"/signup",
           element:<Signup users={users} />

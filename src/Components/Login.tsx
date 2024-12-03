@@ -6,12 +6,8 @@ import { Link,
      } from "react-router-dom";
 import Cookies from 'js-cookie';
 
-interface usersObj {
-  email: string;
-  password: string;
-}
 
-function Login(props: { users: any; setLogOut: any }) {
+function Login() {
   const logNavigation = useNavigate();
 
   const logEmail = useRef<any>(null);
@@ -22,7 +18,7 @@ function Login(props: { users: any; setLogOut: any }) {
   
   let emptyLogEmailErrChk = false;
   let emptyLogPassErrChk = false;
-  let userErrorChk = false;
+  const userErrorChk = false;
   
   
   function HandleLogin() {
@@ -49,21 +45,11 @@ function Login(props: { users: any; setLogOut: any }) {
         emptyLogPassErrChk = false
     }
 
-    const userObj = props.users.current.filter((item:usersObj) => item?.email == logEmail.current?.value && item?.password == logPassword.current.value )
 
-    if(userObj.length == 0){
-        setUserError(true)
-        userErrorChk = true
-        console.log("userErrorChk "+userErrorChk);
-
-    }else{
-        setUserError(false)
-        userErrorChk = false
-    }
-    console.log(userObj);
+   
     if(!emptyLogEmailErrChk && !emptyLogPassErrChk && !userErrorChk){
 console.log('')
-
+setUserError(false)
     }
   }
   const Fetch = async () => {
@@ -90,7 +76,7 @@ console.log('')
 
   return (
     <>
-      <div className="w-[100%] p-[24px] pb-[32] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px] ">
+      <div className="w-[100%] p-[24px] pb-[32] flex flex-col items-center bg-[#161D2F] bg-opacity-50 rounded-[10px] md:rounded-[20px] ">
         <h1 className="text-[32px] text-[#FFF] font-light tracking-[-0.5px] mb-[40px] self-start	">
           Login
         </h1>

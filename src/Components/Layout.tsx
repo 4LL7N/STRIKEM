@@ -6,12 +6,13 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 import { useWebSocketContext } from "./Websocket";
-import { FaBell, FaRegMessage } from "react-icons/fa6";
+import { FaBell, FaRegIdCard, FaRegMessage } from "react-icons/fa6";
 import { IoLogoGameControllerB } from "react-icons/io";
 
 import "./CSS/notification.css";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { CiLogin } from "react-icons/ci";
 
 interface User {
   email: string;
@@ -58,7 +59,6 @@ interface Player {
   user: User;
 }
 
-
 function Layout(props: {
   search: string;
   setSearch: (search: string) => void;
@@ -69,19 +69,20 @@ function Layout(props: {
   acceptInvatation: number;
   setAcceptInvatation: (acceptInvatation: number) => void;
 }) {
-  const { sendJsonMessage, lastJsonMessage } = useWebSocketContext();
+  const { sendJsonMessage, lastJsonMessage, logedIn, setLogedIn } =
+    useWebSocketContext();
   const navigate = useNavigate();
   const location = useLocation();
 
   const [notificationsOpen, setNotificationsOpen] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<Message[]>();
-  const [unReadNotifications,setUnReadNotifications] = useState<number>()
+  const [unReadNotifications, setUnReadNotifications] = useState<number>();
 
-  const [currentUser,setCurrentUser] = useState<Player>()
+  const [currentUser, setCurrentUser] = useState<Player>();
 
   const header = useRef<any>();
   const [contentW, setContentW] = useState<string>();
-  const [contentH, setContentH] = useState<string>()
+  const [contentH, setContentH] = useState<string>();
   const [headerHeight, setHeaderHeight] = useState<number>(100);
 
   const timeAgo = useCallback((timestamp: string): string => {
@@ -117,23 +118,30 @@ function Layout(props: {
   //     headerResize()
   //   })
   // };
-  const FetchCurrentUser = async ()=>{
-    const token = Cookies.get('token');
+  const FetchCurrentUser = async () => {
+    const token = Cookies.get("token");
 
-    try{
-  const currentUserResponse = await axios.get(
-    "https://strikem.site/users/current-user",
-    {
-      headers: { Authorization: `JWT ${token}` },
+    try {
+      if (token && token != "logout") {
+        const currentUserResponse = await axios.get(
+          "https://strikem.site/users/current-user",
+          {
+            headers: { Authorization: `JWT ${token}` },
+          }
+        );
+
+        console.log(currentUserResponse.data);
+        setCurrentUser(currentUserResponse.data);
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify(currentUserResponse.data)
+        );
+      }
+    } catch (err) {
+      console.error(err);
     }
-  );
-  console.log(currentUserResponse.data)
-  setCurrentUser(currentUserResponse.data)
-  localStorage.setItem('currentUser', JSON.stringify(currentUserResponse.data));
-  }catch(err){
-    console.error(err)
-  }
-}
+  };
+
   const updateLayout = useCallback(() => {
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
@@ -149,18 +157,17 @@ function Layout(props: {
         : "100%"
     );
 
-    if(viewportWidth < 768){
-      
-      setContentH(`${viewportHeight - 77}px`)
-      console.log(`${viewportHeight - 57}px`)
-    }else if(viewportWidth < 1024){
-      setContentH(`${viewportHeight - 137}px`)
-      console.log(`${viewportHeight - 137}px`)
-    }else{
-      setContentH(`${viewportHeight - 204}px`)
+    if (viewportWidth < 768) {
+      setContentH(`${viewportHeight - 77}px`);
+      console.log(`${viewportHeight - 57}px`);
+    } else if (viewportWidth < 1024) {
+      setContentH(`${viewportHeight - 137}px`);
+      console.log(`${viewportHeight - 137}px`);
+    } else {
+      setContentH(`${viewportHeight - 204}px`);
     }
 
-    `${window.innerHeight - 137}px`
+    `${window.innerHeight - 137}px`;
     setHeaderHeight(
       isSpecialPage || viewportWidth < 1024 ? 100 : window.innerHeight - 64
     );
@@ -199,26 +206,26 @@ function Layout(props: {
         }
       );
       setNotifications(response.data.results);
-
-      
     } catch (err) {
       console.error(err);
     }
   }, []);
 
-  const FetchUnreadNotifications = useCallback(async()=>{
+  const FetchUnreadNotifications = useCallback(async () => {
     const token = Cookies.get("token");
-    try{
-      const unreadResponse = await axios.get("https://strikem.site/api/unread-matchups/",
+    try {
+      const unreadResponse = await axios.get(
+        "https://strikem.site/api/unread-matchups/",
         {
           headers: { Authorization: `JWT ${token}` },
-        })
-        setUnReadNotifications(unreadResponse.data.unread)
+        }
+      );
+      setUnReadNotifications(unreadResponse.data.unread);
       console.log(unreadResponse.data.unread);
-    }catch(err){
-      console.error(err)
+    } catch (err) {
+      console.error(err);
     }
-  },[])
+  }, []);
 
   const goProfile = (e: any, id: number) => {
     setNotificationsOpen(false);
@@ -229,14 +236,19 @@ function Layout(props: {
   useEffect(() => {
     // divSize();
     // headerResize()
-    FetchCurrentUser()
+    const token = Cookies.get("token");
+    if (token && token != "logout") {
+      setLogedIn(true);
+      console.log(token);
+      FetchCurrentUser();
+      FetchUnreadNotifications();
+    }
     updateLayout();
     window.addEventListener("resize", () => {
       console.log("windown eventlistener");
       headerResize();
-      updateLayout()
+      updateLayout();
     });
-    FetchUnreadNotifications()
   }, []);
 
   useEffect(() => {
@@ -360,8 +372,8 @@ function Layout(props: {
           <div
             className={` flex ${
               location.pathname == "/messenger" ||
-              location.pathname.includes("users") || 
-              location.pathname.includes("Pools") 
+              location.pathname.includes("users") ||
+              location.pathname.includes("Pools")
                 ? "flex-row"
                 : "flex-col"
             } items-center gap-[20px] `}
@@ -378,10 +390,11 @@ function Layout(props: {
               style={{ color: "#fab907" }}
               className={` w-[32px] h-[32px] hidden ${
                 location.pathname == "/messenger" ||
-                location.pathname.includes("users")
+                location.pathname.includes("users") ||
+                !logedIn
                   ? "hidden"
                   : "lg:block"
-              }  `}
+              } `}
               onClick={() => {
                 fetchNoti(), setNotificationsOpen(!notificationsOpen);
               }}
@@ -394,7 +407,7 @@ function Layout(props: {
               location.pathname.includes("Pools")
                 ? ""
                 : "lg:flex-col"
-            } gap-[32px] `}
+            } gap-[32px] ${!logedIn && "hidden"} `}
           >
             <Link
               to={"/messenger"}
@@ -419,7 +432,9 @@ function Layout(props: {
               />
             </Link>
           </div>
-          <div className="flex items-center gap-[12px] ">
+          <div
+            className={`flex items-center gap-[12px] ${!logedIn && "hidden"} `}
+          >
             <FaBell
               style={{ color: "#fab907" }}
               className={` w-[20px] h-[20px] md:w-[32px] md:h-[32px] ${
@@ -440,6 +455,19 @@ function Layout(props: {
                 localStorage.setItem("matchUpId", "");
               }}
             />
+          </div>
+          <div className={` flex ${ location.pathname.includes('Pool')? 'lg:gap-[20px] items-center':'lg:flex-col justify-center '} gap-[10px] md:gap-[14px] `}>
+            
+            <button className={` px-[10px] py-[5px]  bg-[#243257d5] rounded-[20px]  ${ location.pathname.includes('Pool')? '':' lg:w-[32px] lg:h-[32px] lg:flex lg:p-0 lg:rounded-[6px] '}  lg:items-center lg:justify-center `}>
+              <p className={` text-white text-[12px] md:text-[16px]  ${ location.pathname.includes('Pool')? 'lg:text-[20px]':' lg:hidden  '} `}>Log In</p>
+              <CiLogin style={{color:'white',width:'80%',height:'80%' }} className={`hidden ${ location.pathname.includes('Pool')? '':' lg:block '} `} />
+            </button>
+
+            <button className={` px-[10px] py-[5px]  bg-[#243257d5] rounded-[20px]  ${ location.pathname.includes('Pool')? '':' lg:w-[32px] lg:h-[32px] lg:flex lg:p-0 lg:rounded-[6px] '}  lg:items-center lg:justify-center `}>
+              <p className={` text-white text-[12px] md:text-[16px]  ${ location.pathname.includes('Pool')? 'lg:text-[20px]':' lg:hidden  '} `}>Sign Up</p>
+              <FaRegIdCard style={{color:'white',width:'80%',height:'80%' }} className={`hidden ${ location.pathname.includes('Pool')? '':' lg:block '} `}  />
+            </button>
+            
           </div>
         </header>
         <div
@@ -532,7 +560,7 @@ function Layout(props: {
                 ? { width: contentW, height: contentH }
                 : window.innerWidth < 1024
                 ? { width: contentW, height: contentH } // content fix
-                : { width: contentW, height:'100%' }
+                : { width: contentW, height: "100%" }
               : { width: contentW }
           }
           className={` ${
