@@ -467,7 +467,7 @@ function Layout(props: {
               }}
             />
             <button
-              className={`   bg-[#243257d5] rounded-[6px] w-[24px] h-[24px] lg:w-[32px] lg:h-[32px] flex items-center justify-center `}
+              className={` ${logedIn && "hidden"}  bg-[#243257d5] rounded-[6px] w-[24px] h-[24px] lg:w-[32px] lg:h-[32px] flex items-center justify-center `}
               onClick={logOut}
             >
               <CiLogout
