@@ -149,17 +149,9 @@ function Pool() {
   const whiteBoxRef = useRef<any>()
 
   const Fetch = async () => {
-    const token = Cookies.get('token')
     try {
       const response = await axios.get(
-        `https://strikem.site/api/poolhouses/${id}/ratings/`,
-        {
-          headers: {
-            Authorization:
-              `JWT ${token}`,
-          },
-        }
-      );
+        `https://strikem.site/api/poolhouses/${id}/ratings/`);
       setRatings(response.data);
 
     } catch (err) {
@@ -701,11 +693,16 @@ function Pool() {
           {poolInfo.title}
         </Tooltip>
       </Marker>
+      {
+        Cookies.get('token') && Cookies.get('token') != 'logout' ?
       <Marker position={[coords.latitude,coords.longitude]} icon={markerIcon} >
       <Tooltip direction="top" offset={[0, -20]} permanent>
           You
         </Tooltip>
       </Marker>
+      :
+      null
+    }
     </MapContainer>
     </div>
     ) : (
