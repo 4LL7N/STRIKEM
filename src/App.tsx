@@ -1,8 +1,6 @@
 import { useState } from 'react'
-import data from "./../data.json";
 import Layout from './Components/Layout';
 import Home from './Components/Home';
-import Page from './Components/Page';
 import Pool from './Components/Pool'
 import { Navigate , createBrowserRouter , RouterProvider } from 'react-router-dom';
 import User from './Components/User';
@@ -12,9 +10,7 @@ import { WebSocketProvider } from './Components/Websocket';
 
 
 
-function App() {
-  const Filmdata = data
-  
+function App() {  
 
   const [search, setSearch] = useState<string>('')
   const [usersSearch,setUsersSearch] = useState<string>('')
@@ -32,10 +28,6 @@ function App() {
         {
           path:"/home",
           element:<Home  search={search} />
-        },
-        {
-          path:"/:page",
-          element:<Page Filmdata={Filmdata} search={search} />
         },
         {
           element:<Pool/>,

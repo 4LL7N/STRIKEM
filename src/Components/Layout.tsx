@@ -387,7 +387,7 @@ function Layout(props: {
           >
             
             <Link
-              to={location.pathname == "/home" ? "/login" : "/home"}
+              to={"/home"}
               className='w-[25px] h-[25px] bg-[length:25px_25px] bg-[url("/images/logo1.png")] md:w-[32px] md:h-[32px] md:bg-[length:32px_32px] '
               onClick={() => {
                 props.setLogOut(false);
