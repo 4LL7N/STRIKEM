@@ -186,6 +186,7 @@ function Layout(props: {
           headers: { Authorization: `JWT ${token}` },
         }
       );
+      console.log(response.data.results)
       setNotifications(response.data.results);
     } catch (err) {
       console.error(err);
@@ -381,9 +382,10 @@ function Layout(props: {
               location.pathname.includes("users") ||
               location.pathname.includes("Pools")
                 ? "flex-row"
-                : "flex-col"
+                : "lg:flex-col"
             } items-center gap-[20px] `}
           >
+            
             <Link
               to={location.pathname == "/home" ? "/login" : "/home"}
               className='w-[25px] h-[25px] bg-[length:25px_25px] bg-[url("/images/logo1.png")] md:w-[32px] md:h-[32px] md:bg-[length:32px_32px] '
@@ -392,6 +394,10 @@ function Layout(props: {
                 localStorage.setItem("matchUpId", "");
               }}
             />
+            <div className="relative " >
+            <div className={` ${ location.pathname == "/messenger" || location.pathname.includes("users") || location.pathname.includes("Pools")? '' :'lg:flex'} hidden items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 `} >
+                <p className="text-[12px] text-white " >{unReadNotifications}</p>
+              </div>
             <FaBell
               style={{ color: "#fab907" }}
               className={` w-[32px] h-[32px] hidden ${
@@ -405,6 +411,7 @@ function Layout(props: {
                 fetchNoti(), setNotificationsOpen(!notificationsOpen);
               }}
             />
+            </div>
           </div>
           <div
             className={`flex ${
@@ -439,17 +446,17 @@ function Layout(props: {
             </Link>
           </div>
           <div
-            className={`flex lg:flex-col items-center gap-[12px] ${!logedIn && "hidden"} `}
+            className={`flex ${location.pathname.includes('Pool') || location.pathname == '/messenger' || location.pathname.includes("users") ? '' :'lg:flex-col'} items-center gap-[12px] ${!logedIn && "hidden"} `}
           >
             <div className="relative" >
-              <div className=" flex lg:hidden items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 " >
+              <div className={`  ${ location.pathname == "/messenger" || location.pathname.includes("Pools") || location.pathname.includes("users")? '' :'lg:hidden'} flex  items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 `} >
                 <p className="text-[12px] text-white " >{unReadNotifications}</p>
               </div>
             <FaBell
               style={{ color: "#fab907" }}
               className={` w-[20px] h-[20px] md:w-[32px] md:h-[32px] ${
                 location.pathname == "/messenger" ||
-                location.pathname.includes("users")
+                location.pathname.includes("users") || location.pathname.includes("Pools")
                   ? "block"
                   : "lg:hidden"
               }  `}
