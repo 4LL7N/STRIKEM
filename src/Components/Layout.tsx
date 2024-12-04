@@ -439,10 +439,10 @@ function Layout(props: {
             </Link>
           </div>
           <div
-            className={`flex items-center gap-[12px] ${!logedIn && "hidden"} `}
+            className={`flex lg:flex-col items-center gap-[12px] ${!logedIn && "hidden"} `}
           >
             <div className="relative" >
-              <div className=" flex items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 " >
+              <div className=" flex lg:hidden items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 " >
                 <p className="text-[12px] text-white " >{unReadNotifications}</p>
               </div>
             <FaBell
@@ -467,7 +467,7 @@ function Layout(props: {
               }}
             />
             <button
-              className={` ${logedIn && "hidden"}  bg-[#243257d5] rounded-[6px] w-[24px] h-[24px] lg:w-[32px] lg:h-[32px] flex items-center justify-center `}
+              className={` ${!logedIn && "hidden"}  bg-[#243257d5] rounded-[6px] w-[24px] h-[24px] lg:w-[32px] lg:h-[32px] flex items-center justify-center `}
               onClick={logOut}
             >
               <CiLogout

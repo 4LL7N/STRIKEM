@@ -68,6 +68,7 @@ function Login({setLoginBox,setSignUpBox}:any) {
     setLoginBox(false)
     logNavigation("/home");
     window.location.reload()
+    
 
     } catch (err:any) {
       
