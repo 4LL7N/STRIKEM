@@ -83,6 +83,7 @@ function Layout(props: {
   const [loginBox, setLoginBox] = useState<boolean>(false);
   const [signUpBox, setSignUpBox] = useState<boolean>(false);
 
+  const [resize,setResize] = useState<boolean>(false)
 
   const [currentUser, setCurrentUser] = useState<Player>();
 
@@ -132,18 +133,18 @@ function Layout(props: {
     }
   };
 
-  const updateLayout = useCallback(() => {
+  const updateLayout = useCallback((pathname:string) => {
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     const isSpecialPage =
-      location.pathname.includes("users") ||
-      location.pathname === "/messenger" ||
-      location.pathname.includes("Pools") ||
-      location.pathname === "/matchmake";
-
+      pathname.includes("users") ||
+      pathname === "/messenger" ||
+      pathname.includes("Pools") ||
+      pathname === "/matchmake";
+    console.log(" updateLayout")
     setContentW(
       viewportWidth >= 1024 && !isSpecialPage
-        ? `${viewportWidth - 167}px`
+        ? `${viewportWidth - 191}px`
         : "100%"
     );
 
@@ -161,18 +162,21 @@ function Layout(props: {
     );
   }, [location.pathname]);
 
-  const headerResize = useCallback(() => {
-    const viewportWidth = window.innerWidth;
+  // const headerResize = useCallback(() => {
+  //   const viewportWidth = window.innerWidth;
 
-    const isSpecialPage =
-      location.pathname.includes("users") ||
-      location.pathname === "/messenger" ||
-      location.pathname.includes("Pools") ||
-      location.pathname === "/matchmake";
-    setHeaderHeight(
-      isSpecialPage || viewportWidth < 1024 ? 100 : window.innerHeight - 64
-    );
-  }, [location.pathname]);
+  //   const isSpecialPage =
+  //     location.pathname.includes("users") ||
+  //     location.pathname === "/messenger" ||
+  //     location.pathname.includes("Pools") ||
+  //     location.pathname === "/matchmake";
+  //     console.log(isSpecialPage," isSpecialPage")
+  //     console.log(location.pathname)
+  //     console.log(viewportWidth < 1024," viewportWidth < 1024")
+  //   setHeaderHeight(
+  //     isSpecialPage || viewportWidth < 1024 ? 100 : window.innerHeight - 64
+  //   );
+  // }, [location.pathname]);
 
   const fetchNoti = useCallback(async () => {
     const token = Cookies.get("token");
@@ -229,17 +233,22 @@ function Layout(props: {
       FetchCurrentUser();
       FetchUnreadNotifications();
     }
-    updateLayout();
+    updateLayout(location.pathname);
     window.addEventListener("resize", () => {
-      headerResize();
-      updateLayout();
+      // headerResize();
+      // updateLayout();
+      setResize((i)=>!i)
     });
   }, []);
 
+  useEffect(()=>{
+    updateLayout(location.pathname)
+  },[resize])
+
   useEffect(() => {
-    // console.log("location useEffect");
-    headerResize();
-  }, [location]);
+    // console.log(location.pathname);
+    updateLayout(location.pathname)
+  }, [location.pathname]);
 
   useEffect(() => {
     if (location.pathname.includes("Pool")) {
@@ -624,9 +633,7 @@ function Layout(props: {
         <div
           style={
             location.pathname == "/messenger"
-              ? window.innerWidth < 768
-                ? { width: contentW, height: contentH }
-                : window.innerWidth < 1024
+              ?window.innerWidth < 1024
                 ? { width: contentW, height: contentH } // content fix
                 : { width: contentW, height: "100%" }
               : { width: contentW }

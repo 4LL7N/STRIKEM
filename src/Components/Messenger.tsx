@@ -264,7 +264,7 @@ function Messenger() {
     // setChatHeight(chatBox.current.getBoundingClientRect().height - 96);
     // console.log(window.innerHeight - 269 )
     // setChatHeight(window.innerHeight - 275 );
-    setBoxHeight(window.innerHeight - 200);
+    setBoxHeight(window.innerHeight - 220);
     // }
   };
 
