@@ -57,7 +57,6 @@ const ChatBubble = React.memo(
     formattedDate?.replace("a",",")
 
 
-    console.log(formattedDate)
 
     return (
       <div
