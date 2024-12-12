@@ -466,7 +466,7 @@ function Layout(props: {
             />
             </div>
             <img
-              className="w-[24px] h-[24px] md:w-[32px] md:h-[32px] lg:min-w-[40px] lg:min-h-[40px] rounded-[50%] "
+              className="w-[24px] h-[24px] md:w-[32px] md:h-[32px] rounded-[50%] "
               src={currentUser?.profile_image}
               onClick={() => {
                 navigate("/users/me");

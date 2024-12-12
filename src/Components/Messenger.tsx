@@ -83,7 +83,7 @@ interface Message {
       username: string;
     };
   };
-  read:boolean
+  read: boolean;
 }
 
 function Messenger() {
@@ -95,6 +95,7 @@ function Messenger() {
 
   const messageChat = useRef<any>();
   const chatBox = useRef<any>();
+  const messengersBox = useRef<any>();
 
   const currentUser = useMemo(() => {
     return localStorage.getItem("currentUser")
@@ -103,21 +104,27 @@ function Messenger() {
   }, []);
 
   // const location = useLocation()
+  // const [nextMessages, setNextMessages] = useState<string | null>(null);
+  const [nextChats, setNextChats] = useState<string | null>(null);
+
+  const [addNextChat, setAddNextChat] = useState<boolean>(false);
+
   const [messages, setMessages] = useState<Message[]>();
   const [openChat, setOpenChat] = useState<string>("");
   const [chat, setChat] = useState<chatMessage[]>([]);
 
   const [messageTo, setMessageTo] = useState<any>();
 
-  const [chatHeight, setChatHeight] = useState<number>(0);
+  // const [chatHeight, setChatHeight] = useState<number>(0);
+  const [boxHeight, setBoxHeight] = useState<number>(0);
 
   const chatInput = useRef<any>();
 
   const token = Cookies.get("token");
   const Fetch = async () => {
     const MatchUpId = localStorage.getItem("matchUpId");
-    if(MatchUpId){
-      setOpenChat(MatchUpId)
+    if (MatchUpId) {
+      setOpenChat(MatchUpId);
     }
     try {
       const response = await axios("https://strikem.site/api/matchups/", {
@@ -125,6 +132,8 @@ function Messenger() {
           Authorization: `JWT ${token}`,
         },
       });
+      // console.log(response.data)
+      // setNextMessages(response.data.next);
       setMessages(response.data.results);
       if (response.data.results.length > 0) {
         if (!openChat) {
@@ -166,7 +175,7 @@ function Messenger() {
               : openChat
               ? openChat
               : response.data.results[0].id
-          }/chat/`,
+          }/chat`,
           {
             headers: {
               Authorization: `JWT ${token}`,
@@ -174,8 +183,9 @@ function Messenger() {
           }
         );
         const chatData = Chatresponse.data.results;
-        // console.log(chatData);
-
+        const nextChatsEndpoint = Chatresponse.data.next;
+        // console.log(nextChatsEndpoint);
+        setNextChats(nextChatsEndpoint);
         setChat(chatData);
         localStorage.setItem("matchUpId", "");
       }
@@ -192,6 +202,7 @@ function Messenger() {
           { headers: { Authorization: `JWT ${token}` } }
         );
         const chatData = Chatresponse.data.results;
+        console.log(chatData);
         setChat(chatData);
       } catch (err) {
         console.log(err);
@@ -223,7 +234,6 @@ function Messenger() {
       chatInput.current.value &&
       chatInput.current.value.trim()
     ) {
-      console.log("senddddd");
       sendJsonMessage({
         action: "matchup",
         message: chatInput.current.value,
@@ -241,97 +251,157 @@ function Messenger() {
           user,
         },
         time_sent: getFormattedTime,
-      }
-      const chatContent = [newMessage,...chat];
-      console
+      };
+      const chatContent = [newMessage, ...chat];
+      console;
       setChat(chatContent);
       chatInput.current.value = "";
     }
   };
 
-  const setChatBoxHeight = ()=>{
-    if (messageChat.current && chatBox.current) {
-      setChatHeight(chatBox.current.getBoundingClientRect().height - 106);
+  const setChatBoxHeight = () => {
+    // if (messageChat.current && chatBox.current) {
+    // setChatHeight(chatBox.current.getBoundingClientRect().height - 96);
+    // console.log(window.innerHeight - 269 )
+    // setChatHeight(window.innerHeight - 275 );
+    setBoxHeight(window.innerHeight - 200);
+    // }
+  };
+
+  const readChat = async (id: string) => {
+    await axios.put(
+      `https://strikem.site/api/read-matchup/${id}/`,
+      {},
+      {
+        headers: { Authorization: `JWT ${token}` },
+      }
+    );
+    const allChats = messages && [...messages];
+    allChats?.forEach((item) => {
+      if (item.id == id) item.read = true;
+    });
+    setMessages(allChats);
+  };
+
+  const addMessages = async () => {
+    const url = nextChats?.replace("http", "https");
+    if (nextChats && url) {
+      try {
+        const ChatResponse = await axios(url, {
+          headers: { Authorization: `JWT ${token}` },
+        });
+        // console.log(ChatResponse);
+        const chatData = ChatResponse.data.results;
+        const newChat = [...chatData, ...chat];
+        setChat(newChat);
+      } catch (err) {
+        console.log(err);
+      }
     }
-  }
+  };
+
+  const handleChatScroll = (e: any) => {
+    const target = e.target as HTMLElement;
+
+    const onTopOne =
+      Math.floor(target.scrollHeight - -target.scrollTop) ==
+      target.clientHeight;
+    const onTopTwo =
+      Math.floor(target.scrollHeight - -target.scrollTop) ==
+      target.clientHeight - 1;
+    if (onTopOne || onTopTwo) {
+      console.log(nextChats);
+      setAddNextChat(true);
+    } else {
+      setAddNextChat(false);
+    }
+  };
+
+  const handleMessagesScroll = (e: any) => {
+    const target = e.target as HTMLElement;
+
+    // console.log((target.scrollHeight - target.scrollTop) == target.clientHeight)
+    if (target.scrollHeight - target.scrollTop == target.clientHeight)
+      console.log("new chats");
+  };
 
   useEffect(() => {
     Fetch();
 
-    setChatBoxHeight()
+    setChatBoxHeight();
 
-    window.addEventListener('resize',()=>{setChatBoxHeight()})
+    window.addEventListener("resize", () => {
+      setChatBoxHeight();
+    });
 
-    if (messageChat.current) {
+
+
+    if (messageChat.current && messengersBox.current) {
       messageChat.current.scrollTop = messageChat.current.scrollHeight;
+      messageChat.current.addEventListener("scroll", handleChatScroll);
+      messengersBox.current.addEventListener("scroll", handleMessagesScroll);
     }
   }, []);
+
+
   useLayoutEffect(() => {
     if (messageChat.current) {
       messageChat.current.scrollTop = messageChat.current.scrollHeight;
     }
   }, []);
 
-  
+  useEffect(() => {
+    addNextChat && addMessages()
+  }, [addNextChat]);
 
   useEffect(() => {
     if (lastJsonMessage) {
-      if(lastJsonMessage.matchup_id == openChat ){
-        console.log(lastJsonMessage," lastJsonMessage")
-      const lastMessage = {
-        body: lastJsonMessage.message,
-        sender: {
-          id: lastJsonMessage.sender_player_id,
-        },
-        time_sent: lastJsonMessage?.getFormattedTime,
-      };
-      const chatContent = [lastMessage, ...chat];
-      setChat(chatContent);
+      if (lastJsonMessage.matchup_id == openChat) {
+        console.log(lastJsonMessage, " lastJsonMessage");
+        const lastMessage = {
+          body: lastJsonMessage.message,
+          sender: {
+            id: lastJsonMessage.sender_player_id,
+          },
+          time_sent: lastJsonMessage?.getFormattedTime,
+        };
+        const chatContent = [lastMessage, ...chat];
+        setChat(chatContent);
 
-      if(!messages) return
-      console.log(messages,' messages 2')
-      const MessagesList:any = [...messages]
-      console.log(MessagesList,' 1')
-      for(let i=0;i<MessagesList?.length;i++){
-        if(MessagesList[i].id == lastJsonMessage.matchup_id){
-          // console.log(MessagesList.splice(i,1))
-          const [chat] = MessagesList.splice(i,1)
-          chat.last_message.body = lastJsonMessage.message
-          console.log(chat)
-          MessagesList.splice(0,0,chat)
+        if (!messages) return;
+        const MessagesList: any = [...messages];
+        for (let i = 0; i < MessagesList?.length; i++) {
+          if (MessagesList[i].id == lastJsonMessage.matchup_id) {
+            const [chat] = MessagesList.splice(i, 1);
+            chat.last_message.body = lastJsonMessage.message;
+            chat.read = false;
+            MessagesList.splice(0, 0, chat);
+          }
         }
-      }
-      setMessages(MessagesList)
 
-    }else{
-      console.log(lastJsonMessage,' lastJsonMessage')
-      console.log(messages,' messages')
-      if(!messages) return
-      console.log(messages,' messages 2')
-      const MessagesList:any = [...messages]
-      console.log(MessagesList,' 1')
-      for(let i=0;i<MessagesList?.length;i++){
-        if(MessagesList[i].id == lastJsonMessage.matchup_id){
-          // console.log(MessagesList.splice(i,1))
-          const [chat] = MessagesList.splice(i,1)
-          chat.last_message.body = lastJsonMessage.message
-          console.log(chat)
-          MessagesList.splice(0,0,chat)
+        setMessages(MessagesList);
+      } else {
+        if (!messages) return;
+        const MessagesList: any = [...messages];
+        for (let i = 0; i < MessagesList?.length; i++) {
+          if (MessagesList[i].id == lastJsonMessage.matchup_id) {
+            const [chat] = MessagesList.splice(i, 1);
+            chat.last_message.body = lastJsonMessage.message;
+            chat.read = false;
+            MessagesList.splice(0, 0, chat);
+          }
         }
+        setMessages(MessagesList);
       }
-      setMessages(MessagesList)
     }
-  }
   }, [lastJsonMessage]);
 
   const messagesList = useMemo(() => {
-    console.log(messages)
     return messages?.map((item: Message) => {
       const otherPlayer =
         item.player_accepting?.id == currentUser?.id
           ? item.player_inviting
           : item.player_accepting;
-      // console.log(item)
 
       return (
         <MessageItem
@@ -348,6 +418,7 @@ function Messenger() {
               action: "change_matchup",
               matchup_id: item.id,
             });
+            readChat(item.id);
           }}
           goToProfile={(e) => {
             e.stopPropagation();
@@ -360,10 +431,14 @@ function Messenger() {
   }, [messages, openChat, messagesFetch]);
 
   const chatMessages = useMemo(() => {
+    console.log(chat," chat")
     return chat?.map((item: chatMessage, i: number) => {
-      const author = item?.sender.id === currentUser.id;
+      // console.log(item,'item')
+      // console.log(currentUser," currentUser")
+      const author = item?.sender?.id === currentUser?.id;
 
       let rounded = "rounded-[40px]";
+      let timeAppear = false
       if (author) {
         if (chat[i + 1] && chat[i]?.sender.id === chat[i + 1]?.sender.id) {
           rounded =
@@ -390,17 +465,19 @@ function Messenger() {
         }
       }
 
+      if(chat[i]?.sender.id == chat[i+1]?.sender.id){
+        timeAppear = false
+      }else{
+        timeAppear = true
+      }
+
       const margin =
-        i === (chat.length -1)
+        i === chat.length - 1
           ? "mt-[0px]"
           : chat[i + 1] && chat[i]?.sender.id === chat[i + 1]?.sender.id
           ? "mt-[2px]"
           : "mt-[7px]";
-          console.log(chat)
-      console.log(i === chat.length,' i === chat.length')
-      console.log(chat[i],' chat[i]')
-      console.log(chat[i + 1],"  chat[i + 1]")
-      console.log(chat[i]?.sender.id === chat[i + 1]?.sender.id," chat[i]?.sender.id === chat[i + 1]?.sender.id")
+
       return (
         <ChatBubble
           key={i}
@@ -408,6 +485,7 @@ function Messenger() {
           isCurrentUser={author}
           rounded={rounded}
           margin={margin}
+          timeAppear={timeAppear}
         />
       );
     });
@@ -416,6 +494,7 @@ function Messenger() {
   return (
     <section
       // ref={messengerRef}
+      style={{ height: `${boxHeight}px` }}
       className="lg:flex-grow flex flex-col lg:flex-row m-[10px] w-[100%] border-[1px] border-[#243257d5]  rounded-[20px] overflow-hidden relative min-h-[100%] "
     >
       <div
@@ -425,7 +504,12 @@ function Messenger() {
       >
         {messagesList}
       </div>
-      <div className="lg:flex lg:flex-col hidden w-[35%] border-r border-r-[#243257d5]  h-[100%] overflow-y-auto chatScroll ">
+      <div
+        ref={messengersBox}
+        className="lg:flex lg:flex-col hidden w-[35%] border-r border-r-[#243257d5]  overflow-y-auto chatScroll  "
+      >
+        {messagesList}
+        {messagesList}
         {messagesList}
       </div>
       <div className="flex justify-between items-center w-[100%] h-[84px] md:h-[128px] border-b-[1px] border-b-[#243257d5] p-[10px] md:p-[16px] lg:hidden ">
@@ -468,8 +552,8 @@ function Messenger() {
       >
         <section
           ref={messageChat}
-          style={{ height: `${chatHeight}px` }}
-          className="flex flex-col-reverse flex-grow  w-[100%] h-full relative overflow-y-auto chatScroll "
+          // style={{ height: `${chatHeight}px` }}
+          className="flex flex-col-reverse flex-grow  w-[100%] relative overflow-y-auto chatScroll "
         >
           {chatMessages}
         </section>
