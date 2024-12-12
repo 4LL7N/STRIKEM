@@ -104,12 +104,14 @@ function Messenger() {
   }, []);
 
   // const location = useLocation()
-  // const [nextMessages, setNextMessages] = useState<string | null>(null);
+  const [nextMessages, setNextMessages] = useState<string | null>(null);
   const [nextChats, setNextChats] = useState<string | null>(null);
 
   const [addNextChat, setAddNextChat] = useState<boolean>(false);
+  const [addNextMessages, setAddNextMessages] = useState<boolean>(false);
 
-  const [messages, setMessages] = useState<Message[]>();
+
+  const [messages, setMessages] = useState<Message[]>([]);
   const [openChat, setOpenChat] = useState<string>("");
   const [chat, setChat] = useState<chatMessage[]>([]);
 
@@ -133,7 +135,7 @@ function Messenger() {
         },
       });
       // console.log(response.data)
-      // setNextMessages(response.data.next);
+      setNextMessages(response.data.next);
       setMessages(response.data.results);
       if (response.data.results.length > 0) {
         if (!openChat) {
@@ -202,7 +204,6 @@ function Messenger() {
           { headers: { Authorization: `JWT ${token}` } }
         );
         const chatData = Chatresponse.data.results;
-        console.log(chatData);
         setChat(chatData);
       } catch (err) {
         console.log(err);
@@ -253,7 +254,6 @@ function Messenger() {
         time_sent: getFormattedTime,
       };
       const chatContent = [newMessage, ...chat];
-      console;
       setChat(chatContent);
       chatInput.current.value = "";
     }
@@ -283,7 +283,7 @@ function Messenger() {
     setMessages(allChats);
   };
 
-  const addMessages = async () => {
+  const addChats = async () => {
     const url = nextChats?.replace("http", "https");
     if (nextChats && url) {
       try {
@@ -300,6 +300,25 @@ function Messenger() {
     }
   };
 
+  const addMessages = async () => {
+    const url = nextMessages?.replace("http", "https");
+    
+    if (nextMessages && url) {
+      try {
+        const MessagesResponse = await axios(url, {
+          headers: { Authorization: `JWT ${token}` },
+        });
+        // console.log(ChatResponse);
+        const messagesData = MessagesResponse.data.results;
+        const newMessages = [...messages,...messagesData];
+        setMessages(newMessages);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+
+
   const handleChatScroll = (e: any) => {
     const target = e.target as HTMLElement;
 
@@ -310,7 +329,7 @@ function Messenger() {
       Math.floor(target.scrollHeight - -target.scrollTop) ==
       target.clientHeight - 1;
     if (onTopOne || onTopTwo) {
-      console.log(nextChats);
+      // console.log(nextChats);
       setAddNextChat(true);
     } else {
       setAddNextChat(false);
@@ -319,10 +338,18 @@ function Messenger() {
 
   const handleMessagesScroll = (e: any) => {
     const target = e.target as HTMLElement;
-
-    // console.log((target.scrollHeight - target.scrollTop) == target.clientHeight)
-    if (target.scrollHeight - target.scrollTop == target.clientHeight)
-      console.log("new chats");
+    
+    const onBottomOne =
+      Math.floor(target.scrollHeight - target.scrollTop) ==
+      target.clientHeight;
+    const onBottomTwo =
+      Math.floor(target.scrollHeight - -target.scrollTop) ==
+      target.clientHeight - 1;
+    if (onBottomOne || onBottomTwo){
+      setAddNextMessages(true)
+    }else{
+      setAddNextMessages(false)
+    }
   };
 
   useEffect(() => {
@@ -351,13 +378,16 @@ function Messenger() {
   }, []);
 
   useEffect(() => {
-    addNextChat && addMessages()
+    addNextChat && addChats()
   }, [addNextChat]);
+
+  useEffect(()=>{
+    addNextMessages && addMessages()
+  },[addNextMessages])
 
   useEffect(() => {
     if (lastJsonMessage) {
       if (lastJsonMessage.matchup_id == openChat) {
-        console.log(lastJsonMessage, " lastJsonMessage");
         const lastMessage = {
           body: lastJsonMessage.message,
           sender: {
@@ -431,10 +461,7 @@ function Messenger() {
   }, [messages, openChat, messagesFetch]);
 
   const chatMessages = useMemo(() => {
-    console.log(chat," chat")
     return chat?.map((item: chatMessage, i: number) => {
-      // console.log(item,'item')
-      // console.log(currentUser," currentUser")
       const author = item?.sender?.id === currentUser?.id;
 
       let rounded = "rounded-[40px]";
@@ -493,7 +520,6 @@ function Messenger() {
 
   return (
     <section
-      // ref={messengerRef}
       style={{ height: `${boxHeight}px` }}
       className="lg:flex-grow flex flex-col lg:flex-row m-[10px] w-[100%] border-[1px] border-[#243257d5]  rounded-[20px] overflow-hidden relative min-h-[100%] "
     >
@@ -508,8 +534,6 @@ function Messenger() {
         ref={messengersBox}
         className="lg:flex lg:flex-col hidden w-[35%] border-r border-r-[#243257d5]  overflow-y-auto chatScroll  "
       >
-        {messagesList}
-        {messagesList}
         {messagesList}
       </div>
       <div className="flex justify-between items-center w-[100%] h-[84px] md:h-[128px] border-b-[1px] border-b-[#243257d5] p-[10px] md:p-[16px] lg:hidden ">
