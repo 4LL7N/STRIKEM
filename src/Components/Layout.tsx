@@ -388,7 +388,7 @@ function Layout(props: {
               }}
             />
             <div className="relative " >
-            <div className={` ${!unReadNotifications && 'hidden'} ${ location.pathname == "/messenger" || location.pathname.includes("users") || location.pathname.includes("Pools")? '' :'lg:flex'} hidden items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 `} >
+            <div className={` ${ location.pathname == "/messenger" || location.pathname.includes("users") || location.pathname.includes("Pools")? '' :!unReadNotifications ?'hidden':'lg:flex '} hidden items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 `} >
                 <p className="text-[12px] text-white " >{unReadNotifications}</p>
               </div>
             <FaBell
