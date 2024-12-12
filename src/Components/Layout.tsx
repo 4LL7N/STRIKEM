@@ -121,7 +121,6 @@ function Layout(props: {
           }
         );
 
-        console.log(currentUserResponse.data);
         setCurrentUser(currentUserResponse.data);
         localStorage.setItem(
           "currentUser",
@@ -150,10 +149,8 @@ function Layout(props: {
 
     if (viewportWidth < 768) {
       setContentH(`${viewportHeight - 77}px`);
-      console.log(`${viewportHeight - 57}px`);
     } else if (viewportWidth < 1024) {
       setContentH(`${viewportHeight - 137}px`);
-      console.log(`${viewportHeight - 137}px`);
     } else {
       setContentH(`${viewportHeight - 204}px`);
     }
@@ -186,7 +183,6 @@ function Layout(props: {
           headers: { Authorization: `JWT ${token}` },
         }
       );
-      console.log(response.data.results)
       setNotifications(response.data.results);
     } catch (err) {
       console.error(err);
@@ -203,7 +199,6 @@ function Layout(props: {
         }
       );
       setUnReadNotifications(unreadResponse.data.unread);
-      console.log(unreadResponse.data.unread);
     } catch (err) {
       console.error(err);
     }
@@ -231,13 +226,11 @@ function Layout(props: {
     const token = Cookies.get("token");
     if (token && token != "logout") {
       setLogedIn(true);
-      console.log(token);
       FetchCurrentUser();
       FetchUnreadNotifications();
     }
     updateLayout();
     window.addEventListener("resize", () => {
-      console.log("windown eventlistener");
       headerResize();
       updateLayout();
     });
@@ -395,7 +388,7 @@ function Layout(props: {
               }}
             />
             <div className="relative " >
-            <div className={` ${ location.pathname == "/messenger" || location.pathname.includes("users") || location.pathname.includes("Pools")? '' :'lg:flex'} hidden items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 `} >
+            <div className={` ${!unReadNotifications && 'hidden'} ${ location.pathname == "/messenger" || location.pathname.includes("users") || location.pathname.includes("Pools")? '' :'lg:flex'} hidden items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 `} >
                 <p className="text-[12px] text-white " >{unReadNotifications}</p>
               </div>
             <FaBell
@@ -449,7 +442,7 @@ function Layout(props: {
             className={`flex ${location.pathname.includes('Pool') || location.pathname == '/messenger' || location.pathname.includes("users") ? '' :'lg:flex-col'} items-center gap-[12px] ${!logedIn && "hidden"} `}
           >
             <div className="relative" >
-              <div className={`  ${ location.pathname == "/messenger" || location.pathname.includes("Pools") || location.pathname.includes("users")? '' :'lg:hidden'} flex  items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 `} >
+              <div className={` ${!unReadNotifications && 'hidden'}  ${ location.pathname == "/messenger" || location.pathname.includes("Pools") || location.pathname.includes("users")? '' :'lg:hidden'} flex  items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 `} >
                 <p className="text-[12px] text-white " >{unReadNotifications}</p>
               </div>
             <FaBell
