@@ -142,7 +142,6 @@ function Layout(props: {
       pathname === "/messenger" ||
       pathname.includes("Pools") ||
       pathname === "/matchmake";
-    console.log(" updateLayout")
     setContentW(
       viewportWidth >= 1024 && !isSpecialPage
         ? `${viewportWidth - 191}px`
@@ -162,22 +161,6 @@ function Layout(props: {
       isSpecialPage || viewportWidth < 1024 ? 100 : window.innerHeight - 65
     );
   }, [location.pathname]);
-
-  // const headerResize = useCallback(() => {
-  //   const viewportWidth = window.innerWidth;
-
-  //   const isSpecialPage =
-  //     location.pathname.includes("users") ||
-  //     location.pathname === "/messenger" ||
-  //     location.pathname.includes("Pools") ||
-  //     location.pathname === "/matchmake";
-  //     console.log(isSpecialPage," isSpecialPage")
-  //     console.log(location.pathname)
-  //     console.log(viewportWidth < 1024," viewportWidth < 1024")
-  //   setHeaderHeight(
-  //     isSpecialPage || viewportWidth < 1024 ? 100 : window.innerHeight - 64
-  //   );
-  // }, [location.pathname]);
 
   const fetchNoti = useCallback(async () => {
     const token = Cookies.get("token");
@@ -244,7 +227,6 @@ function Layout(props: {
     // headerResize()
     const token = Cookies.get("token");
     if (token && token != "logout" && isTokenExpired(token)) {
-      console.log(token)
       setLogedIn(true);
       FetchCurrentUser();
       FetchUnreadNotifications();
