@@ -231,6 +231,8 @@ function Layout(props: {
         const currentTime = Math.floor(Date.now() / 1000);
         if(decoded.exp){ // Current time in seconds
         console.log(decoded.exp < currentTime)
+        console.log(decoded.exp)
+        console.log(currentTime);
         return decoded.exp < currentTime
         }
         console.log(decoded)
