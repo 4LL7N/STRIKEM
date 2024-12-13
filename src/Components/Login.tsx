@@ -61,7 +61,8 @@ function Login({setLoginBox,setSignUpBox}:any) {
       Cookies.set('token',response.data.access
         ,{
         secure: true,
-        sameSite: 'Strict',         
+        sameSite: 'Strict',
+        expires:1      
       }
     )
 

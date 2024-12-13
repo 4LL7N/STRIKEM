@@ -158,7 +158,7 @@ function Layout(props: {
 
     `${window.innerHeight - 137}px`;
     setHeaderHeight(
-      isSpecialPage || viewportWidth < 1024 ? 100 : window.innerHeight - 64
+      isSpecialPage || viewportWidth < 1024 ? 100 : window.innerHeight - 65
     );
   }, [location.pathname]);
 
@@ -229,6 +229,7 @@ function Layout(props: {
     // headerResize()
     const token = Cookies.get("token");
     if (token && token != "logout") {
+      console.log(token)
       setLogedIn(true);
       FetchCurrentUser();
       FetchUnreadNotifications();
