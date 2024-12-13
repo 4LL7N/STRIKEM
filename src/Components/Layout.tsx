@@ -230,14 +230,8 @@ function Layout(props: {
         const decoded = jwtDecode(token);
         const currentTime = Math.floor(Date.now() / 1000);
         if(decoded.exp){ // Current time in seconds
-        console.log(decoded.exp < currentTime)
-        console.log(decoded.exp)
-        console.log(currentTime);
-        return decoded.exp < currentTime
+        return decoded.exp > currentTime
         }
-        console.log(decoded)
-        console.log(currentTime);
-        
         return false // Check if the token is expired
     } catch (error) {
         console.error("Invalid token:", error);
