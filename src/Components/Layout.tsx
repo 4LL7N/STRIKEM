@@ -15,6 +15,7 @@ import Cookies from "js-cookie";
 import { CiLogin, CiLogout } from "react-icons/ci";
 import Login from "./Login";
 import Signup from "./Signup";
+import { jwtDecode } from "jwt-decode";
 
 interface User {
   email: string;
@@ -224,11 +225,22 @@ function Layout(props: {
     window.location.reload();
   };
 
+  const isTokenExpired = (token:string) => {
+    try {
+        const decoded = jwtDecode(token);
+        const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+        return decoded.exp? decoded.exp < currentTime:false // Check if the token is expired
+    } catch (error) {
+        console.error("Invalid token:", error);
+        return true; // Treat as expired if decoding fails
+    }
+};
+
   useEffect(() => {
     // divSize();
     // headerResize()
     const token = Cookies.get("token");
-    if (token && token != "logout") {
+    if (token && token != "logout" && isTokenExpired(token)) {
       console.log(token)
       setLogedIn(true);
       FetchCurrentUser();
