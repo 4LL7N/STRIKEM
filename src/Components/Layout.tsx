@@ -228,9 +228,15 @@ function Layout(props: {
   const isTokenExpired = (token:string) => {
     try {
         const decoded = jwtDecode(token);
-        const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
-        console.log(decoded.exp)
-        return decoded.exp? decoded.exp < currentTime:false // Check if the token is expired
+        const currentTime = Math.floor(Date.now() / 1000);
+        if(decoded.exp){ // Current time in seconds
+        console.log(decoded.exp < currentTime)
+        return decoded.exp < currentTime
+        }
+        console.log(decoded)
+        console.log(currentTime);
+        
+        return false // Check if the token is expired
     } catch (error) {
         console.error("Invalid token:", error);
         return true; // Treat as expired if decoding fails
