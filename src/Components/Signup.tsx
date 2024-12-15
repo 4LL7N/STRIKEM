@@ -185,7 +185,7 @@ function Signup({setSignUpBox,setLoginBox}:any) {
         <h1 className="text-[32px] text-[#FFF] font-light tarcking-[-0.5px] self-start	">
           Sign Up
         </h1>
-        <IoMdClose style={{color:'white',width:'24px',height:'24px'}} onClick={()=>{setSignUpBox(false)}} />
+        <IoMdClose style={{color:'white',width:'24px',height:'24px',cursor:'pointer'}} onClick={()=>{setSignUpBox(false)}} />
         </div>
         <div
           className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${

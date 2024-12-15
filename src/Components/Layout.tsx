@@ -17,6 +17,7 @@ import Login from "./Login";
 import Signup from "./Signup";
 import { jwtDecode } from "jwt-decode";
 
+
 interface User {
   email: string;
   first_name: string;
@@ -72,7 +73,7 @@ function Layout(props: {
   acceptInvatation: number;
   setAcceptInvatation: (acceptInvatation: number) => void;
 }) {
-  const { sendJsonMessage, lastJsonMessage, logedIn, setLogedIn } =
+  const { sendJsonMessage, lastJsonMessage, logedIn, setLogedIn ,reservationBox} =
     useWebSocketContext();
   const navigate = useNavigate();
   const location = useLocation();
@@ -293,12 +294,13 @@ function Layout(props: {
       >
         <Signup setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />
       </div>
+      
       <div
         className={`w-[100vw] ${
           ((location.pathname == "/matchmake" ||
             location.pathname == "/messenger") &&
             window.innerWidth > 1024) ||
-          loginBox
+          loginBox || signUpBox || reservationBox
             ? "h-screen"
             : "min-h-screen"
         } relative overflow-hidden md:overflow-auto bg-[#10141E] flex flex-col md:p-[25px] ${

@@ -4,7 +4,8 @@ import "./CSS/Pool.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "leaflet/dist/leaflet.css";
-import L from 'leaflet';
+import L from "leaflet";
+
 import { useRef, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { CiStar } from "react-icons/ci";
@@ -12,9 +13,10 @@ import axios from "axios";
 import { TbLetterW } from "react-icons/tb";
 import { MdTableRestaurant } from "react-icons/md";
 import { FaBuilding } from "react-icons/fa";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import { MapContainer, Marker, TileLayer, Tooltip } from "react-leaflet";
 import { useGeolocated } from "react-geolocated";
+import { useWebSocketContext } from "./Websocket";
 
 interface Rating {
   id: number;
@@ -46,15 +48,17 @@ interface PoolHall {
   avg_rating: number;
   pics: Picture[];
   table_count: number;
-  slug:string,
-  latitude:number,
-  longitude:number
-
+  slug: string;
+  latitude: number;
+  longitude: number;
 }
 
 interface Table {
   id: number;
   current_session: any;
+  free:boolean;
+  left:number;
+  top:number;
 }
 
 interface Picture {
@@ -67,8 +71,8 @@ const Star = ({ fillPercentage }: { fillPercentage: number }) => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      width="2.7rem" 
-      height="2.7rem" 
+      width="2.7rem"
+      height="2.7rem"
       style={{ position: "relative" }}
     >
       <path
@@ -78,7 +82,7 @@ const Star = ({ fillPercentage }: { fillPercentage: number }) => {
       <path
         d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
         fill="#ffd700"
-        style={{ clipPath: `inset(0 ${100 - fillPercentage}% 0 0)` }} 
+        style={{ clipPath: `inset(0 ${100 - fillPercentage}% 0 0)` }}
       />
     </svg>
   );
@@ -101,36 +105,36 @@ const StarRating = ({ rating }: { rating: number | undefined }) => {
     }
   });
 
-  return (
-    <div className="flex space-x-1">{stars}</div>
-  );
+  return <div className="flex space-x-1">{stars}</div>;
 };
 
-
 const markerIcon = new L.Icon({
-  iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-  iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
 });
 
-
 function Pool() {
-
   const { coords, isGeolocationAvailable, isGeolocationEnabled } =
-        useGeolocated({
-            positionOptions: {
-                enableHighAccuracy: false,
-            },
-            userDecisionTimeout: 5000,
-        });
+    useGeolocated({
+      positionOptions: {
+        enableHighAccuracy: false,
+      },
+      userDecisionTimeout: 5000,
+    });
+
+  const { setReservationBox } = useWebSocketContext();
 
   const location = useLocation();
   const [ratings, setRatings] = useState<Rating[]>([]);
 
-  const [whiteBoxHeight,setWhiteBoxHeight] = useState<number>(0)
-  const [whiteBoxWidth,setWhiteBoxWidth] = useState<number>(0)
+  const [whiteBoxHeight, setWhiteBoxHeight] = useState<number>(0);
+  const [whiteBoxWidth, setWhiteBoxWidth] = useState<number>(0);
 
   const avgRating = location.state.avg_rating;
 
@@ -146,14 +150,14 @@ function Pool() {
   const overlayDiv = useRef<any>();
   const imgContainer = useRef<any>();
   const mapImage = useRef<any>();
-  const whiteBoxRef = useRef<any>()
+  const whiteBoxRef = useRef<any>();
 
   const Fetch = async () => {
     try {
       const response = await axios.get(
-        `https://strikem.site/api/poolhouses/${id}/ratings/`);
+        `https://strikem.site/api/poolhouses/${id}/ratings/`
+      );
       setRatings(response.data);
-
     } catch (err) {
       console.error(err);
     }
@@ -169,70 +173,68 @@ function Pool() {
 
     Fetch();
 
-    setTimeout(()=>{
-    const heightPercent =
-      (imgContainer?.current?.getBoundingClientRect().height * 100) /
-      img?.current?.getBoundingClientRect().height /
-      100;
-    const widthPercent =
-      (imgContainer?.current?.getBoundingClientRect().width * 100) /
-      img?.current?.getBoundingClientRect().width /
-      100;
-
-    const whiteBoxHeight = Number(
-      mapImage?.current?.getBoundingClientRect().height * heightPercent
-    );
-    const whiteBoxWidth = Number(
-      mapImage?.current?.getBoundingClientRect().width * widthPercent
-    );
-
-    setWhiteBoxHeight(whiteBoxHeight)
-    setWhiteBoxWidth(whiteBoxWidth)
-    },1000)
-    
-    window.addEventListener('resize', () => {
+    setTimeout(() => {
       const heightPercent =
-      (imgContainer?.current?.getBoundingClientRect().height * 100) /
-      img?.current?.getBoundingClientRect().height /
-      100;
-    const widthPercent =
-      (imgContainer?.current?.getBoundingClientRect().width * 100) /
-      img?.current?.getBoundingClientRect().width /
-      100;
+        (imgContainer?.current?.getBoundingClientRect().height * 100) /
+        img?.current?.getBoundingClientRect().height /
+        100;
+      const widthPercent =
+        (imgContainer?.current?.getBoundingClientRect().width * 100) /
+        img?.current?.getBoundingClientRect().width /
+        100;
 
-    const whiteBoxHeight = Number(
-      mapImage?.current?.getBoundingClientRect().height * heightPercent
-    );
-    const whiteBoxWidth = Number(
-      mapImage?.current?.getBoundingClientRect().width * widthPercent
-    );
+      const whiteBoxHeight = Number(
+        mapImage?.current?.getBoundingClientRect().height * heightPercent
+      );
+      const whiteBoxWidth = Number(
+        mapImage?.current?.getBoundingClientRect().width * widthPercent
+      );
 
-    setWhiteBoxHeight(whiteBoxHeight)
-    setWhiteBoxWidth(whiteBoxWidth)
-  });
+      setWhiteBoxHeight(whiteBoxHeight);
+      setWhiteBoxWidth(whiteBoxWidth);
+    }, 1000);
+
+    window.addEventListener("resize", () => {
+      const heightPercent =
+        (imgContainer?.current?.getBoundingClientRect().height * 100) /
+        img?.current?.getBoundingClientRect().height /
+        100;
+      const widthPercent =
+        (imgContainer?.current?.getBoundingClientRect().width * 100) /
+        img?.current?.getBoundingClientRect().width /
+        100;
+
+      const whiteBoxHeight = Number(
+        mapImage?.current?.getBoundingClientRect().height * heightPercent
+      );
+      const whiteBoxWidth = Number(
+        mapImage?.current?.getBoundingClientRect().width * widthPercent
+      );
+
+      setWhiteBoxHeight(whiteBoxHeight);
+      setWhiteBoxWidth(whiteBoxWidth);
+    });
   }, []);
-
-  
-
 
   function handleResize() {
     const sectionNumHorizontal = img.current?.naturalWidth / 1920;
     const sectionNumVertical = img.current?.naturalHeight / 1080;
-    if(overlayDiv.current){
-    overlayDiv.current.style.width = `${
-      imgContainer.current.getBoundingClientRect().width * sectionNumHorizontal
-    }px`;
-  }
+    if (overlayDiv.current) {
+      overlayDiv.current.style.width = `${
+        imgContainer.current.getBoundingClientRect().width *
+        sectionNumHorizontal
+      }px`;
+    }
 
     const rect = img.current?.getBoundingClientRect();
-  if(overlayDiv.current){
-    overlayDiv.current.style.height = `${rect.height}px`;
-    imgContainer.current.style.height = `${
-      img.current.getBoundingClientRect().height / sectionNumVertical
-    }px`;
-    navigate("", true);
+    if (overlayDiv.current) {
+      overlayDiv.current.style.height = `${rect.height}px`;
+      imgContainer.current.style.height = `${
+        img.current.getBoundingClientRect().height / sectionNumVertical
+      }px`;
+      navigate("", true);
+    }
   }
-}
 
   function navigate(direction: string, resizing: boolean) {
     const sectionNumHorizontal = img.current?.naturalWidth / 1920;
@@ -337,50 +339,49 @@ function Pool() {
         break;
     }
   }
- 
-  function mapNavigation(direction:string) {
 
-    switch (direction){
-      case 'east':{
-        let left = whiteBoxRef.current.style.left
-        if(left.includes('px')){
-          left = left.slice(0, -2)
+  function mapNavigation(direction: string) {
+    switch (direction) {
+      case "east": {
+        let left = whiteBoxRef.current.style.left;
+        if (left.includes("px")) {
+          left = left.slice(0, -2);
         }
         whiteBoxRef.current.style.left = `${Number(left) + whiteBoxWidth}px`;
-        break
+        break;
       }
-      case 'west':{
-        let left = whiteBoxRef.current.style.left
-        if(left.includes('px')){
-          left = left.slice(0, -2)
+      case "west": {
+        let left = whiteBoxRef.current.style.left;
+        if (left.includes("px")) {
+          left = left.slice(0, -2);
         }
         whiteBoxRef.current.style.left = `${Number(left) - whiteBoxWidth}px`;
-        break
+        break;
       }
-      case 'south':{
-        let top = whiteBoxRef.current.style.top
-        if(top.includes('px')){
-          top = top.slice(0, -2)
+      case "south": {
+        let top = whiteBoxRef.current.style.top;
+        if (top.includes("px")) {
+          top = top.slice(0, -2);
         }
         whiteBoxRef.current.style.top = `${Number(top) + whiteBoxHeight}px`;
-        break
+        break;
       }
-      case 'north':{
-        let top = whiteBoxRef.current.style.top
-        if(top.includes('px')){
-          top = top.slice(0, -2)
+      case "north": {
+        let top = whiteBoxRef.current.style.top;
+        if (top.includes("px")) {
+          top = top.slice(0, -2);
         }
         whiteBoxRef.current.style.top = `${Number(top) - whiteBoxHeight}px`;
-        break
+        break;
       }
     }
   }
 
   const ImageMap = () => {
-    setTimeout(()=>{
-      whiteBoxRef.current.style.left = '0px'
-      whiteBoxRef.current.style.top = '0px'
-    },10)
+    setTimeout(() => {
+      whiteBoxRef.current.style.left = "0px";
+      whiteBoxRef.current.style.top = "0px";
+    }, 10);
     return (
       <div className=" absolute right-0 top-0 w-[20%] z-1 border border-black ">
         <div className="relative w-[100%] h-[100%] ">
@@ -394,10 +395,10 @@ function Pool() {
           <div
             ref={whiteBoxRef}
             style={{
-              position:'absolute',
+              position: "absolute",
               width: `${whiteBoxWidth}px`,
               height: `${whiteBoxHeight}px`,
-              transition: 'left 0.3s ease, top 0.3s ease',
+              transition: "left 0.3s ease, top 0.3s ease",
             }}
             className={`bg-[#ffffff8b] `}
           />
@@ -405,6 +406,8 @@ function Pool() {
       </div>
     );
   };
+
+  console.log(poolInfo)
 
   return (
     <section className="flex flex-col items-center bg-[#10141E] w-[100%] min-h-screen  pb-[120px]">
@@ -440,7 +443,9 @@ function Pool() {
                     className="direction-div-vertical me-1"
                   >
                     <button
-                      onClick={() => {navigate("east", false),mapNavigation("east")}}
+                      onClick={() => {
+                        navigate("east", false), mapNavigation("east");
+                      }}
                       id="east"
                       className="hover:opacity-30 transition-opacity duration-300 "
                       style={{ padding: "5px", borderRadius: "5px" }}
@@ -459,7 +464,9 @@ function Pool() {
                     className="direction-div-vertical ms-1"
                   >
                     <button
-                      onClick={() =>{navigate("west", false),mapNavigation("west")}}
+                      onClick={() => {
+                        navigate("west", false), mapNavigation("west");
+                      }}
                       id="west"
                       className="hover:opacity-30 transition-opacity duration-300 "
                       style={{ padding: "5px", borderRadius: "5px" }}
@@ -478,9 +485,9 @@ function Pool() {
                     className="direction-div-horizontal  mt-1"
                   >
                     <button
-                      onClick={() => 
-                        {navigate("north", false),mapNavigation("north")}
-                      }
+                      onClick={() => {
+                        navigate("north", false), mapNavigation("north");
+                      }}
                       id="north"
                       className="hover:opacity-30 transition-opacity duration-300 "
                       style={{ padding: "5px", borderRadius: "5px" }}
@@ -499,7 +506,9 @@ function Pool() {
                     className="direction-div-horizontal mb-1"
                   >
                     <button
-                      onClick={() => {navigate("south", false),mapNavigation("south")}}
+                      onClick={() => {
+                        navigate("south", false), mapNavigation("south");
+                      }}
                       id="south"
                       className="hover:opacity-30 transition-opacity duration-300 "
                       style={{ padding: "5px", borderRadius: "5px" }}
@@ -517,16 +526,30 @@ function Pool() {
                     }}
                     className="div-container fade-in"
                   >
-                    <div className=" absolute top-[11.9%] left-[8.7%] z-40 w-[6.95%] h-[31.3%] hover:bg-[#000000a4] cursor-pointer flex justify-center items-center ">
+                    {
+
+                    poolInfo.tables.map((item)=>{
+                      return(
+                        <div style={{position:"absolute",top:`${item.top}%`,left:`${item.left}%`}} className=" z-40 w-[5%] h-[9%] bg-white rounded-xl cursor-pointer flex justify-center items-center ">
                       <div className="flex flex-col items-center">
-                        <p className="text-[#fff] text-[100%]">
+                        <p className="text-[#fab907] text-[100%]">
                           {ratings[0]?.rater?.user?.username} vs{" "}
                           {ratings[1]?.rater?.user?.username}{" "}
                         </p>
-                        <p className="text-[#fff] text-[100%]">1:30:29</p>
+                        <p className="text-[#fab907] text-[100%]">1:30:29</p>
+                        <button
+                          className="w-[100%] flex justify-center  bg-[#fab907] text-white  py-1 rounded-[10px] mt-1 "
+                          onClick={() => {
+                            setReservationBox(true);
+                          }}
+                        >
+                          <p>RESERVE</p>
+                        </button>
                       </div>
-                    </div>
-
+                    </div>  
+                      )
+                    })
+                    }
                     <img
                       ref={img}
                       src="/images/testPool.jpg"
@@ -670,44 +693,53 @@ function Pool() {
             );
           })}
         </div>
-        <div className=" flex items-center justify-center mt-[48px] rounded-[18px] overflow-hidden " >
+        <div className=" flex items-center justify-center mt-[48px] rounded-[18px] overflow-hidden ">
           {!isGeolocationAvailable ? (
-        <h1 className="text-[20px] text-[#fff] " >Your browser does not support Geolocation</h1>
-    ) : !isGeolocationEnabled ? (
-      <h1 className="text-[20px] text-[#fff] " >Geolocation is not enabled</h1>
-    ) : coords ? (
-      <div className="w-[100%]" >
-      <MapContainer
-      center={[poolInfo?.latitude, poolInfo?.longitude]} 
-      zoom={15}
-      minZoom={13}            
-      maxZoom={18}
-      style={{ height: '400px', width: '100%' }}
-    >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
-      />
-      <Marker position={[poolInfo?.latitude, poolInfo?.longitude]} icon={markerIcon} >
-      <Tooltip direction="top" offset={[0, -20]} permanent>
-          {poolInfo.title}
-        </Tooltip>
-      </Marker>
-      {
-        Cookies.get('token') && Cookies.get('token') != 'logout' ?
-      <Marker position={[coords.latitude,coords.longitude]} icon={markerIcon} >
-      <Tooltip direction="top" offset={[0, -20]} permanent>
-          You
-        </Tooltip>
-      </Marker>
-      :
-      null
-    }
-    </MapContainer>
-    </div>
-    ) : (
-      <h1 className="text-[20px] text-[#fff] " >Getting the location data&hellip; </h1>
-    )}
+            <h1 className="text-[20px] text-[#fff] ">
+              Your browser does not support Geolocation
+            </h1>
+          ) : !isGeolocationEnabled ? (
+            <h1 className="text-[20px] text-[#fff] ">
+              Geolocation is not enabled
+            </h1>
+          ) : coords ? (
+            <div className="w-[100%]">
+              <MapContainer
+                center={[poolInfo?.latitude, poolInfo?.longitude]}
+                zoom={15}
+                minZoom={13}
+                maxZoom={18}
+                style={{ height: "400px", width: "100%" }}
+              >
+                <TileLayer
+                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+                />
+                <Marker
+                  position={[poolInfo?.latitude, poolInfo?.longitude]}
+                  icon={markerIcon}
+                >
+                  <Tooltip direction="top" offset={[0, -20]} permanent>
+                    {poolInfo.title}
+                  </Tooltip>
+                </Marker>
+                {Cookies.get("token") && Cookies.get("token") != "logout" ? (
+                  <Marker
+                    position={[coords.latitude, coords.longitude]}
+                    icon={markerIcon}
+                  >
+                    <Tooltip direction="top" offset={[0, -20]} permanent>
+                      You
+                    </Tooltip>
+                  </Marker>
+                ) : null}
+              </MapContainer>
+            </div>
+          ) : (
+            <h1 className="text-[20px] text-[#fff] ">
+              Getting the location data&hellip;{" "}
+            </h1>
+          )}
         </div>
       </main>
     </section>
