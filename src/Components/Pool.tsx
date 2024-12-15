@@ -47,6 +47,7 @@ interface PoolHall {
   tables: Table[];
   avg_rating: number;
   pics: Picture[];
+  room_image:string
   table_count: number;
   slug: string;
   latitude: number;
@@ -552,7 +553,7 @@ function Pool() {
                     }
                     <img
                       ref={img}
-                      src="/images/testPool.jpg"
+                      src={poolInfo.room_image}
                       id="largeImage"
                       className="img-fluid"
                     />
