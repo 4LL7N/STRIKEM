@@ -408,7 +408,6 @@ function Pool() {
     );
   };
 
-  console.log(poolInfo)
 
   return (
     <section className="flex flex-col items-center bg-[#10141E] w-[100%] min-h-screen  pb-[120px]">
@@ -527,26 +526,22 @@ function Pool() {
                     }}
                     className="div-container fade-in"
                   >
-                    {
-
-                    poolInfo.tables.map((item)=>{
+                    {poolInfo.tables.map((item,i)=>{
                       return(
-                        <div style={{position:"absolute",top:`${item.top}%`,left:`${item.left}%`}} className=" z-40 w-[5%] h-[9%] bg-white rounded-xl cursor-pointer flex justify-center items-center ">
-                      <div className="flex flex-col items-center">
-                        <p className="text-[#fab907] text-[100%]">
+                        <div key={i} style={{position:"absolute",top:`${item.top}%`,left:`${item.left}%`}} className=" flex-col z-40 w-[5%] h-[8%] p-2 bg-white rounded-md md:rounded-xl cursor-pointer flex justify-center items-center ">
+                        <p className="text-[#fab907] text-[8px] lg:text-[12px]">
                           {ratings[0]?.rater?.user?.username} vs{" "}
                           {ratings[1]?.rater?.user?.username}{" "}
                         </p>
-                        <p className="text-[#fab907] text-[100%]">1:30:29</p>
+                        <p className="text-[#fab907] text-[8px] lg:text-[12px] ">1:30:29</p>
                         <button
-                          className="w-[100%] flex justify-center  bg-[#fab907] text-white  py-1 rounded-[10px] mt-1 "
+                          className="w-[100%] flex justify-center  bg-[#fab907] text-white text-[8px] lg:text-[12px]  py-1 rounded-[5px] md:rounded-[10px] mt-1 "
                           onClick={() => {
                             setReservationBox(true);
                           }}
                         >
                           <p>RESERVE</p>
                         </button>
-                      </div>
                     </div>  
                       )
                     })

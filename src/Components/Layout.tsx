@@ -16,6 +16,7 @@ import { CiLogin, CiLogout } from "react-icons/ci";
 import Login from "./Login";
 import Signup from "./Signup";
 import { jwtDecode } from "jwt-decode";
+import Reservation from "./Reservation";
 
 
 interface User {
@@ -294,7 +295,13 @@ function Layout(props: {
       >
         <Signup setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />
       </div>
-      
+      <div
+        className={` flex flex-col items-center justify-center  w-[100vw] h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+          reservationBox ? "" : "hidden"
+        }  `}
+      >
+        <Reservation/>
+      </div>
       <div
         className={`w-[100vw] ${
           ((location.pathname == "/matchmake" ||
