@@ -137,12 +137,16 @@ function Pool() {
   const [whiteBoxHeight, setWhiteBoxHeight] = useState<number>(0);
   const [whiteBoxWidth, setWhiteBoxWidth] = useState<number>(0);
 
+  const [nameLength,setNameLength] = useState<number>(2)
+
   const avgRating = location.state.avg_rating;
 
   const id =
     location.pathname.split("/")[location.pathname.split("/").length - 1];
   const poolInfo: PoolHall = location.state;
   const [imageI, setImageI] = useState<number>(0);
+
+
 
   let positionVertical = 1;
   let positionHorizontal = 1;
@@ -214,8 +218,35 @@ function Pool() {
 
       setWhiteBoxHeight(whiteBoxHeight);
       setWhiteBoxWidth(whiteBoxWidth);
+      // setNameSizeChange((i)=>!i)
+       
+      if(window.innerWidth >1045){
+        setNameLength(0)
+        console.log(0);
+      }else if(window.innerWidth > 460){
+        setNameLength(4)
+        console.log(4);
+      }else if(window.innerWidth > 382){
+        setNameLength(3)
+        console.log(3);
+      }else if(window.innerWidth > 336){
+        setNameLength(2)
+      }else{
+      setNameLength(1) 
+      }
     });
   }, []);
+
+  // useEffect(()=>{
+    
+  //                     if(window.innerWidth > 382){
+  //                       setNameLength(3)
+  //                     }else if(window.innerWidth > 460){
+  //                       setNameLength(4)
+  //                     }else if(window.innerWidth >1024){
+  //                       setNameLength(5)
+  //                     }
+  // },[nameSizeChange])
 
   function handleResize() {
     const sectionNumHorizontal = img.current?.naturalWidth / 1920;
@@ -528,15 +559,17 @@ function Pool() {
                     className="div-container fade-in"
                   >
                     {poolInfo.tables.map((item,i)=>{
+                      
                       return(
-                        <div key={i} style={{position:"absolute",top:`${item.top}%`,left:`${item.left}%`}} className=" flex-col z-50 md:w-[5%] md:h-[8%] p-2 bg-white rounded-md md:rounded-xl cursor-pointer flex justify-center items-center ">
-                        <p className="text-[#fab907] text-[8px] lg:text-[12px]">
-                          {ratings[0]?.rater?.user?.username} vs{" "}
-                          {ratings[1]?.rater?.user?.username}{" "}
+                        <div key={i} style={{position:"absolute",top:`${item.top}%`,left:`${item.left}%`}} className=" flex-col z-50 w-[6%] h-[14%] p-2 bg-white rounded-md md:rounded-xl cursor-pointer flex justify-center items-center ">
+                        <p className="text-[#fab907] text-[8px] sm:text-[12px] lg:text-[14px]">
+                          
+                          {nameLength?ratings[0]?.rater?.user?.username.slice(0,nameLength):ratings[0]?.rater?.user?.username}{nameLength?".. ":" "}vs{" "}
+                          {nameLength?ratings[1]?.rater?.user?.username.slice(0,nameLength):ratings[0]?.rater?.user?.username}{nameLength?".. ":" "}
                         </p>
-                        <p className="text-[#fab907] text-[8px] lg:text-[12px] ">1:30:29</p>
+                        <p className="text-[#fab907] text-[8px] sm:text-[12px] ">1:30:29</p>
                         <button
-                          className="w-[100%] flex justify-center  bg-[#fab907] text-white text-[8px] lg:text-[12px]  py-1 rounded-[5px] md:rounded-[10px] mt-1  pointer-events-auto"
+                          className="w-[100%] flex justify-center  bg-[#fab907] text-white text-[8px] sm:text-[12px] py-[2px] md:py-1 rounded-[5px] md:rounded-[10px] mt-1  pointer-events-auto"
                           onClick={() => {
                             setReservationBox(true);
                           }}
