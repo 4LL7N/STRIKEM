@@ -415,7 +415,7 @@ function Pool() {
       whiteBoxRef.current.style.top = "0px";
     }, 10);
     return (
-      <div className=" absolute right-0 top-0 w-[20%] z-1 border border-black ">
+      <div className=" absolute right-0 top-0 w-[20%] z-[49] border border-black ">
         <div className="relative w-[100%] h-[100%] ">
           <img
             ref={mapImage}
@@ -469,7 +469,7 @@ function Pool() {
                       position: "absolute",
                       right: "0",
                       top: "50%",
-                      zIndex: "40",
+                      zIndex: "49",
                     }}
                     className="direction-div-vertical me-1"
                   >
@@ -490,7 +490,7 @@ function Pool() {
                       position: "absolute",
                       left: "0",
                       top: "50%",
-                      zIndex: "40",
+                      zIndex: "49",
                     }}
                     className="direction-div-vertical ms-1"
                   >
@@ -511,7 +511,7 @@ function Pool() {
                       position: "absolute",
                       top: "0",
                       left: "50%",
-                      zIndex: "40",
+                      zIndex: "49",
                     }}
                     className="direction-div-horizontal  mt-1"
                   >
@@ -531,7 +531,7 @@ function Pool() {
                     style={{
                       position: "absolute",
                       left: "50%",
-                      zIndex: "40",
+                      zIndex: "49",
                       bottom: "0",
                     }}
                     className="direction-div-horizontal mb-1"
@@ -553,7 +553,7 @@ function Pool() {
                       position: "absolute",
                       top: "0",
                       left: "0",
-                      zIndex: "49",
+                      zIndex: "48",
                       pointerEvents: "auto",
                     }}
                     className="div-container fade-in"
