@@ -522,25 +522,26 @@ function Pool() {
                       position: "absolute",
                       top: "0",
                       left: "0",
-                      zIndex: "0",
+                      zIndex: "49",
+                      pointerEvents: "auto",
                     }}
                     className="div-container fade-in"
                   >
                     {poolInfo.tables.map((item,i)=>{
                       return(
-                        <div key={i} style={{position:"absolute",top:`${item.top}%`,left:`${item.left}%`}} className=" flex-col z-40 w-[5%] h-[8%] p-2 bg-white rounded-md md:rounded-xl cursor-pointer flex justify-center items-center ">
+                        <div key={i} style={{position:"absolute",top:`${item.top}%`,left:`${item.left}%`}} className=" flex-col z-50 md:w-[5%] md:h-[8%] p-2 bg-white rounded-md md:rounded-xl cursor-pointer flex justify-center items-center ">
                         <p className="text-[#fab907] text-[8px] lg:text-[12px]">
                           {ratings[0]?.rater?.user?.username} vs{" "}
                           {ratings[1]?.rater?.user?.username}{" "}
                         </p>
                         <p className="text-[#fab907] text-[8px] lg:text-[12px] ">1:30:29</p>
                         <button
-                          className="w-[100%] flex justify-center  bg-[#fab907] text-white text-[8px] lg:text-[12px]  py-1 rounded-[5px] md:rounded-[10px] mt-1 "
+                          className="w-[100%] flex justify-center  bg-[#fab907] text-white text-[8px] lg:text-[12px]  py-1 rounded-[5px] md:rounded-[10px] mt-1  pointer-events-auto"
                           onClick={() => {
                             setReservationBox(true);
                           }}
                         >
-                          <p>RESERVE</p>
+                          RESERVE
                         </button>
                     </div>  
                       )
@@ -550,9 +551,10 @@ function Pool() {
                       ref={img}
                       src={poolInfo.room_image}
                       id="largeImage"
-                      className="img-fluid"
+                      className="img-fluid z-10 "
                     />
                   </div>
+                  
                 </div>
               </div>
             </div>
