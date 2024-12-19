@@ -282,7 +282,7 @@ function Layout(props: {
   return (
     <>
       <div
-        className={` flex flex-col items-center justify-center  w-[100vw] h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+        className={` flex flex-col items-center justify-center  w-[100vw] min-h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
           loginBox ? "" : "hidden"
         } `}
       >
@@ -296,7 +296,7 @@ function Layout(props: {
         <Signup setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />
       </div>
       <div
-        className={` flex flex-col items-center justify-center  w-[100vw] h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+        className={` flex flex-col items-center justify-center  w-[100vw] ${window.innerHeight < 860?"min-h-[860px] md:h-screen ":"h-screen"} px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
           reservationBox ? "" : "hidden"
         }  `}
       >
@@ -304,10 +304,16 @@ function Layout(props: {
       </div>
       <div
         className={`w-[100vw] ${
+          reservationBox ?
+            window.innerHeight < 860?
+            "h-[860px] md:h-screen"
+            :
+            "h-screen "
+          :
           ((location.pathname == "/matchmake" ||
             location.pathname == "/messenger") &&
             window.innerWidth > 1024) ||
-          loginBox || signUpBox || reservationBox
+          loginBox || signUpBox 
             ? "h-screen"
             : "min-h-screen"
         } relative overflow-hidden md:overflow-auto bg-[#10141E] flex flex-col md:p-[25px] ${

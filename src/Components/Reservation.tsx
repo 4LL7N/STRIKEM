@@ -1,5 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import "./CSS/Reservation.css"
+
 import { useMemo, useState } from "react";
 
 import { useEffect } from "react";
@@ -12,6 +14,10 @@ import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticTimePicker } from "@mui/x-date-pickers/StaticTimePicker";
+
+import FullCalendar from "@fullcalendar/react";
+import timeGridPlugin from "@fullcalendar/timegrid";
+
 
 interface Player {
   id: number;
@@ -312,25 +318,19 @@ function Reservation() {
             `https://strikem.site/api/poolhouses/7/tables/16/reserve/?date=${date(
               0
             )}`,
-            {
-              headers: { Authorization: `JWT ${token}` },
-            }
+
           ),
           axios.get(
             `https://strikem.site/api/poolhouses/7/tables/16/reserve/?date=${date(
               1
             )}`,
-            {
-              headers: { Authorization: `JWT ${token}` },
-            }
+           
           ),
           axios.get(
             `https://strikem.site/api/poolhouses/7/tables/16/reserve/?date=${date(
               2
             )}`,
-            {
-              headers: { Authorization: `JWT ${token}` },
-            }
+            
           ),
         ]);
 
@@ -409,10 +409,39 @@ function Reservation() {
 
   const handleTimeSelect = (e: dayjs.Dayjs | null) => {
     const hour = dayjs(e?.toDate()).hour();
-    let day = `${tableDate.split("/")[1]}/${hour >=0 && hour <=3 ?tableDate.split("/")[2].split("-")[1]:tableDate.split("/")[2].split("-")[0]}/${tableDate.split("/")[0]}`
-    day += ` ${dayjs(e?.toDate()).format("hh:mm A")}`
+    let day = `${tableDate.split("/")[1]}/${
+      hour >= 0 && hour <= 3
+        ? tableDate.split("/")[2].split("-")[1]
+        : tableDate.split("/")[2].split("-")[0]
+    }/${tableDate.split("/")[0]}`;
+    day += ` ${dayjs(e?.toDate()).format("hh:mm A")}`;
 
-    setSelectedTime(day)
+    setSelectedTime(day);
+  };
+
+  const occupiedTimes = [
+    { start: '2024-12-20T08:00:00', end: '2024-12-20T10:00:00' },
+    { start: '2024-12-20T12:00:00', end: '2024-12-20T14:00:00' },
+    { start: '2024-12-21T00:00:00', end: '2024-12-21T02:00:00' },
+    
+    // Add more occupied times here
+  ];
+
+  const events = occupiedTimes.map(time => ({
+    title: 'Occupied',
+    start: time.start,
+    end: time.end,
+    color: '#fab907',
+  }));
+
+  const handleEventContent = (eventInfo:any) => {
+    
+    return (
+      <div style={{ backgroundColor: eventInfo.event.backgroundColor,color:'white',height:"100%",display:"flex",flexDirection:"column",justifyContent:"space-between",padding:"4px" }} >
+        <p>{eventInfo.timeText.split("-")[0]}</p>
+        <p>{eventInfo.timeText.split("-")[1]}</p>
+      </div>
+    );
   };
 
   return (
@@ -526,17 +555,43 @@ function Reservation() {
           }}
         />
       </div>
-      <div className="flex flex-col lg:gap-3 md:flex-row md:p-3 w-[300px] md:w-auto ">
-        <table className="table-auto border-collapse border border-gray-400 w-[300px]">
-          <thead style={{ width: "100%", textAlign: "center" }}>
-            <tr>
-              <th colSpan={7}>
-                <p className="my-[3px] text-white font-medium">{tableDate}</p>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {timeCalendar.map((row, rowIndex) => {
+      <div className="flex flex-col gap-2 lg:gap-3 md:flex-row md:p-3 w-[300px] md:w-auto ">
+        <div className=" border-collapse border border-gray-400 w-[300px]  rounded-[10px] overflow-hidden">
+            <FullCalendar
+          
+          plugins={[timeGridPlugin]}
+          initialView="customTimeGridDay"
+          nowIndicator={false} // Disable the now indicator
+          allDaySlot={false}
+          headerToolbar={false} // Disable the header toolbar
+          dayHeaders={false} // Disable the day headers
+          slotMaxTime={"28:00:00"}
+          slotMinTime={"08:00:00"}
+          expandRows={true}
+          height="356px"
+          events={events}
+          eventContent={handleEventContent}
+          slotLabelContent={(slotInfo) => (
+            <div style={{ color: "white", height: "100%" }}>
+              {slotInfo?.text}
+            </div>
+          )}
+          views={{
+            customTimeGridDay: {
+              type: 'timeGrid',
+              duration: { days: 1 },
+              buttonText: 'Custom Day',
+              slotDuration: '00:30:00', // 30-minute slots
+              slotLabelFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+              },
+              dayHeaderFormat: undefined // Remove the weekday header
+            }
+          }}
+        />
+            {/* {timeCalendar.map((row, rowIndex) => {
               const now = new Date().toString();
 
               return (
@@ -582,9 +637,8 @@ function Reservation() {
                   })}
                 </tr>
               );
-            })}
-          </tbody>
-        </table>
+            })} */}
+        </div>
         <div>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <StaticTimePicker
@@ -607,28 +661,38 @@ function Reservation() {
                 "& .MuiPickersToolbar-root": {
                   paddingTop: 0,
                 },
-                "& .css-jdw6pu-MuiTypography-root-MuiPickersToolbarText-root.Mui-selected":{
-                  color:"#fab907"
+                "& .css-jdw6pu-MuiTypography-root-MuiPickersToolbarText-root.Mui-selected":
+                  {
+                    color: "#fab907",
+                  },
+                "& .MuiClock-pin": {
+                  backgroundColor: "#fab907",
                 },
-                "& .MuiClock-pin":{
-                  backgroundColor:"#fab907"
+                "& .MuiClockPointer-thumb": {
+                  border: "16px solid #fab907",
+                  backgroundColor: "transparent",
                 },
-                "& .MuiClockPointer-thumb":{
-                  border:"16px solid #fab907",
-                  backgroundColor:"transparent"
+                "& .css-pncb2q-MuiClockPointer-root": {
+                  backgroundColor: "#fab907",
                 },
-                "& .css-pncb2q-MuiClockPointer-root":{
-                  backgroundColor:"#fab907"
+                "& .css-1h2qg9i-MuiClockPointer-root": {
+                  backgroundColor: "#fab907",
                 },
-                "& .css-1h2qg9i-MuiClockPointer-root":{
-                  backgroundColor:"#fab907"
-                },
-                "& .css-16l5jv0-MuiButtonBase-root-MuiIconButton-root-MuiClock-pmButton":{
-                  backgroundColor:"#fab907"
-                },
-                "& .css-16l5jv0-MuiButtonBase-root-MuiIconButton-root-MuiClock-pmButton:hover":{
-                  backgroundColor:"#956f06"
-                },
+                "& .css-16l5jv0-MuiButtonBase-root-MuiIconButton-root-MuiClock-pmButton":
+                  {
+                    backgroundColor: "#fab907",
+                  },
+                "& .css-16l5jv0-MuiButtonBase-root-MuiIconButton-root-MuiClock-pmButton:hover":
+                  {
+                    backgroundColor: "#956f06",
+                  },
+                  "& .css-1o37o8l-MuiButtonBase-root-MuiIconButton-root-MuiClock-amButton":
+                  {
+                    backgroundColor: "#fab907",
+                  },
+                "& .css-1o37o8l-MuiButtonBase-root-MuiIconButton-root-MuiClock-amButton:hover":{
+                  backgroundColor: "#956f06",
+                }
               }}
               ampmInClock={true}
               onChange={handleTimeSelect}
