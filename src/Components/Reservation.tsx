@@ -632,6 +632,7 @@ function Reservation() {
               }}
               ampmInClock={true}
               onChange={handleTimeSelect}
+              minutesStep={5}
             />
           </LocalizationProvider>
         </div>
