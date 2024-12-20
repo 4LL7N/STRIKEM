@@ -2,6 +2,9 @@
   height: auto;
 }
 
+.fc-timegrid-event-harness > .fc-timegrid-event{
+  position: static;
+}
 .fc .fc-scroller::-webkit-scrollbar {
   appearance: none;
   height: 5px;

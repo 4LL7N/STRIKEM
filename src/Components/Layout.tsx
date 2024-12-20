@@ -300,7 +300,7 @@ function Layout(props: {
           reservationBox ? "" : "hidden"
         }  `}
       >
-        <Reservation reservationBox={reservationBox} />
+        <Reservation reservationBox={reservationBox} PoolInfo={location.state} />
       </div>
       <div
         className={`w-[100vw] ${
