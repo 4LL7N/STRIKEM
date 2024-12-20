@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "./CSS/Reservation.css"
 
-import { useMemo, useState } from "react";
+import { memo, useMemo, useState } from "react";
 
 import { useEffect } from "react";
 import { useWebSocketContext } from "./Websocket";
@@ -17,6 +17,7 @@ import { StaticTimePicker } from "@mui/x-date-pickers/StaticTimePicker";
 
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
+import { useLocation } from "react-router-dom";
 
 
 interface Player {
@@ -56,8 +57,38 @@ interface UserDetails {
   username: string;
 }
 
-function Reservation() {
+interface PoolHall {
+  id: number;
+  title: string;
+  address: string;
+  tables: Table[];
+  avg_rating: number;
+  pics: Picture[];
+  room_image:string
+  table_count: number;
+  slug: string;
+  latitude: number;
+  longitude: number;
+  open_time:string;
+  close_time:string;
+}
+
+interface Table {
+  id: number;
+  current_session: any;
+  free:boolean;
+  left:number;
+  top:number;
+}
+
+interface Picture {
+  id: number;
+  image: string;
+}
+
+const Reservation = memo(({reservationBox}:{reservationBox:boolean})=>{
   const { logedIn, setReservationBox } = useWebSocketContext();
+  const location = useLocation();
 
   const [tableDate, setTableDate] = useState<string>("");
   const [daySelect, setDaySelect] = useState<boolean>(false);
@@ -79,9 +110,10 @@ function Reservation() {
     Reservation[]
   >([]);
 
-  const [timeCalendar, setTimeCalendar] = useState<
-    { time: string; reserved: boolean }[][]
-  >([]);
+  // const [timeCalendar, setTimeCalendar] = useState<
+  //   { time: string; reserved: boolean }[][]
+  // >([]);
+
 
   const currentUser = useMemo(() => {
     return localStorage.getItem("currentUser")
@@ -89,197 +121,12 @@ function Reservation() {
       : null;
   }, []);
 
-  const generateInitialReservations = () => {
-    const timeSlots = [];
-    let startHour = 8;
-    const endHour = 3;
-    let startMinute = "00";
-    let day = 1;
-    // let afterMidnight = "AM"
+  const [poolInfo,setPoolInfo] = useState<PoolHall>()
 
-    const box =
-      endHour < startHour
-        ? (12 + (12 - startHour) + endHour) * 2
-        : (12 + (endHour - startHour)) * 2;
+  useEffect(()=>{
+    setPoolInfo(location.state)
+  },[location.state])
 
-    for (let i = 0; i < box; i++) {
-      if (startHour == 0 && startMinute == "00") {
-        day++;
-      }
-      timeSlots.push({
-        time: `${day},${
-          startHour.toString().split(".")[0].length == 1 ? "0" : ""
-        }${startHour.toString().split(".")[0]}:${startMinute}`,
-        reserved: false,
-      });
-
-      if (startMinute == "30") {
-        startMinute = "00";
-        startHour += 1;
-      } else {
-        startMinute = "30";
-      }
-      if (startHour == 24) {
-        startHour = 0;
-      }
-    }
-    return timeSlots;
-  };
-
-  const createGrid = (TodayReservations: Reservation[]) => {
-    const grid: { time: string; reserved: boolean }[][] = [];
-    for (let row = 0; row < 6; row++) {
-      const rowSlots = [];
-      for (let col = 0; col < 7; col++) {
-        const index = row * 7 + col;
-        if (index < generateInitialReservations().length) {
-          rowSlots.push(generateInitialReservations()[index]);
-        }
-      }
-      grid.push(rowSlots);
-    }
-
-    TodayReservations.forEach((item: Reservation) => {
-      const time = item.start_time
-        .split("T")[1]
-        .split("+")[0]
-        .split(":")
-        .slice(0, -1)
-        .join(":");
-      for (let i = 0; i < grid.length; i++) {
-        for (let j = 0; j < grid[i].length; j++) {
-          const howLong = item.duration / 30;
-          if (
-            grid[i][j].time.split(",")[1].split(":")[0] == time.split(":")[0]
-          ) {
-            if (Number(time.split(":")[1]) >= 30) {
-              if (grid[i][j].time.split(",")[1].split(":")[1] == "30") {
-                for (let k = 0; k < howLong; k++) {
-                  let anotherLine = 0;
-                  grid[i][j + k]
-                    ? (grid[i][j + k].reserved = true)
-                    : grid[i + 1]
-                    ? (grid[i + 1][anotherLine].reserved = true)
-                    : null;
-
-                  if (k == 0 || k == howLong - 1) {
-                    let newReservation = `${
-                      grid[i][j].time.split(",")[0]
-                    },${time}`;
-
-                    if (k == howLong - 1 && time.split(":")[1] != "30") {
-                      grid[i][j].time = newReservation;
-                      const plusduration = Math.floor(howLong / 2);
-
-                      const houres =
-                        time.split(":")[0] == "23"
-                          ? "00"
-                          : howLong % 2
-                          ? Number(time.split(":")[0]) + plusduration + 1
-                          : Number(time.split(":")[0]) + plusduration;
-                      const newTime = `${houres}:${
-                        howLong % 2
-                          ? Number(time.split(":")[1]) - 30
-                          : time.split(":")[1]
-                      }`;
-
-                      const day =
-                        Number(newTime.split(":")[0]) < 8 &&
-                        Number(grid[i][j].time.split(",")[1].split(":")[0]) > 8
-                          ? Number(grid[i][j].time.split(",")[0]) + 1
-                          : grid[i][j].time.split(",")[0];
-                      newReservation = `${day},${newTime}`;
-
-                      if (howLong == 1) {
-                        if (grid[i][j + 1]) {
-                          grid[i][j + 1].reserved = true;
-                          grid[i][j + 1].time = newReservation;
-                        } else {
-                          if (grid[i + 1]) {
-                            grid[i + 1][0].reserved = true;
-                            grid[i + 1][0].time = newReservation;
-                          }
-                        }
-                      } else {
-                        grid[i][j + k]
-                          ? (grid[i][j + k].time = newReservation)
-                          : grid[i + 1]
-                          ? (grid[i + 1][anotherLine].time = newReservation)
-                          : null;
-                      }
-                    } else {
-                      grid[i][j].time = newReservation;
-                    }
-                  }
-                  !grid[i][j + k] ? (anotherLine += 1) : (anotherLine = 0);
-                }
-              }
-            } else {
-              if (grid[i][j].time.split(",")[1].split(":")[1] == "00") {
-                for (let k = 0; k < howLong; k++) {
-                  let anotherLine = 0;
-                  grid[i][j + k]
-                    ? (grid[i][j + k].reserved = true)
-                    : grid[i + 1]
-                    ? (grid[i + 1][anotherLine].reserved = true)
-                    : null;
-
-                  if (k == 0 || k == howLong - 1) {
-                    let newReservation = `${
-                      grid[i][j].time.split(",")[0]
-                    },${time}`;
-                    if (k == howLong - 1 && time.split(":")[1] != "00") {
-                      grid[i][j].time = newReservation;
-
-                      const plusduration = Math.floor(howLong / 2);
-
-                      const newTime = `${
-                        Number(time.split(":")[0]) + plusduration
-                      }:${
-                        howLong % 2
-                          ? Number(time.split(":")[1]) + 30
-                          : time.split(":")[1]
-                      }`;
-
-                      newReservation = `${
-                        grid[i][j].time.split(",")[0]
-                      },${newTime}`;
-
-                      if (howLong == 1) {
-                        if (grid[i][j + 1]) {
-                          grid[i][j + 1].reserved = true;
-                          grid[i][j + 1].time = newReservation;
-                        } else {
-                          if (grid[i + 1]) {
-                            grid[i + 1][0].reserved = true;
-                            grid[i + 1][0].time = newReservation;
-                          }
-                        }
-                      } else {
-                        grid[i][j + k]
-                          ? (grid[i][j + k].time = newReservation)
-                          : grid[i + 1]
-                          ? (grid[i + 1][anotherLine].time = newReservation)
-                          : null;
-                      }
-                    } else {
-                      grid[i][j].time = newReservation;
-                    }
-                  }
-                  !grid[i][j + k] ? (anotherLine += 1) : (anotherLine = 0);
-                }
-              }
-            }
-          }
-        }
-      }
-    });
-    // console.log(grid);
-    setTimeCalendar(grid);
-    // return grid;
-  };
-
-  //   const grid = createGrid([]);
 
   const fetchPlayers = async () => {
     const token = Cookies.get("token");
@@ -303,13 +150,15 @@ function Reservation() {
   };
 
   const fetchReservations = async () => {
-    const token = Cookies.get("token");
 
     function date(daysToAdd: number) {
       const date = new Date();
       date.setDate(date.getDate() + daysToAdd); // Add days to the current date
+      console.log(date.toISOString().split("T")[0])
       return date.toISOString().split("T")[0]; // Format as yyyy-mm-dd
     }
+
+    console.log(location.state)
 
     try {
       const [todayResponse, tomorrowResponse, afterTomorrowResponse] =
@@ -336,7 +185,7 @@ function Reservation() {
 
       //   console.log(todayResponse.data," todayResponse.data")
       setTodayReservation(todayResponse.data);
-      createGrid(todayResponse.data);
+      // createGrid(todayResponse.data);
       //   console.log(tomorrowResponse.data," tomorrowResponse.data")
       setTomorrowReservation(tomorrowResponse.data);
       //   console.log(afterTomorrowResponse.data," afterTomorrowResponse.data")
@@ -730,6 +579,6 @@ function Reservation() {
       </div>
     </div>
   );
-}
+})
 
 export default Reservation;

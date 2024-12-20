@@ -52,6 +52,8 @@ interface PoolHall {
   slug: string;
   latitude: number;
   longitude: number;
+  open_time:string;
+  close_time:string;
 }
 
 interface Table {
