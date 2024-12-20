@@ -730,6 +730,12 @@ const Reservation = memo(
                 },
                 "& .css-qwdxx6":{
                   color:"#fab907"
+                },
+                "& .css-1niro10":{
+                  color:"#fab907"
+                },
+                "& .css-1niro10.Mui-focused":{
+                  color:"#956f06"
                 }
               }}
             />
