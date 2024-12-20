@@ -207,6 +207,25 @@ const Reservation = memo(
       }
     };
 
+    const postReservation = async(body:{
+      start_time:string,
+      duration:number,
+      other_player:number|null
+    })=>{
+      const token = Cookies.get("token");
+      try{
+        const postResponse = await axios.post(`https://strikem.site/api/poolhouses/${poolInfo?.id}/tables/16/reserve/`
+        ,body
+        ,{
+          headers: { Authorization: `JWT ${token}` },
+        })
+        console.log(postResponse);
+        
+      }catch(err){
+        console.log(err)
+      }
+    }
+
     useEffect(() => {
       const date = new Date();
 
@@ -234,45 +253,6 @@ const Reservation = memo(
       fetchPlayers();
       poolInfo && fetchReservations();
     }, [reservationBox]);
-
-    //   function handleReserve(item: {
-    //     reserved: boolean;
-    //     reservedBy: string;
-    //     time: string;
-    //   }) {
-    //     console.log(item);
-    //     let marked = [...markedTimes];
-    //     if (markedTimes.includes(item.time)) {
-    //       marked = marked.filter((el: string) => el != item.time);
-    //     } else {
-    //       marked.push(item.time);
-    //     }
-
-    //     const one = marked.filter((el: string) => el.split(",")[0] == "1");
-    //     const two = marked.filter((el: string) => el.split(",")[0] == "2");
-    //     one.sort((a, b) => {
-    //       const [hoursA, minutesA] = a.split(",")[1].split(":").map(Number);
-    //       const [hoursB, minutesB] = b.split(",")[1].split(":").map(Number);
-
-    //       const totalMinutesA = hoursA * 60 + minutesA;
-    //       const totalMinutesB = hoursB * 60 + minutesB;
-
-    //       return totalMinutesA - totalMinutesB;
-    //     });
-    //     two.sort((a, b) => {
-    //       const [hoursA, minutesA] = a.split(",")[1].split(":").map(Number);
-    //       const [hoursB, minutesB] = b.split(",")[1].split(":").map(Number);
-
-    //       const totalMinutesA = hoursA * 60 + minutesA;
-    //       const totalMinutesB = hoursB * 60 + minutesB;
-
-    //       return totalMinutesA - totalMinutesB;
-    //     });
-    //     marked = [...one, ...two];
-
-    //     console.log(marked);
-    //     setMarkedTimes(marked);
-    //   }
 
     const handleTimeSelect = (e: dayjs.Dayjs | null) => {
       const hour = dayjs(e?.toDate()).hour();
@@ -393,10 +373,6 @@ const Reservation = memo(
       //  console.log(end1);
        
         let overlap = false
-        console.log(dayjs(start1).hour()," start1");
-        console.log(end1.format()," ,end1")
-        console.log(start2.hour()," start2")
-        console.log(end2.format()," end2");
 
         if(dayjs(start1).hour()<start2.hour()){ 
           if(end1.hour()<=start2.hour()){
@@ -448,14 +424,16 @@ const Reservation = memo(
         setReserverError('')
       }
 
+      const start_time = dayjs(newReserveTime, "YYYY/MM/DD hh:mm A").format("YYYY-MM-DDTHH:mm:ssZ")
+
       const newReservation = {
-        start_time:newReserveTime,
+        start_time,
         duration:selectedDuration,
-        other_player:selectedOpponent?.id
+        other_player:selectedOpponent?selectedOpponent.id:null
       }
       console.log(newReservation);
       // console.log(selectedTime, selectedDuration, selectedOpponent);
-  
+      postReservation(newReservation)
 
     };
 
