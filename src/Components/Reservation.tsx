@@ -481,7 +481,7 @@ console.log(options)
               }
               slotMinTime={PoolInfo?.open_time}
               expandRows={true}
-              height="356px"
+              height="422px"
               events={events()}
               eventContent={handleEventContent}
               slotLabelContent={(slotInfo) => (
