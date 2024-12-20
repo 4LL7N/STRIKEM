@@ -101,7 +101,7 @@ const Reservation = memo(
     const [daySelect, setDaySelect] = useState<boolean>(false);
     const [selectDates, setSelectDates] = useState<string[]>([]);
 
-    const options = Array.from({ length: 10 }, (_, i) => ({
+    const options = Array.from({ length: 5 }, (_, i) => ({
       value: (i + 1) * 30,
       label: `${(i + 1) * 30}`,
     }));
@@ -267,20 +267,21 @@ const Reservation = memo(
     };
 
     const events = () => {
-      console.log(tableDate);
       const schedule =
-        tableDate == selectDates[0]
-          ? todayReservation
-          : tableDate == selectDates[1]
-          ? tomorrowReservation
-          : afterTomorrowReservation;
-
+      tableDate == selectDates[0]
+      ? todayReservation
+      : tableDate == selectDates[1]
+      ? tomorrowReservation
+      : afterTomorrowReservation;
+      
+      // console.log(schedule);
       const arr = schedule.map((item: Reservation) => {
         const currentDay = new Date().getDate(); // Extract the current day
         const updatedStartTime = item.start_time.replace(
           tableDate.split("/")[tableDate.split("/").length - 1].split("-")[0],
           currentDay.toString()
         );
+        // console.log(updatedStartTime)
         return { ...item, start_time: updatedStartTime }; // Return the modified object
       });
 
@@ -289,7 +290,7 @@ const Reservation = memo(
         const end = dayjs(start)
           .add(time?.duration + 5, "minute")
           .format();
-
+        
         return {
           title: "Occupied",
           start,
@@ -300,6 +301,7 @@ const Reservation = memo(
     };
 
     const handleEventContent = (eventInfo: any) => {
+      // console.log(eventInfo)
       return (
         <div
           style={{
@@ -572,11 +574,13 @@ const Reservation = memo(
               height="422px"
               events={events()}
               eventContent={handleEventContent}
-              slotLabelContent={(slotInfo) => (
+              slotLabelContent={(slotInfo) => {
+                console.log(slotInfo)
+                return(
                 <div style={{ color: "white", height: "100%" }}>
                   {slotInfo?.text}
                 </div>
-              )}
+              )}}
               views={{
                 customTimeGridDay: {
                   type: "timeGrid",
@@ -584,9 +588,9 @@ const Reservation = memo(
                   buttonText: "Custom Day",
                   slotDuration: "00:30:00", // 30-minute slots
                   slotLabelFormat: {
-                    hour: "2-digit",
+                    hour: "numeric",
                     minute: "2-digit",
-                    hour12: false,
+                    hour12: true,
                   },
                   dayHeaderFormat: undefined, // Remove the weekday header
                 },
@@ -666,6 +670,9 @@ const Reservation = memo(
                   },
                   "& .css-c6olds:hover":{
                     backgroundColor:"#fab907"
+                  },
+                  "& .css-f1s25r ":{
+                    backgroundColor:"#fab907"
                   }
                 }}
                 ampmInClock={true}
@@ -706,6 +713,24 @@ const Reservation = memo(
                 "& .css-1dune0f-MuiInputBase-input-MuiOutlinedInput-input": {
                   color: "white",
                 },
+                "& .css-160rfsr":{
+                  color:"#fab907"
+                },
+                "& .css-160rfsr.Mui-focused":{
+                  color:"#956f06"
+                },
+                "& .css-5v2ak0":{
+                  borderColor:"#fab907"
+                },
+                "& .css-1kmkvia.Mui-focused .MuiOutlinedInput-notchedOutline":{
+                  borderColor:"#956f06"
+                },
+                "& .css-1kmkvia:hover .MuiOutlinedInput-notchedOutline":{
+                  borderColor:"#956f06"
+                },
+                "& .css-qwdxx6":{
+                  color:"#fab907"
+                }
               }}
             />
           </div>
