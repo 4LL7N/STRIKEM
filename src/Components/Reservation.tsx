@@ -18,6 +18,7 @@ import { StaticTimePicker } from "@mui/x-date-pickers/StaticTimePicker";
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { useLocation } from "react-router-dom";
+import { Autocomplete, TextField } from "@mui/material";
 
 interface Player {
   id: number;
@@ -100,13 +101,23 @@ const Reservation = memo(
     const [daySelect, setDaySelect] = useState<boolean>(false);
     const [selectDates, setSelectDates] = useState<string[]>([]);
 
-    const [selectedTime, setSelectedTime] = useState<string>("");
+    // const [selectedNumber, setSelectedNumber] = useState(30);
 
-    // const [markedTimes, setMarkedTimes] = useState<string[]>([]);
+  // Generate options dynamically
+  const options = Array.from({ length: 10 }, (_, i) => ({
+    value: (i + 1) * 30,
+    label: `${(i + 1) * 30}`,
+  }));
+
+console.log(options)
+    // const [selected, setSelected] = useState(options[0]);
 
     const [selectedOpponent, setSelectedOpponent] = useState<Player | null>(
       null
     );
+    const [selectedTime, setSelectedTime] = useState<string>("");
+    const [selectedDuration,setSelectedDuration] = useState<number|null>(null)
+
     const [opponentsList, setOpponentsList] = useState<Player[]>([]);
     const [openOpponents, setOpenOpponents] = useState<boolean>(false);
 
@@ -334,6 +345,10 @@ const Reservation = memo(
       );
     };
 
+    const handleDurationChange = (_: any, value: { value: number; label: string } | null) => {
+      value && setSelectedDuration(value.value);
+    }
+
     return (
       <div className="w-[100%] md:w-auto p-[18px] md:pb-[24px] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px] ">
         <div className="w-[100%] flex justify-between items-center mb-[8px] md:mb-0 md:p-[12px_12px_0px_12px] relative ">
@@ -489,55 +504,8 @@ const Reservation = memo(
                 },
               }}
             />
-            {/* {timeCalendar.map((row, rowIndex) => {
-              const now = new Date().toString();
-
-              return (
-                <tr key={rowIndex}>
-                  {row.map((time, colIndex) => {
-                    return (
-                      <td
-                        key={colIndex}
-                        className={` ${
-                          Number(now.split(" ")[4].split(":")[0]) >
-                            Number(time.time.split(",")[1].split(":")[0]) &&
-                          Number(time.time.split(",")[1].split(":")[0]) > 3
-                            ? " opacity-25"
-                            : now.split(" ")[4].split(":")[0] ==
-                                time.time.split(",")[1].split(":")[0] &&
-                              now.split(" ")[4].split(":")[1] >=
-                                time.time.split(",")[1].split(":")[1]
-                            ? " opacity-25"
-                            : ""
-                        } border border-gray-400 p-[2px] md:p-1 text-center w-[10px] md:w-[20px] lg:w-[80px] h-[30px] md:h-[40px] lg:h-[80px]  ${
-                          time.reserved && "bg-[#fab907] "
-                        } `}
-                        // onClick={()=>handleReserve(time)}
-                      >
-                        <div className="mb-2 text-white text-[8px] md:text-[12px] lg:text-[16px] ">
-                          {time.time.split(",")[1]}
-                        </div>
-                        {time.reserved ? (
-                          <p className="text-white font-medium hover:underline text-[8px] md:text-[12px] lg:text-[16px]">
-                            Reserved
-                          </p>
-                        ) : (
-                          //   <button
-                          //   onClick={()=>{handleReserve(time)}}
-                          //   >
-                          <p className="text-white font-medium text-[8px] md:text-[12px] lg:text-[16px]">
-                            Reserve
-                          </p>
-                          //   </button>
-                        )}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })} */}
           </div>
-          <div>
+          <div className="flex flex-col gap-[10px]" >
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <StaticTimePicker
                 orientation={"portrait"}
@@ -598,6 +566,35 @@ const Reservation = memo(
                 minutesStep={5}
               />
             </LocalizationProvider>
+            <Autocomplete
+      options={options}
+      getOptionLabel={(option) => `${option.label}`}
+      onChange={handleDurationChange}
+      renderInput={(params) => <TextField {...params} label="Select a number" />}
+      sx={{
+        "& .css-113d811-MuiFormLabel-root-MuiInputLabel-root":{
+          color:"#fab907"
+        },
+        "& .css-113d811-MuiFormLabel-root-MuiInputLabel-root.Mui-focused":{
+          color:"#956f06"
+        },
+        "& .css-1n04w30-MuiInputBase-root-MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":{
+          borderColor:"#fab907"
+        },
+        "& .css-1n04w30-MuiInputBase-root-MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":{
+          borderColor:"#956f06"
+        },
+        "& .css-1n04w30-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":{
+          borderColor:"#956f06"
+        },
+        "& .css-19qnlrw-MuiFormLabel-root-MuiInputLabel-root":{
+          color:"#fab907"
+        },
+        "& .css-1dune0f-MuiInputBase-input-MuiOutlinedInput-input":{
+          color:"white"
+        },
+      }}
+    />
           </div>
         </div>
         <div
