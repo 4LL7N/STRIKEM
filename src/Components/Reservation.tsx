@@ -593,7 +593,7 @@ const Reservation = memo(
               }}
             />
           </div>
-          <div className="flex flex-col gap-[10px]">
+          <div className={`flex flex-col gap-[10px] ${!logedIn && "hidden"} `}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <StaticTimePicker
                 orientation={"portrait"}
@@ -605,6 +605,9 @@ const Reservation = memo(
                   bgcolor: "transparent",
                   "& .MuiTypography-root": {
                     color: "white",
+                  },
+                  "& .css-oyx3il.Mui-selected": {
+                    color: "#fab907",
                   },
                   "& .MuiClockNumber-root": {
                     color: "white",
@@ -619,6 +622,10 @@ const Reservation = memo(
                     {
                       color: "#fab907",
                     },
+
+                  "& .css-1mafmct ": {
+                    backgroundColor: "#fab907",
+                  },
                   "& .MuiClock-pin": {
                     backgroundColor: "#fab907",
                   },
@@ -648,6 +655,18 @@ const Reservation = memo(
                     {
                       backgroundColor: "#956f06",
                     },
+                  "& .css-3jstwd":{
+                    backgroundColor:"#fab907"
+                  },
+                  "& .css-3jstwd:hover":{
+                    backgroundColor:"#956f06"
+                  },
+                  "& .css-c6olds":{
+                    backgroundColor:"#fab907"
+                  },
+                  "& .css-c6olds:hover":{
+                    backgroundColor:"#fab907"
+                  }
                 }}
                 ampmInClock={true}
                 onChange={handleTimeSelect}
