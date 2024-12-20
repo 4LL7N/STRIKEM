@@ -101,22 +101,18 @@ const Reservation = memo(
     const [daySelect, setDaySelect] = useState<boolean>(false);
     const [selectDates, setSelectDates] = useState<string[]>([]);
 
-    // const [selectedNumber, setSelectedNumber] = useState(30);
-
-  // Generate options dynamically
-  const options = Array.from({ length: 10 }, (_, i) => ({
-    value: (i + 1) * 30,
-    label: `${(i + 1) * 30}`,
-  }));
-
-console.log(options)
-    // const [selected, setSelected] = useState(options[0]);
+    const options = Array.from({ length: 10 }, (_, i) => ({
+      value: (i + 1) * 30,
+      label: `${(i + 1) * 30}`,
+    }));
 
     const [selectedOpponent, setSelectedOpponent] = useState<Player | null>(
       null
     );
     const [selectedTime, setSelectedTime] = useState<string>("");
-    const [selectedDuration,setSelectedDuration] = useState<number|null>(null)
+    const [selectedDuration, setSelectedDuration] = useState<number | null>(
+      null
+    );
 
     const [opponentsList, setOpponentsList] = useState<Player[]>([]);
     const [openOpponents, setOpenOpponents] = useState<boolean>(false);
@@ -128,10 +124,6 @@ console.log(options)
     const [afterTomorrowReservation, setAfterTomorrowReservation] = useState<
       Reservation[]
     >([]);
-
-    // const [timeCalendar, setTimeCalendar] = useState<
-    //   { time: string; reserved: boolean }[][]
-    // >([]);
 
     const currentUser = useMemo(() => {
       return localStorage.getItem("currentUser")
@@ -148,6 +140,8 @@ console.log(options)
         Number(poolInfo.close_time.split(":")[0])
         ? true
         : false;
+
+    const [reserverError, setReserverError] = useState<string | null>(null);
 
     useEffect(() => {
       setPoolInfo(location.state);
@@ -292,7 +286,6 @@ console.log(options)
       setSelectedTime(day);
     };
 
-
     const events = () => {
       console.log(tableDate);
       const schedule =
@@ -301,7 +294,6 @@ console.log(options)
           : tableDate == selectDates[1]
           ? tomorrowReservation
           : afterTomorrowReservation;
-
 
       const arr = schedule.map((item: Reservation) => {
         const currentDay = new Date().getDate(); // Extract the current day
@@ -313,8 +305,10 @@ console.log(options)
       });
 
       return arr.map((time) => {
-        const start = time?.start_time
-        const end = dayjs(start).add(time?.duration+5,'minute').format()
+        const start = time?.start_time;
+        const end = dayjs(start)
+          .add(time?.duration + 5, "minute")
+          .format();
 
         return {
           title: "Occupied",
@@ -326,7 +320,6 @@ console.log(options)
     };
 
     const handleEventContent = (eventInfo: any) => {
-  
       return (
         <div
           style={{
@@ -345,9 +338,126 @@ console.log(options)
       );
     };
 
-    const handleDurationChange = (_: any, value: { value: number; label: string } | null) => {
+    const handleDurationChange = (
+      _: any,
+      value: { value: number; label: string } | null
+    ) => {
       value && setSelectedDuration(value.value);
-    }
+    };
+
+    const handleReserveSubmit = () => {
+
+      if(!selectedTime){
+        setReserverError("Please select time")
+        return
+      }
+
+      if(!selectedDuration){
+        setReserverError('Please select duration')
+        return
+      }
+
+      const schedule =
+        tableDate == selectDates[0]
+          ? todayReservation
+          : tableDate == selectDates[1]
+          ? tomorrowReservation
+          : afterTomorrowReservation;
+
+      const afterMidnight =
+            poolInfo &&
+            poolInfo?.close_time < poolInfo?.open_time &&
+            selectedTime.split(' ')[2] == "AM" &&
+            Number(selectedTime.split(' ')[1].split(":")[0]) <
+              Number(poolInfo?.close_time.split(":")[0])
+              ? true
+              : false;
+
+        const dayDate =   `${tableDate.split('/').slice(0,-1).join('/')}/${afterMidnight?tableDate.split('/')[2].split('-')[1]:tableDate.split('/')[2].split('-')[0]}`
+
+        const newReserveTime = `${dayDate} ${selectedTime.split(' ')[1]} ${selectedTime.split(' ')[2]}`;
+
+      function checkOverlap(startTime1:string, duration1:number, startTime2:string, duration2:number) {
+        // Parse start times
+
+        console.log(startTime1,startTime2," startTime1,startTime2")
+        const start1 = dayjs(startTime1, "YYYY/MM/DD hh:mm A").format("YYYY-MM-DDTHH:mm:ssZ");
+        const start2 = dayjs(startTime2);
+
+        // Calculate end times
+        const end1 =dayjs(start1).add(duration1, "minute");
+        const end2 = start2.add(duration2, "minute");
+
+        // Check for overlap
+      //  console.log(startTime2);
+      //  console.log(end1);
+       
+        let overlap = false
+        console.log(dayjs(start1).hour()," start1");
+        console.log(end1.format()," ,end1")
+        console.log(start2.hour()," start2")
+        console.log(end2.format()," end2");
+
+        if(dayjs(start1).hour()<start2.hour()){ 
+          if(end1.hour()<=start2.hour()){
+            if(end1.hour()==start2.hour()){
+              if((start2.minute()-end1.minute()) >= 5){
+                overlap = false 
+              }else{
+                overlap = true
+              }
+            }else{
+              overlap=false
+            }
+          }else{
+            overlap = true
+          }
+          console.log(dayjs(start1).hour(),start2.hour());
+        }else if(dayjs(start1).hour()>start2.hour()){
+            if(end2.hour()<=dayjs(start1).hour()){
+              if(end2.hour()==dayjs(start1).hour()){
+                if((dayjs(start1).minute()-end2.minute()) >= 5){
+                  overlap = false 
+                }else{
+                 overlap = true
+                }
+              }else{
+                overlap=false
+              }
+            }else{
+              overlap = true
+            }
+        }else{
+          overlap = true
+        }
+        // console.log(dayjs(start1).isBefore(end2));
+        // console.log(dayjs(start2).isBefore(end1))
+
+        // console.log(start1.isBefore(end2)," start1.isBefore(end2)");
+        // console.log(start2.isBefore(end1)," start2.isBefore(end1)")
+        
+        return overlap 
+        dayjs(start1).isBefore(end2) && dayjs(start2).isBefore(end1);
+      }
+      const error = schedule.some((item:Reservation)=>{return checkOverlap(newReserveTime,selectedDuration+5,item.start_time,item.duration)})
+      console.log(error);
+      if(error){
+        setReserverError('time overlap, change reservation time or duration')
+        return
+      }else{
+        setReserverError('')
+      }
+
+      const newReservation = {
+        start_time:newReserveTime,
+        duration:selectedDuration,
+        other_player:selectedOpponent?.id
+      }
+      console.log(newReservation);
+      // console.log(selectedTime, selectedDuration, selectedOpponent);
+  
+
+    };
 
     return (
       <div className="w-[100%] md:w-auto p-[18px] md:pb-[24px] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px] ">
@@ -505,7 +615,7 @@ console.log(options)
               }}
             />
           </div>
-          <div className="flex flex-col gap-[10px]" >
+          <div className="flex flex-col gap-[10px]">
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <StaticTimePicker
                 orientation={"portrait"}
@@ -567,40 +677,50 @@ console.log(options)
               />
             </LocalizationProvider>
             <Autocomplete
-      options={options}
-      getOptionLabel={(option) => `${option.label}`}
-      onChange={handleDurationChange}
-      renderInput={(params) => <TextField {...params} label="Select a number" />}
-      sx={{
-        "& .css-113d811-MuiFormLabel-root-MuiInputLabel-root":{
-          color:"#fab907"
-        },
-        "& .css-113d811-MuiFormLabel-root-MuiInputLabel-root.Mui-focused":{
-          color:"#956f06"
-        },
-        "& .css-1n04w30-MuiInputBase-root-MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":{
-          borderColor:"#fab907"
-        },
-        "& .css-1n04w30-MuiInputBase-root-MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":{
-          borderColor:"#956f06"
-        },
-        "& .css-1n04w30-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":{
-          borderColor:"#956f06"
-        },
-        "& .css-19qnlrw-MuiFormLabel-root-MuiInputLabel-root":{
-          color:"#fab907"
-        },
-        "& .css-1dune0f-MuiInputBase-input-MuiOutlinedInput-input":{
-          color:"white"
-        },
-      }}
-    />
+              options={options}
+              getOptionLabel={(option) => `${option.label}`}
+              onChange={handleDurationChange}
+              renderInput={(params) => (
+                <TextField {...params} label="Select a number" />
+              )}
+              sx={{
+                "& .css-113d811-MuiFormLabel-root-MuiInputLabel-root": {
+                  color: "#fab907",
+                },
+                "& .css-113d811-MuiFormLabel-root-MuiInputLabel-root.Mui-focused":
+                  {
+                    color: "#956f06",
+                  },
+                "& .css-1n04w30-MuiInputBase-root-MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline":
+                  {
+                    borderColor: "#fab907",
+                  },
+                "& .css-1n04w30-MuiInputBase-root-MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                  {
+                    borderColor: "#956f06",
+                  },
+                "& .css-1n04w30-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                  {
+                    borderColor: "#956f06",
+                  },
+                "& .css-19qnlrw-MuiFormLabel-root-MuiInputLabel-root": {
+                  color: "#fab907",
+                },
+                "& .css-1dune0f-MuiInputBase-input-MuiOutlinedInput-input": {
+                  color: "white",
+                },
+              }}
+            />
           </div>
         </div>
         <div
-          className={` justify-end w-[100%] flex px-0 md:px-4 mt-[10px] md:mt-0 `}
+          className={` justify-end w-[100%] flex gap-2 px-0 md:px-4 mt-[10px] md:mt-0 `}
         >
-          <button className="px-2 py-1 bg-[#fab907] rounded-[8px] md:rounded-[12px] text-white text-[10px] md:text-[16px] ">
+          <p className={reserverError?"text-[16px] text-red-600 ":"hidden"}>{reserverError}</p>
+          <button
+            className="px-2 py-1 bg-[#fab907] rounded-[8px] md:rounded-[12px] text-white text-[10px] md:text-[16px] "
+            onClick={handleReserveSubmit}
+          >
             RESERVE
           </button>
         </div>
