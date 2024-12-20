@@ -696,7 +696,7 @@ const Reservation = memo(
         >
           <p className={reserverError?"text-[16px] text-red-600 ":"hidden"}>{reserverError}</p>
           <button
-            className="px-2 py-1 bg-[#fab907] rounded-[8px] md:rounded-[12px] text-white text-[10px] md:text-[16px] "
+            className="px-2 py-1 bg-[#fab907] rounded-[8px] md:rounded-[12px] text-white text-[12px] md:text-[16px] "
             onClick={handleReserveSubmit}
           >
             RESERVE

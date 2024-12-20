@@ -277,7 +277,13 @@ function Layout(props: {
 
   useEffect(() => {
     // console.log("Last message layout:", lastJsonMessage);
+    
   }, [lastJsonMessage]);
+  
+  useEffect(()=>{
+    console.log(location.state);
+
+  },[location.state])
 
   return (
     <>
@@ -296,17 +302,17 @@ function Layout(props: {
         <Signup setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />
       </div>
       <div
-        className={` flex flex-col items-center justify-center  w-[100vw] ${window.innerHeight < 860?"h-[860px] md:h-screen ":"h-screen"} px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
-          reservationBox ? "" : "hidden"
+        className={` flex flex-col items-center justify-center  w-[100vw] ${window.innerHeight < 992?"h-[992px] md:h-screen ":"h-screen"} px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+          reservationBox && location.state? "" : "hidden"
         }  `}
       >
-        <Reservation reservationBox={reservationBox} PoolInfo={location.state} />
+        {location.state && <Reservation reservationBox={reservationBox} PoolInfo={location.state} />}
       </div>
       <div
         className={`w-[100vw] ${
           reservationBox ?
-            window.innerHeight < 860?
-            "h-[860px] md:h-screen"
+            window.innerHeight < 992?
+            "h-[992px] md:h-screen"
             :
             "h-screen "
           :
