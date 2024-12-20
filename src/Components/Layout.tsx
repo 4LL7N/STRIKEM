@@ -296,7 +296,7 @@ function Layout(props: {
         <Signup setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />
       </div>
       <div
-        className={` flex flex-col items-center justify-center  w-[100vw] ${window.innerHeight < 860?"min-h-[860px] md:h-screen ":"h-screen"} px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+        className={` flex flex-col items-center justify-center  w-[100vw] ${window.innerHeight < 860?"h-[860px] md:h-screen ":"h-screen"} px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
           reservationBox ? "" : "hidden"
         }  `}
       >
