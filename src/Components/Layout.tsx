@@ -391,7 +391,7 @@ function Layout(props: {
             location.pathname.includes("users") ||
             location.pathname == "/messenger" ||
             location.pathname.includes("Pools")
-              ? " md:mb-[24px] lg:mb-[48px] "
+              ? " md:mb-[24px] "
               : `lg:flex-col  lg:max-w-[96px] lg:px-[28px] lg:pt-[35.4px] lg:pb-[32px] `
           }`}
         >
