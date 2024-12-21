@@ -6,7 +6,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useMemo} from "react";
 import { useLocation } from "react-router-dom";
 import { CiStar } from "react-icons/ci";
 import axios from "axios";
@@ -17,6 +17,7 @@ import Cookies from "js-cookie";
 import { MapContainer, Marker, TileLayer, Tooltip } from "react-leaflet";
 import { useGeolocated } from "react-geolocated";
 import { useWebSocketContext } from "./Websocket";
+import ReservationOnTable from "./PoolMemo/ReservationOnTable";
 
 interface Rating {
   id: number;
@@ -29,13 +30,7 @@ interface Rating {
   rater: {
     profile_image: string;
     total_points: number;
-    user: {
-      email: string;
-      first_name: string;
-      id: number;
-      last_name: string;
-      username: string;
-    };
+    user: User;
   };
   review: string;
 }
@@ -58,11 +53,36 @@ interface PoolHall {
 
 interface Table {
   id: number;
-  current_session: any;
+  current_session: current_session;
   free:boolean;
   left:number;
   top:number;
 }
+
+interface current_session {
+  id: number;
+  start_time: string; // ISO 8601 formatted date string
+  duration: number; // Duration in minutes
+  finished_reservation: boolean;
+  other_player_details: PlayerDetails;
+  player_reserving: PlayerDetails;
+}
+
+interface PlayerDetails {
+  id: number;
+  profile_image: string; // URL of the profile image
+  total_points: number;
+  user: User;
+}
+
+interface User {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  username: string;
+}
+
 
 interface Picture {
   id: number;
@@ -245,19 +265,8 @@ function Pool() {
       }else{
       setNameLength(1) 
       }
-    });
+    });    
   }, []);
-
-  // useEffect(()=>{
-    
-  //                     if(window.innerWidth > 382){
-  //                       setNameLength(3)
-  //                     }else if(window.innerWidth > 460){
-  //                       setNameLength(4)
-  //                     }else if(window.innerWidth >1024){
-  //                       setNameLength(5)
-  //                     }
-  // },[nameSizeChange])
 
   function handleResize() {
     const sectionNumHorizontal = img.current?.naturalWidth / 1920;
@@ -450,6 +459,20 @@ function Pool() {
     );
   };
 
+  const TableReservationList = useMemo(() => {
+    return poolInfo.tables.map((item,i)=>{
+      console.log(item);
+      
+      return(
+        <ReservationOnTable
+          key={i}
+          item={item}
+          setReservationBox={setReservationBox}
+          nameLength={nameLength}
+        />
+      )
+    })
+  },[poolInfo,nameLength])
 
   return (
     <section className="flex flex-col items-center bg-[#10141E] w-[100%] min-h-screen  pb-[120px]">
@@ -569,31 +592,7 @@ function Pool() {
                     }}
                     className="div-container fade-in"
                   >
-                    {poolInfo.tables.map((item,i)=>{
-                      
-                      return(
-                        <div key={i} style={{position:"absolute",top:`${item.top}%`,left:`${item.left}%`}} className=" flex-col z-50 w-[6%] h-[14%] p-2 bg-white rounded-md md:rounded-xl cursor-pointer flex justify-center items-center ">
-                        <p className="text-[#fab907] text-[8px] sm:text-[12px] lg:text-[14px]">
-                          
-                          {nameLength?ratings[0]?.rater?.user?.username.slice(0,nameLength):ratings[0]?.rater?.user?.username}{nameLength?".. ":" "}vs{" "}
-                          {nameLength?ratings[1]?.rater?.user?.username.slice(0,nameLength):ratings[0]?.rater?.user?.username}{nameLength?".. ":" "}
-                        </p>
-                        <p className="text-[#fab907] text-[8px] sm:text-[12px] ">1:30:29</p>
-                        <button
-                          className="w-[100%] flex justify-center  bg-[#fab907] text-white text-[8px] sm:text-[12px] py-[2px] md:py-1 rounded-[5px] md:rounded-[10px] mt-1  pointer-events-auto"
-                          onClick={() => {
-                            localStorage.setItem("tableId",item.id.toString())
-                            // setTimeout(() => {
-                              setReservationBox(true);
-                            // },100)
-                          }}
-                        >
-                          RESERVE
-                        </button>
-                    </div>  
-                      )
-                    })
-                    }
+                    {TableReservationList}
                     <img
                       ref={img}
                       src={poolInfo.room_image}
