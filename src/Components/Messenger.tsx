@@ -280,6 +280,8 @@ function Messenger() {
   };
 
   const addChats = async () => {
+    console.log('nextChats');
+    
     const url = nextChats?.replace("http", "https");
     if (nextChats && url) {
       try {
@@ -289,6 +291,8 @@ function Messenger() {
         const chatData = ChatResponse.data.results;
         const newChat = [...chatData, ...chat];
         setChat(newChat);
+        console.log('newChat');
+        
       } catch (err) {
         console.log(err);
       }
@@ -319,7 +323,7 @@ function Messenger() {
     const onTopOne= (target.scrollHeight - -target.scrollTop) -2 < target.clientHeight;
       // console.log((target.scrollHeight - -target.scrollTop) -2 , target.clientHeight)
     if (onTopOne ) {
-      console.log("true")
+      console.log(true)
       setAddNextChat(true);
     } else {
       console.log(false);
