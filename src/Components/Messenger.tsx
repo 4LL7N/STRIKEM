@@ -317,10 +317,13 @@ function Messenger() {
     const target = e.target as HTMLElement;
 
     const onTopOne= (target.scrollHeight - -target.scrollTop) -2 < target.clientHeight;
-      console.log((target.scrollHeight - -target.scrollTop) -2 , target.clientHeight)
+      // console.log((target.scrollHeight - -target.scrollTop) -2 , target.clientHeight)
     if (onTopOne ) {
+      console.log("true")
       setAddNextChat(true);
     } else {
+      console.log(false);
+      
       setAddNextChat(false);
     }
   };
