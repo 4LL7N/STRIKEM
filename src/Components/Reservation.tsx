@@ -133,6 +133,10 @@ const Reservation = memo(
 
     const [poolInfo, setPoolInfo] = useState<PoolHall | null>(PoolInfo);
 
+    const [reserverError, setReserverError] = useState<string | null>(null);
+
+    const tableID = localStorage && localStorage.getItem("tableId");
+
     const tillClose =
       poolInfo &&
       poolInfo?.close_time < poolInfo?.open_time &&
@@ -141,7 +145,6 @@ const Reservation = memo(
         ? true
         : false;
 
-    const [reserverError, setReserverError] = useState<string | null>(null);
 
     useEffect(() => {
       setPoolInfo(location.state);
@@ -174,24 +177,23 @@ const Reservation = memo(
         dateNow.setDate(dateNow.getDate() + daysToAdd);
         return dateNow.toISOString().split("T")[0];
       }
-
       try {
         const [todayResponse, tomorrowResponse, afterTomorrowResponse] =
           await Promise.all([
             axios.get(
               `https://strikem.site/api/poolhouses/${
                 poolInfo?.id
-              }/tables/16/reserve/?date=${tillClose ? date(-1) : date(0)}`
+              }/tables/${tableID}/reserve/?date=${tillClose ? date(-1) : date(0)}`
             ),
             axios.get(
               `https://strikem.site/api/poolhouses/${
                 poolInfo?.id
-              }/tables/16/reserve/?date=${tillClose ? date(0) : date(1)}`
+              }/tables/${tableID}/reserve/?date=${tillClose ? date(0) : date(1)}`
             ),
             axios.get(
               `https://strikem.site/api/poolhouses/${
                 poolInfo?.id
-              }/tables/16/reserve/?date=${tillClose ? date(1) : date(2)}`
+              }/tables/${tableID}/reserve/?date=${tillClose ? date(1) : date(2)}`
             ),
           ]);
 
@@ -250,7 +252,7 @@ const Reservation = memo(
       }
       setSelectDates(selectData);
 
-      fetchPlayers();
+      logedIn && fetchPlayers();
       poolInfo && fetchReservations();
     }, [reservationBox]);
 
@@ -575,7 +577,6 @@ const Reservation = memo(
               events={events()}
               eventContent={handleEventContent}
               slotLabelContent={(slotInfo) => {
-                console.log(slotInfo)
                 return(
                 <div style={{ color: "white", height: "100%" }}>
                   {slotInfo?.text}

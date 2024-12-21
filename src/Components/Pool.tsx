@@ -588,7 +588,10 @@ function Pool() {
                         <button
                           className="w-[100%] flex justify-center  bg-[#fab907] text-white text-[8px] sm:text-[12px] py-[2px] md:py-1 rounded-[5px] md:rounded-[10px] mt-1  pointer-events-auto"
                           onClick={() => {
-                            setReservationBox(true);
+                            localStorage.setItem("tableId",item.id.toString())
+                            // setTimeout(() => {
+                              setReservationBox(true);
+                            // },100)
                           }}
                         >
                           RESERVE
