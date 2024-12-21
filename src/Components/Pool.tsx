@@ -139,7 +139,7 @@ function Pool() {
   const [whiteBoxHeight, setWhiteBoxHeight] = useState<number>(0);
   const [whiteBoxWidth, setWhiteBoxWidth] = useState<number>(0);
 
-  const [nameLength,setNameLength] = useState<number>(2)
+  const [nameLength,setNameLength] = useState<number>(0)
 
   const avgRating = location.state.avg_rating;
 
@@ -200,6 +200,21 @@ function Pool() {
       setWhiteBoxHeight(whiteBoxHeight);
       setWhiteBoxWidth(whiteBoxWidth);
     }, 1000);
+
+    if(window.innerWidth >1045){
+      setNameLength(0)
+      console.log(0);
+    }else if(window.innerWidth > 460){
+      setNameLength(4)
+      console.log(4);
+    }else if(window.innerWidth > 382){
+      setNameLength(3)
+      console.log(3);
+    }else if(window.innerWidth > 336){
+      setNameLength(2)
+    }else{
+    setNameLength(1) 
+    }
 
     window.addEventListener("resize", () => {
       const heightPercent =
