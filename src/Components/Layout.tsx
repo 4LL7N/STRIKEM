@@ -152,10 +152,12 @@ function Layout(props: {
 
     if (viewportWidth < 768) {
       setContentH(`${viewportHeight - 77}px`);
+      
     } else if (viewportWidth < 1024) {
-      setContentH(`${viewportHeight - 137}px`);
+      setContentH(`${viewportHeight - 140}px`);
+      // console.log(viewportHeight - 140);
     } else {
-      setContentH(`${viewportHeight - 204}px`);
+      setContentH(`${viewportHeight - 24}px`);
     }
 
     `${window.innerHeight - 137}px`;

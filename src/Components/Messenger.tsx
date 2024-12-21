@@ -264,8 +264,13 @@ function Messenger() {
     // setChatHeight(chatBox.current.getBoundingClientRect().height - 96);
     // console.log(window.innerHeight - 269 )
     // setChatHeight(window.innerHeight - 275 );
-    setBoxHeight(window.innerHeight - 220);
-    // }
+    if(window.innerWidth > 768){
+    setBoxHeight(window.innerHeight - 160);
+    }else{
+      console.log(window.innerHeight - 150);
+      
+      setBoxHeight(window.innerHeight - 97);
+    }
   };
 
   const readChat = async (id: string) => {
@@ -337,11 +342,8 @@ function Messenger() {
       // console.log(onTopOne);
       
     if (onTopOne ) {
-      // console.log('true');
       setAddNextChat(true);
     } else {
-      // console.log('false');
-      
       setAddNextChat(false);
     }
   };
@@ -531,7 +533,7 @@ function Messenger() {
   return (
     <section
       style={{ height: `${boxHeight}px` }}
-      className="lg:flex-grow flex flex-col lg:flex-row m-[10px] w-[100%] border-[1px] border-[#243257d5]  rounded-[20px] overflow-hidden relative min-h-[100%] "
+      className="lg:flex-grow flex flex-col lg:flex-row m-[10px] w-[100%] border-[1px] border-[#243257d5]  rounded-[20px] overflow-hidden relative  "
     >
       <div
         className={` lg:hidden absolute top-0 left-0 z-50 transition-transform duration-1000 ease-in-out ${
