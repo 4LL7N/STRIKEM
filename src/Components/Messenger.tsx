@@ -322,16 +322,26 @@ function Messenger() {
   const handleChatScroll = (e: any) => {
     const target = e.target as HTMLElement;
 
-    const onTopOne =
-      Math.floor(target.scrollHeight - -target.scrollTop) ==
-      target.clientHeight;
-    const onTopTwo =
-      Math.floor(target.scrollHeight - -target.scrollTop) ==
-      target.clientHeight - 1;
-    if (onTopOne || onTopTwo) {
-      // console.log(nextChats);
+    // const onTopOne =
+    //   Math.floor(target.scrollHeight - -target.scrollTop) ==
+    //   target.clientHeight;
+    // console.log(target.scrollHeight - -target.scrollTop,target.clientHeight);
+
+    // const onTopOne = target.scrollHeight - -target.scrollTop > target.clientHeight;
+  // console.log(target.scrollHeight - -target.scrollTop,target.clientHeight);
+
+    // const onTopTwo =
+    //   Math.floor(target.scrollHeight - -target.scrollTop) ==
+    //   target.clientHeight - 1;
+    const onTopOne= (target.scrollHeight - -target.scrollTop) -2 < target.clientHeight;
+      // console.log(onTopOne);
+      
+    if (onTopOne ) {
+      // console.log('true');
       setAddNextChat(true);
     } else {
+      // console.log('false');
+      
       setAddNextChat(false);
     }
   };
@@ -344,7 +354,7 @@ function Messenger() {
       target.clientHeight;
     const onBottomTwo =
       Math.floor(target.scrollHeight - -target.scrollTop) ==
-      target.clientHeight - 1;
+      target.clientHeight - 1;      
     if (onBottomOne || onBottomTwo){
       setAddNextMessages(true)
     }else{
@@ -378,7 +388,7 @@ function Messenger() {
   }, []);
 
   useEffect(() => {
-    addNextChat && addChats()
+    addNextChat && nextChats && addChats()
   }, [addNextChat]);
 
   useEffect(()=>{

@@ -280,10 +280,6 @@ function Layout(props: {
     
   }, [lastJsonMessage]);
   
-  useEffect(()=>{
-    console.log(location.state);
-
-  },[location.state])
 
   return (
     <>

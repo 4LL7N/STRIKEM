@@ -203,13 +203,10 @@ function Pool() {
 
     if(window.innerWidth >1045){
       setNameLength(0)
-      console.log(0);
     }else if(window.innerWidth > 460){
       setNameLength(4)
-      console.log(4);
     }else if(window.innerWidth > 382){
       setNameLength(3)
-      console.log(3);
     }else if(window.innerWidth > 336){
       setNameLength(2)
     }else{
@@ -239,13 +236,10 @@ function Pool() {
        
       if(window.innerWidth >1045){
         setNameLength(0)
-        console.log(0);
       }else if(window.innerWidth > 460){
         setNameLength(4)
-        console.log(4);
       }else if(window.innerWidth > 382){
         setNameLength(3)
-        console.log(3);
       }else if(window.innerWidth > 336){
         setNameLength(2)
       }else{
