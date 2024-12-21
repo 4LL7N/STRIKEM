@@ -134,13 +134,11 @@ function Messenger() {
           Authorization: `JWT ${token}`,
         },
       });
-      // console.log(response.data)
       setNextMessages(response.data.next);
       setMessages(response.data.results);
       if (response.data.results.length > 0) {
         if (!openChat) {
           setOpenChat(response.data.results[0].id);
-          // console.log(response.data);
           let otherPlayer =
             response.data.results[0].player_accepting.id == currentUser?.id
               ? response.data.results[0].player_inviting
@@ -186,7 +184,6 @@ function Messenger() {
         );
         const chatData = Chatresponse.data.results;
         const nextChatsEndpoint = Chatresponse.data.next;
-        // console.log(nextChatsEndpoint);
         setNextChats(nextChatsEndpoint);
         setChat(chatData);
         localStorage.setItem("matchUpId", "");
@@ -260,15 +257,9 @@ function Messenger() {
   };
 
   const setChatBoxHeight = () => {
-    // if (messageChat.current && chatBox.current) {
-    // setChatHeight(chatBox.current.getBoundingClientRect().height - 96);
-    // console.log(window.innerHeight - 269 )
-    // setChatHeight(window.innerHeight - 275 );
     if(window.innerWidth > 768){
     setBoxHeight(window.innerHeight - 160);
-    }else{
-      console.log(window.innerHeight - 150);
-      
+    }else{      
       setBoxHeight(window.innerHeight - 97);
     }
   };
@@ -295,7 +286,6 @@ function Messenger() {
         const ChatResponse = await axios(url, {
           headers: { Authorization: `JWT ${token}` },
         });
-        // console.log(ChatResponse);
         const chatData = ChatResponse.data.results;
         const newChat = [...chatData, ...chat];
         setChat(newChat);
@@ -313,7 +303,6 @@ function Messenger() {
         const MessagesResponse = await axios(url, {
           headers: { Authorization: `JWT ${token}` },
         });
-        // console.log(ChatResponse);
         const messagesData = MessagesResponse.data.results;
         const newMessages = [...messages,...messagesData];
         setMessages(newMessages);
@@ -327,19 +316,7 @@ function Messenger() {
   const handleChatScroll = (e: any) => {
     const target = e.target as HTMLElement;
 
-    // const onTopOne =
-    //   Math.floor(target.scrollHeight - -target.scrollTop) ==
-    //   target.clientHeight;
-    // console.log(target.scrollHeight - -target.scrollTop,target.clientHeight);
-
-    // const onTopOne = target.scrollHeight - -target.scrollTop > target.clientHeight;
-  // console.log(target.scrollHeight - -target.scrollTop,target.clientHeight);
-
-    // const onTopTwo =
-    //   Math.floor(target.scrollHeight - -target.scrollTop) ==
-    //   target.clientHeight - 1;
     const onTopOne= (target.scrollHeight - -target.scrollTop) -2 < target.clientHeight;
-      // console.log(onTopOne);
       
     if (onTopOne ) {
       setAddNextChat(true);

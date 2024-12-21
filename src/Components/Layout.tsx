@@ -155,7 +155,6 @@ function Layout(props: {
       
     } else if (viewportWidth < 1024) {
       setContentH(`${viewportHeight - 140}px`);
-      // console.log(viewportHeight - 140);
     } else {
       setContentH(`${viewportHeight - 24}px`);
     }
@@ -248,7 +247,6 @@ function Layout(props: {
   },[resize])
 
   useEffect(() => {
-    // console.log(location.pathname);
     updateLayout(location.pathname)
   }, [location.pathname]);
 
@@ -276,11 +274,6 @@ function Layout(props: {
       });
     }
   }, [location.pathname, sendJsonMessage]);
-
-  useEffect(() => {
-    // console.log("Last message layout:", lastJsonMessage);
-    
-  }, [lastJsonMessage]);
   
 
   return (

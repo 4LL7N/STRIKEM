@@ -156,8 +156,6 @@ const Reservation = memo(
         const response = await axios.get("https://strikem.site/api/matchups/", {
           headers: { Authorization: `JWT ${token}` },
         });
-        //   console.log(response.data)
-        //   console.log(currentUser);
 
         const opponents: Player[] = [{ id: -1 }];
         response.data.results.forEach((item: any) => {
@@ -197,12 +195,8 @@ const Reservation = memo(
             ),
           ]);
 
-        //   console.log(todayResponse.data," todayResponse.data")
         setTodayReservation(todayResponse.data);
-        // createGrid(todayResponse.data);
-        //   console.log(tomorrowResponse.data," tomorrowResponse.data")
         setTomorrowReservation(tomorrowResponse.data);
-        //   console.log(afterTomorrowResponse.data," afterTomorrowResponse.data")
         setAfterTomorrowReservation(afterTomorrowResponse.data);
       } catch (err) {
         console.log(err);
@@ -216,12 +210,11 @@ const Reservation = memo(
     })=>{
       const token = Cookies.get("token");
       try{
-        const postResponse = await axios.post(`https://strikem.site/api/poolhouses/${poolInfo?.id}/tables/16/reserve/`
+        await axios.post(`https://strikem.site/api/poolhouses/${poolInfo?.id}/tables/16/reserve/`
         ,body
         ,{
           headers: { Authorization: `JWT ${token}` },
         })
-        console.log(postResponse);
         
       }catch(err){
         console.log(err)
@@ -276,14 +269,12 @@ const Reservation = memo(
       ? tomorrowReservation
       : afterTomorrowReservation;
       
-      // console.log(schedule);
       const arr = schedule.map((item: Reservation) => {
         const currentDay = new Date().getDate(); // Extract the current day
         const updatedStartTime = item.start_time.replace(
           tableDate.split("/")[tableDate.split("/").length - 1].split("-")[0],
           currentDay.toString()
         );
-        // console.log(updatedStartTime)
         return { ...item, start_time: updatedStartTime }; // Return the modified object
       });
 
@@ -303,7 +294,6 @@ const Reservation = memo(
     };
 
     const handleEventContent = (eventInfo: any) => {
-      // console.log(eventInfo)
       return (
         <div
           style={{
@@ -364,17 +354,12 @@ const Reservation = memo(
       function checkOverlap(startTime1:string, duration1:number, startTime2:string, duration2:number) {
         // Parse start times
 
-        console.log(startTime1,startTime2," startTime1,startTime2")
         const start1 = dayjs(startTime1, "YYYY/MM/DD hh:mm A").format("YYYY-MM-DDTHH:mm:ssZ");
         const start2 = dayjs(startTime2);
 
         // Calculate end times
         const end1 =dayjs(start1).add(duration1, "minute");
         const end2 = start2.add(duration2, "minute");
-
-        // Check for overlap
-      //  console.log(startTime2);
-      //  console.log(end1);
        
         let overlap = false
 
@@ -392,7 +377,6 @@ const Reservation = memo(
           }else{
             overlap = true
           }
-          console.log(dayjs(start1).hour(),start2.hour());
         }else if(dayjs(start1).hour()>start2.hour()){
             if(end2.hour()<=dayjs(start1).hour()){
               if(end2.hour()==dayjs(start1).hour()){
@@ -410,17 +394,10 @@ const Reservation = memo(
         }else{
           overlap = true
         }
-        // console.log(dayjs(start1).isBefore(end2));
-        // console.log(dayjs(start2).isBefore(end1))
-
-        // console.log(start1.isBefore(end2)," start1.isBefore(end2)");
-        // console.log(start2.isBefore(end1)," start2.isBefore(end1)")
         
         return overlap 
-        dayjs(start1).isBefore(end2) && dayjs(start2).isBefore(end1);
       }
       const error = schedule.some((item:Reservation)=>{return checkOverlap(newReserveTime,selectedDuration+5,item.start_time,item.duration)})
-      console.log(error);
       if(error){
         setReserverError('time overlap, change reservation time or duration')
         return
@@ -435,8 +412,6 @@ const Reservation = memo(
         duration:selectedDuration,
         other_player:selectedOpponent?selectedOpponent.id:null
       }
-      console.log(newReservation);
-      // console.log(selectedTime, selectedDuration, selectedOpponent);
       postReservation(newReservation)
 
     };
