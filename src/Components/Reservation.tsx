@@ -219,7 +219,8 @@ const Reservation = memo(
         ,{
           headers: { Authorization: `JWT ${token}` },
         })
-        
+        window.location.reload()
+        setReservationBox(false)
       }catch(err){
         console.log(err)
       }
@@ -401,6 +402,19 @@ const Reservation = memo(
         
         return overlap 
       }
+
+      if(dayjs(newReserveTime).add(selectedDuration,"minute").isBefore(dayjs())){
+        console.log(newReserveTime,dayjs(newReserveTime),dayjs());
+        
+        setReserverError('Cannot reserve time before current time')
+        return
+      }
+
+      if(dayjs(newReserveTime).isAfter(dayjs(poolInfo?.close_time))){        
+        setReserverError('Cannot reserve after pool close time')
+        return
+      }
+
       const error = schedule.some((item:Reservation)=>{return checkOverlap(newReserveTime,selectedDuration+5,item.start_time,item.duration)})
       if(error){
         setReserverError('time overlap, change reservation time or duration')
@@ -408,6 +422,8 @@ const Reservation = memo(
       }else{
         setReserverError('')
       }
+
+      
 
       const start_time = dayjs(newReserveTime, "YYYY/MM/DD hh:mm A").format("YYYY-MM-DDTHH:mm:ssZ")
 
@@ -419,6 +435,8 @@ const Reservation = memo(
         start_time,
         duration:selectedDuration,
       }
+      console.log(newReservation);
+      
       postReservation(newReservation)
 
     };

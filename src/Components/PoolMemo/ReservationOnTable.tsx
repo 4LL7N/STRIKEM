@@ -74,8 +74,9 @@ const ReservationOnTable = memo(({item,setReservationBox,nameLength}:{item:Table
           :
           <div className=" flex-col  bg-white flex justify-center items-center ">
         <p className="text-[#fab907] text-[8px] sm:text-[12px] lg:text-[14px]">
-          {nameLength?item.current_session.player_reserving.user.username.slice(0,nameLength):item.current_session.player_reserving.user.username}{nameLength?".. ":" "}vs{" "}
-          {nameLength?item.current_session.other_player_details.user.username.slice(0,nameLength):item.current_session.other_player_details.user.username}{nameLength?".. ":" "}
+          {nameLength?item.current_session.player_reserving.user.username.slice(0,nameLength):item.current_session.player_reserving.user.username}{nameLength?".. ":" "}
+          {/* {item.current_session.other_player_details?'vs':""}{" "}
+          {item.current_session.other_player_details?nameLength?item.current_session.other_player_details.user.username.slice(0,nameLength):item.current_session.other_player_details.user.username:""}{item.current_session.other_player_details?nameLength?".. ":" ":""} */}
         </p>
         <p className="text-[#fab907] text-[8px] sm:text-[12px] ">{timeLeft}</p>
         </div>
