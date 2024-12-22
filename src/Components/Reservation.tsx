@@ -214,7 +214,7 @@ const Reservation = memo(
   })=>{
       const token = Cookies.get("token");
       try{
-        await axios.post(`https://strikem.site/api/poolhouses/${poolInfo?.id}/tables/16/reserve/`
+        await axios.post(`https://strikem.site/api/poolhouses/${poolInfo?.id}/tables/${tableID}/reserve/`
         ,body
         ,{
           headers: { Authorization: `JWT ${token}` },
