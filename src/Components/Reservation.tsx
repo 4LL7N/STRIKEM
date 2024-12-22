@@ -204,10 +204,14 @@ const Reservation = memo(
     };
 
     const postReservation = async(body:{
-      start_time:string,
-      duration:number,
-      other_player:number|null
-    })=>{
+      start_time: string;
+      duration: number;
+      other_player: Player;
+  } | {
+      start_time: string;
+      duration: number;
+      other_player?: undefined;
+  })=>{
       const token = Cookies.get("token");
       try{
         await axios.post(`https://strikem.site/api/poolhouses/${poolInfo?.id}/tables/16/reserve/`
@@ -407,10 +411,13 @@ const Reservation = memo(
 
       const start_time = dayjs(newReserveTime, "YYYY/MM/DD hh:mm A").format("YYYY-MM-DDTHH:mm:ssZ")
 
-      const newReservation = {
+      const newReservation = selectedOpponent? {
         start_time,
         duration:selectedDuration,
-        other_player:selectedOpponent?selectedOpponent.id:null
+        other_player:selectedOpponent
+      }:{
+        start_time,
+        duration:selectedDuration,
       }
       postReservation(newReservation)
 
