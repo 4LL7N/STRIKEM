@@ -137,13 +137,12 @@ const Reservation = memo(
 
     const tableID = localStorage && localStorage.getItem("tableId");
 
-    const tillClose =
-      poolInfo &&
-      poolInfo?.close_time < poolInfo?.open_time &&
-      Number(Date().split(" ")[4].split(":")[0]) <
-        Number(poolInfo.close_time.split(":")[0])
-        ? true
-        : false;
+    // const tillClose =
+    //   poolInfo &&
+    //   dayjs(poolInfo?.close_time,"YYYY/MM/DD hh:mm A").hour() < dayjs(poolInfo?.open_time,"YYYY/MM/DD hh:mm A").hour() &&
+    //   dayjs(poolInfo?.close_time,"YYYY/MM/DD hh:mm A").hour() != 0
+    //     ? true
+    //     : false;
 
 
     useEffect(() => {
@@ -159,9 +158,11 @@ const Reservation = memo(
 
         const opponents: Player[] = [{ id: -1 }];
         response.data.results.forEach((item: any) => {
-          item.player_accepting.id == currentUser?.id
-            ? opponents.push(item.player_inviting)
-            : opponents.push(item.player_accepting);
+          if (item.player_accepting.id == currentUser?.id) {
+            opponents.push(item.player_inviting);
+          } else {
+            opponents.push(item.player_accepting);
+          }
         });
         setOpponentsList(opponents);
       } catch (err) {
@@ -171,30 +172,45 @@ const Reservation = memo(
 
     const fetchReservations = async () => {
       function date(daysToAdd: number) {
-        const dateNow = new Date();
-        dateNow.setDate(dateNow.getDate() + daysToAdd);
-        return dateNow.toISOString().split("T")[0];
+        const dateNow = dayjs();
+        // console.log(dateNow);
+        
+        dateNow.add(daysToAdd, "day");
+        console.log(daysToAdd);
+        
+        console.log(dateNow.format("YYYY/MM/DD"));
+        
+        return dateNow.format("YYYY-MM-DD");
       }
+    
+      
       try {
         const [todayResponse, tomorrowResponse, afterTomorrowResponse] =
           await Promise.all([
             axios.get(
               `https://strikem.site/api/poolhouses/${
                 poolInfo?.id
-              }/tables/${tableID}/reserve/?date=${tillClose ? date(-1) : date(0)}`
+              }/tables/${tableID}/reserve/?date=${
+                // tillClose ? date(-1) :
+                 date(0)}`
             ),
             axios.get(
               `https://strikem.site/api/poolhouses/${
                 poolInfo?.id
-              }/tables/${tableID}/reserve/?date=${tillClose ? date(0) : date(1)}`
+              }/tables/${tableID}/reserve/?date=${
+                // tillClose ? date(0) :
+                 date(1)}`
             ),
             axios.get(
               `https://strikem.site/api/poolhouses/${
                 poolInfo?.id
-              }/tables/${tableID}/reserve/?date=${tillClose ? date(1) : date(2)}`
+              }/tables/${tableID}/reserve/?date=${
+                // tillClose ? date(1) :
+                 date(2)}`
             ),
           ]);
-
+          console.log(todayResponse.data);
+          
         setTodayReservation(todayResponse.data);
         setTomorrowReservation(tomorrowResponse.data);
         setAfterTomorrowReservation(afterTomorrowResponse.data);
@@ -238,11 +254,14 @@ const Reservation = memo(
       setTableDate(formattedDate);
       const selectData = [];
       for (let i = 0; i < 3; i++) {
-        const Day = (tillClose ? Number(day) + i - 1 : Number(day) + i)
+        const Day = (
+          // tillClose ? Number(day) + i - 1 :
+         Number(day) + i)
           .toString()
           .padStart(2, "0");
         const NextDay = (
-          tillClose ? Number(nextDay) + i - 1 : Number(nextDay) + i
+          // tillClose ? Number(nextDay) + i - 1 :
+          Number(nextDay) + i
         )
           .toString()
           .padStart(2, "0");
@@ -250,8 +269,12 @@ const Reservation = memo(
       }
       setSelectDates(selectData);
 
-      logedIn && fetchPlayers();
-      poolInfo && fetchReservations();
+      if (logedIn) {
+        fetchPlayers();
+      }
+      if (poolInfo) {
+        fetchReservations();
+      }
     }, [reservationBox]);
 
     const handleTimeSelect = (e: dayjs.Dayjs | null) => {
@@ -267,6 +290,8 @@ const Reservation = memo(
     };
 
     const events = () => {
+      // console.log(todayReservation);
+      
       const schedule =
       tableDate == selectDates[0]
       ? todayReservation
@@ -282,14 +307,17 @@ const Reservation = memo(
         );
         return { ...item, start_time: updatedStartTime }; // Return the modified object
       });
-
+      
       return arr.map((time) => {
+        console.log(time);
+        
         const start = time?.start_time;
         const end = dayjs(start)
           .add(time?.duration + 5, "minute")
           .format();
         
         return {
+          
           title: "Occupied",
           start,
           end,
@@ -321,7 +349,9 @@ const Reservation = memo(
       _: any,
       value: { value: number; label: string } | null
     ) => {
-      value && setSelectedDuration(value.value);
+      if (value) {
+        setSelectedDuration(value.value);
+      }
     };
 
     const handleReserveSubmit = () => {
@@ -342,6 +372,9 @@ const Reservation = memo(
           : tableDate == selectDates[1]
           ? tomorrowReservation
           : afterTomorrowReservation;
+
+          // console.log(schedule);
+          
 
       const afterMidnight =
             poolInfo &&
@@ -372,14 +405,17 @@ const Reservation = memo(
           if(end1.hour()<=start2.hour()){
             if(end1.hour()==start2.hour()){
               if((start2.minute()-end1.minute()) >= 5){
+                
                 overlap = false 
               }else{
+                console.log(true)
                 overlap = true
               }
             }else{
               overlap=false
             }
           }else{
+            console.log(true)
             overlap = true
           }
         }else if(dayjs(start1).hour()>start2.hour()){
@@ -388,15 +424,20 @@ const Reservation = memo(
                 if((dayjs(start1).minute()-end2.minute()) >= 5){
                   overlap = false 
                 }else{
+                  console.log(start1,start2);
+                  
+                  console.log(true)
                  overlap = true
                 }
               }else{
                 overlap=false
               }
             }else{
+              console.log(true)
               overlap = true
             }
         }else{
+          console.log(true)
           overlap = true
         }
         
@@ -522,10 +563,12 @@ const Reservation = memo(
                         "border-b-[1px] border-b-white"
                       }  py-[2px] px-[6px] md:py-1 md:px-[10px] flex gap-[5px] md:gap-[10px] bg-[#161D2F] opacity-100 `}
                       onClick={() => {
-                        setOpenOpponents(false),
-                          item.id == -1
-                            ? setSelectedOpponent(null)
-                            : setSelectedOpponent(item);
+                        setOpenOpponents(false);
+                          if (item.id == -1) {
+                            setSelectedOpponent(null);
+                          } else {
+                            setSelectedOpponent(item);
+                          }
                       }}
                     >
                       <img
@@ -576,7 +619,7 @@ const Reservation = memo(
               height="422px"
               events={events()}
               eventContent={handleEventContent}
-              slotLabelContent={(slotInfo) => {
+              slotLabelContent={(slotInfo:any) => {
                 return(
                 <div style={{ color: "white", height: "100%" }}>
                   {slotInfo?.text}

@@ -509,7 +509,7 @@ function Pool() {
                   >
                     <button
                       onClick={() => {
-                        navigate("east", false), mapNavigation("east");
+                        navigate("east", false); mapNavigation("east");
                       }}
                       id="east"
                       className="hover:opacity-30 transition-opacity duration-300 "
@@ -530,7 +530,7 @@ function Pool() {
                   >
                     <button
                       onClick={() => {
-                        navigate("west", false), mapNavigation("west");
+                        navigate("west", false);mapNavigation("west");
                       }}
                       id="west"
                       className="hover:opacity-30 transition-opacity duration-300 "
@@ -551,7 +551,7 @@ function Pool() {
                   >
                     <button
                       onClick={() => {
-                        navigate("north", false), mapNavigation("north");
+                        navigate("north", false);mapNavigation("north");
                       }}
                       id="north"
                       className="hover:opacity-30 transition-opacity duration-300 "
@@ -572,7 +572,7 @@ function Pool() {
                   >
                     <button
                       onClick={() => {
-                        navigate("south", false), mapNavigation("south");
+                        navigate("south", false);mapNavigation("south");
                       }}
                       id="south"
                       className="hover:opacity-30 transition-opacity duration-300 "

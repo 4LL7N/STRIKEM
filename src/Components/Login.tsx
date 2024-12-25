@@ -160,7 +160,7 @@ function Login({setLoginBox,setSignUpBox}:any) {
           <a className="w-[156px] text-[15px] text-[#FFF] font-light mr-[9px]">
             Don’t have an account?
           </a>
-          <p className="text-[15px] text-[#fab907] font-light " onClick={()=>{setSignUpBox(true),setLoginBox(false)}} >
+          <p className="text-[15px] text-[#fab907] font-light " onClick={()=>{setSignUpBox(true);setLoginBox(false)}} >
             Sign Up
           </p>
         </span>

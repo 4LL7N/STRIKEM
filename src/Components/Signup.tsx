@@ -323,7 +323,7 @@ function Signup({setSignUpBox,setLoginBox}:any) {
           <a className="w-[166px] text-[15px] text-[#FFF] font-light mr-[9px]">
             Do you have an account?
           </a>
-          <p className="text-[15px] text-[#fab907] font-light " onClick={()=>{setSignUpBox(false),setLoginBox(true)}} >
+          <p className="text-[15px] text-[#fab907] font-light " onClick={()=>{setSignUpBox(false);setLoginBox(true)}} >
             Log In
           </p>
         </span>

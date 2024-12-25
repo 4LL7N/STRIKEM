@@ -159,7 +159,7 @@ function Layout(props: {
       setContentH(`${viewportHeight - 24}px`);
     }
 
-    `${window.innerHeight - 137}px`;
+    // `${window.innerHeight - 137}px`;
     setHeaderHeight(
       isSpecialPage || viewportWidth < 1024 ? 100 : window.innerHeight - 65
     );
@@ -229,6 +229,8 @@ function Layout(props: {
     // divSize();
     // headerResize()
     const token = Cookies.get("token");
+    console.log(token);
+    
     if (token && token != "logout" && isTokenExpired(token)) {
       setLogedIn(true);
       FetchCurrentUser();
@@ -420,7 +422,7 @@ function Layout(props: {
                   : "lg:block"
               } `}
               onClick={() => {
-                fetchNoti(), setNotificationsOpen(!notificationsOpen);
+                fetchNoti();setNotificationsOpen(!notificationsOpen);
               }}
             />
             </div>
@@ -473,7 +475,7 @@ function Layout(props: {
                   : "lg:hidden"
               }  `}
               onClick={() => {
-                fetchNoti(), setNotificationsOpen(!notificationsOpen);
+                fetchNoti();setNotificationsOpen(!notificationsOpen);
               }}
             />
             </div>
@@ -599,8 +601,8 @@ function Layout(props: {
                         }
                       : item.type == "MSG"
                       ? () => {
-                          navigate(`/messenger`),
-                            localStorage.setItem("matchUpId", item.extra);
+                          navigate(`/messenger`);
+                          localStorage.setItem("matchUpId", item.extra);
                         }
                       : () => {
                           ("");
@@ -673,11 +675,11 @@ function Layout(props: {
               className="bg-transparent focus:outline-none text-[#FFF] text-[16px] font-light md:text-[24px] "
               type="text"
               placeholder="Search for movies"
-              onChange={(event) => {
+              onChange={
                 location.pathname == "/matchmake"
-                  ? props.setUsersSearch(event.target.value)
-                  : props.setSearch(event.target.value);
-              }}
+                  ? (event) => {props.setUsersSearch(event.target.value)}
+                  : (event) => {props.setSearch(event.target.value)}
+            }
             />
           </div>
           <div

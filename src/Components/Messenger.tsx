@@ -374,11 +374,17 @@ function Messenger() {
   }, []);
 
   useEffect(() => {
-    addNextChat && nextChats && addChats()
+    console.log(addNextChat && nextChats," addNextChat && nextChats");
+    
+    if (addNextChat && nextChats) {
+      addChats();
+    }
   }, [addNextChat]);
 
   useEffect(()=>{
-    addNextMessages && addMessages()
+    if (addNextMessages) {
+      addMessages();
+    }
   },[addNextMessages])
 
   useEffect(() => {
@@ -439,7 +445,9 @@ function Messenger() {
             localStorage.setItem("matchUpId", `${item.id}`);
             messagesFetch(item.id);
             setMessageTo(otherPlayer);
-            window.innerWidth < 1024 ? setIsSwiped(false) : null;
+            if (window.innerWidth < 1024) {
+              setIsSwiped(false);
+            }
             sendJsonMessage({
               action: "change_matchup",
               matchup_id: item.id,

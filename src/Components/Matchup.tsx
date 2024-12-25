@@ -261,7 +261,6 @@ const Fetch = useCallback(async () => {
     const currentUser: Profile  = localStorage.getItem("currentUser") 
     ? JSON.parse(localStorage.getItem("currentUser")!) 
     : null;
-    console
     setIsOn(currentUser.inviting_to_play)
       
     Fetch();
