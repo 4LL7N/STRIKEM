@@ -151,7 +151,7 @@ function Pool() {
       userDecisionTimeout: 5000,
     });
 
-  const { setReservationBox } = useWebSocketContext();
+  const { setReservationBox, lastJsonMessage } = useWebSocketContext();
 
   const location = useLocation();
   const [ratings, setRatings] = useState<Rating[]>([]);
@@ -461,7 +461,7 @@ function Pool() {
 
   const TableReservationList = useMemo(() => {
     return poolInfo.tables.map((item,i)=>{
-      console.log(item);
+      
       
       return(
         <ReservationOnTable
@@ -473,6 +473,10 @@ function Pool() {
       )
     })
   },[poolInfo,nameLength])
+
+  useEffect(() => {
+    console.log(lastJsonMessage)
+  },[lastJsonMessage]);
 
   return (
     <section className="flex flex-col items-center bg-[#10141E] w-[100%] min-h-screen  pb-[120px]">

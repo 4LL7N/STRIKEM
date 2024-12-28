@@ -94,7 +94,7 @@ const Reservation = memo(
     reservationBox: boolean;
     PoolInfo: PoolHall;
   }) => {
-    const { logedIn, setReservationBox } = useWebSocketContext();
+    const { logedIn, setReservationBox, lastJsonMessage } = useWebSocketContext();
     const location = useLocation();
 
     const [tableDate, setTableDate] = useState<string>("");
@@ -182,7 +182,7 @@ const Reservation = memo(
         
         return dateNow.format("YYYY-MM-DD");
       }
-    
+      console.log(poolInfo?.id,tableID,date(0));
       
       try {
         const [todayResponse, tomorrowResponse, afterTomorrowResponse] =
@@ -272,7 +272,7 @@ const Reservation = memo(
       if (logedIn) {
         fetchPlayers();
       }
-      if (poolInfo) {
+      if (poolInfo && tableID) {
         fetchReservations();
       }
     }, [reservationBox]);
@@ -309,7 +309,7 @@ const Reservation = memo(
       });
       
       return arr.map((time) => {
-        console.log(time);
+        // console.log(time);
         
         const start = time?.start_time;
         const end = dayjs(start)
@@ -364,6 +364,9 @@ const Reservation = memo(
       if(!selectedDuration){
         setReserverError('Please select duration')
         return
+      }else if(selectedDuration % 30 == 0){
+        setReserverError('please select duration in 30 minutes interval')
+
       }
 
       const schedule =
@@ -476,11 +479,14 @@ const Reservation = memo(
         start_time,
         duration:selectedDuration,
       }
-      console.log(newReservation);
       
       postReservation(newReservation)
 
     };
+
+    useEffect(() => {
+      console.log(lastJsonMessage)
+    },[lastJsonMessage]);
 
     return (
       <div className="w-[100%] md:w-auto p-[18px] md:pb-[24px] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px] ">

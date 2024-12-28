@@ -229,7 +229,7 @@ function Layout(props: {
     // divSize();
     // headerResize()
     const token = Cookies.get("token");
-    console.log(token);
+    // console.log(token);
     
     if (token && token != "logout" && isTokenExpired(token)) {
       setLogedIn(true);
@@ -499,14 +499,14 @@ function Layout(props: {
           </div>
           <div
             className={` flex ${
-              location.pathname.includes("Pool")
+              location.pathname.includes("Pool") || location.pathname.includes("users")
                 ? "lg:gap-[20px] items-center"
                 : "lg:flex-col justify-center "
             } gap-[10px] md:gap-[14px] ${logedIn && "hidden"} `}
           >
             <button
               className={` px-[10px] py-[5px]  bg-[#243257d5] rounded-[20px]  ${
-                location.pathname.includes("Pool")
+                location.pathname.includes("Pool")|| location.pathname.includes("users")
                   ? ""
                   : " lg:w-[32px] lg:h-[32px] lg:flex lg:p-0 lg:rounded-[6px] "
               }  lg:items-center lg:justify-center `}
@@ -516,7 +516,7 @@ function Layout(props: {
             >
               <p
                 className={` text-white text-[12px] md:text-[16px]  ${
-                  location.pathname.includes("Pool")
+                  location.pathname.includes("Pool")|| location.pathname.includes("users")
                     ? "lg:text-[20px]"
                     : " lg:hidden  "
                 } `}
@@ -526,14 +526,14 @@ function Layout(props: {
               <CiLogin
                 style={{ color: "white", width: "80%", height: "80%" }}
                 className={`hidden ${
-                  location.pathname.includes("Pool") ? "" : " lg:block "
+                  location.pathname.includes("Pool")|| location.pathname.includes("users") ? "" : " lg:block "
                 } `}
               />
             </button>
 
             <button
               className={` px-[10px] py-[5px]  bg-[#243257d5] rounded-[20px]  ${
-                location.pathname.includes("Pool")
+                location.pathname.includes("Pool")|| location.pathname.includes("users")
                   ? ""
                   : " lg:w-[32px] lg:h-[32px] lg:flex lg:p-0 lg:rounded-[6px] "
               }  lg:items-center lg:justify-center `}
@@ -543,7 +543,7 @@ function Layout(props: {
             >
               <p
                 className={` text-white text-[12px] md:text-[16px]  ${
-                  location.pathname.includes("Pool")
+                  location.pathname.includes("Pool")|| location.pathname.includes("users")
                     ? "lg:text-[20px]"
                     : " lg:hidden  "
                 } `}
@@ -553,7 +553,7 @@ function Layout(props: {
               <FaRegIdCard
                 style={{ color: "white", width: "80%", height: "80%" }}
                 className={`hidden ${
-                  location.pathname.includes("Pool") ? "" : " lg:block "
+                  location.pathname.includes("Pool")|| location.pathname.includes("users") ? "" : " lg:block "
                 } `}
               />
             </button>
