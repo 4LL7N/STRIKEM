@@ -364,8 +364,8 @@ const Reservation = memo(
       if(!selectedDuration){
         setReserverError('Please select duration')
         return
-      }else if(selectedDuration % 30 == 0){
-        setReserverError('please select duration in 30 minutes interval')
+      }else if(selectedDuration % 5 == 0){
+        setReserverError('please select duration in 5 minutes interval')
 
       }
 
