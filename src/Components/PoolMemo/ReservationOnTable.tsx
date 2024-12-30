@@ -38,6 +38,7 @@ const ReservationOnTable = memo(({item,setReservationBox,nameLength}:{item:Table
     const [timeLeft, setTimeLeft] = useState<string>("");
 
       useEffect(() => {
+        // console.log(item)
         if (!item.current_session) return
         const endTime = dayjs(item.current_session.start_time).add(item.current_session.duration, "minute"); // Calculate end time
     

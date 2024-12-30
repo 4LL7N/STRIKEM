@@ -151,7 +151,7 @@ function Pool() {
       userDecisionTimeout: 5000,
     });
 
-  const { setReservationBox, lastJsonMessage } = useWebSocketContext();
+  const { setReservationBox } = useWebSocketContext();
 
   const location = useLocation();
   const [ratings, setRatings] = useState<Rating[]>([]);
@@ -165,7 +165,7 @@ function Pool() {
 
   const id =
     location.pathname.split("/")[location.pathname.split("/").length - 1];
-  const poolInfo: PoolHall = location.state;
+  const [poolInfo,setPoolInfo] = useState<PoolHall>(location.state);
   const [imageI, setImageI] = useState<number>(0);
 
 
@@ -184,6 +184,11 @@ function Pool() {
       const response = await axios.get(
         `https://strikem.site/api/poolhouses/${id}/ratings/`
       );
+      const poolResponse = await axios.get(`https://strikem.site/api/poolhouses/${id}/`)
+      console.log(poolResponse.data)  
+      console.log(location.state," location state");
+      
+      setPoolInfo(poolResponse.data)
       setRatings(response.data);
     } catch (err) {
       console.error(err);
@@ -460,8 +465,9 @@ function Pool() {
   };
 
   const TableReservationList = useMemo(() => {
+    // console.log(poolInfo)
     return poolInfo.tables.map((item,i)=>{
-      
+      // console.log(item)
       
       return(
         <ReservationOnTable
@@ -474,9 +480,7 @@ function Pool() {
     })
   },[poolInfo,nameLength])
 
-  useEffect(() => {
-    console.log(lastJsonMessage)
-  },[lastJsonMessage]);
+  
 
   return (
     <section className="flex flex-col items-center bg-[#10141E] w-[100%] min-h-screen  pb-[120px]">

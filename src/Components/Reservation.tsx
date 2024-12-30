@@ -173,16 +173,13 @@ const Reservation = memo(
     const fetchReservations = async () => {
       function date(daysToAdd: number) {
         const dateNow = dayjs();
-        // console.log(dateNow);
+        
         
         dateNow.add(daysToAdd, "day");
-        console.log(daysToAdd);
-        
-        console.log(dateNow.format("YYYY/MM/DD"));
+
         
         return dateNow.format("YYYY-MM-DD");
       }
-      console.log(poolInfo?.id,tableID,date(0));
       
       try {
         const [todayResponse, tomorrowResponse, afterTomorrowResponse] =
@@ -209,7 +206,7 @@ const Reservation = memo(
                  date(2)}`
             ),
           ]);
-          console.log(todayResponse.data);
+          // console.log(todayResponse.data);
           
         setTodayReservation(todayResponse.data);
         setTomorrowReservation(tomorrowResponse.data);
@@ -235,7 +232,7 @@ const Reservation = memo(
         ,{
           headers: { Authorization: `JWT ${token}` },
         })
-        window.location.reload()
+        // window.location.reload()
         setReservationBox(false)
       }catch(err){
         console.log(err)
