@@ -480,8 +480,8 @@ function Pool() {
   },[poolTablesData,nameLength])
 
   useEffect(() => {
-    console.log(lastJsonMessage)
-    console.log(poolTablesData)
+    // console.log(lastJsonMessage)
+    // console.log(poolTablesData)
     if (lastJsonMessage) {
       if (lastJsonMessage.protocol === "now_busy") {
         setPoolTablesData((prev) => {

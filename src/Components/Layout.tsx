@@ -110,7 +110,7 @@ function Layout(props: {
   }, []);
 
   const messageContent = useCallback((body: string): string => {
-    return body.length > 22 ? `${body.slice(0, 22)}...` : body;
+    return body?.length > 22 ? `${body.slice(0, 22)}...` : body;
   }, []);
 
   const FetchCurrentUser = async () => {
@@ -172,6 +172,7 @@ function Layout(props: {
           headers: { Authorization: `JWT ${token}` },
         }
       );
+      console.log(response.data.results);
       setNotifications(response.data.results);
     } catch (err) {
       console.error(err);
@@ -415,7 +416,8 @@ function Layout(props: {
               className={` w-[32px] h-[32px] hidden ${
                 location.pathname == "/messenger" ||
                 location.pathname.includes("users") ||
-                !logedIn
+                !logedIn||
+                location.pathname.includes("Pools")
                   ? "hidden"
                   : "lg:block"
               } `}
@@ -560,15 +562,17 @@ function Layout(props: {
         <div
           className={` overflow-hidden absolute top-[80px] md:top-[110px]  right-[50px] md:right-[100px] ${
             location.pathname == "/messenger" ||
-            location.pathname.includes("users")
+            location.pathname.includes("users") || 
+            location.pathname.includes("Pools")
               ? " lg:top-[150px] lg:right-[150px]"
               : " lg:top-[70px] lg:left-[150px]"
-          } w-[260px] md:w-[340px] h-[260px] md:h-[380px] bg-[#10141E] border-[1px] border-[#243257d5] rounded-[20px] z-40 transform transition-all duration-500 ease-in-out delay-200 ${
+          } w-[260px] md:w-[340px] h-[260px] md:h-[380px] bg-[#10141E] border-[1px] border-[#243257d5] rounded-[20px] z-[100] transform transition-all duration-500 ease-in-out delay-200 ${
             notificationsOpen ? "opacity-100 " : "opacity-0 "
           }`}
         >
           <div className="flex flex-col w-full h-full overflow-y-auto notificationsScroll ">
             {notifications?.map((item: Message, i: number) => {
+              // console.log(item);
               const message = () => {
                 switch (item.type) {
                   case "INV":
@@ -579,6 +583,8 @@ function Layout(props: {
                     return "rejected your invitation.";
                   case "ACP":
                     return "accepted your invitation.";
+                  case "GSE":
+                      return "enter the result of the game.";
                   default:
                     return "contacted you";
                 }
@@ -602,14 +608,20 @@ function Layout(props: {
                           navigate(`/messenger`);
                           localStorage.setItem("matchUpId", item.extra);
                         }
-                      : () => {
+                      : item.type == "GSE"
+                      ? () => {
+                         console.log(item);
+                         localStorage.setItem("resultId", item.extra);
+                         
+                        }
+                      :() => {
                           ("");
                         }
                   }
                 >
                   <img
-                    src={item.sent_by.profile_image}
-                    className="h-[95%] aspect-square rounded-[50%] "
+                    src={item?.sent_by?.profile_image}
+                    className={`h-[95%] aspect-square rounded-[50%] ${item.type == "GSE" && "hidden"} `}
                     alt=""
                     onClick={(e) => {
                       goProfile(e, item.sent_by.id);
@@ -617,7 +629,7 @@ function Layout(props: {
                   />
                   <div className="flex flex-col md:gap-[4px] ">
                     <h1 className="text-[14px] md:text-[18px] text-[#fff] ">
-                      {item.sent_by.user.username} {message()}
+                      {item.type != "GSE" && item.sent_by.user.username} {message()}
                     </h1>
                     <div className="flex gap-[3px]  ">
                       <p
