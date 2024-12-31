@@ -151,7 +151,7 @@ function Pool() {
       userDecisionTimeout: 5000,
     });
 
-  const { setReservationBox } = useWebSocketContext();
+  const { setReservationBox, lastJsonMessage } = useWebSocketContext();
 
   const location = useLocation();
   const [ratings, setRatings] = useState<Rating[]>([]);
@@ -166,6 +166,7 @@ function Pool() {
   const id =
     location.pathname.split("/")[location.pathname.split("/").length - 1];
   const [poolInfo,setPoolInfo] = useState<PoolHall>(location.state);
+  const [poolTablesData, setPoolTablesData] = useState<any[]>(location.state.tables);
   const [imageI, setImageI] = useState<number>(0);
 
 
@@ -185,10 +186,9 @@ function Pool() {
         `https://strikem.site/api/poolhouses/${id}/ratings/`
       );
       const poolResponse = await axios.get(`https://strikem.site/api/poolhouses/${id}/`)
-      console.log(poolResponse.data)  
-      console.log(location.state," location state");
-      
+
       setPoolInfo(poolResponse.data)
+      setPoolTablesData(poolResponse.data.tables)
       setRatings(response.data);
     } catch (err) {
       console.error(err);
@@ -465,8 +465,7 @@ function Pool() {
   };
 
   const TableReservationList = useMemo(() => {
-    // console.log(poolInfo)
-    return poolInfo.tables.map((item,i)=>{
+    return poolTablesData.map((item,i)=>{
       // console.log(item)
       
       return(
@@ -478,9 +477,59 @@ function Pool() {
         />
       )
     })
-  },[poolInfo,nameLength])
+  },[poolTablesData,nameLength])
 
-  
+  useEffect(() => {
+    console.log(lastJsonMessage)
+    console.log(poolTablesData)
+    if (lastJsonMessage) {
+      if (lastJsonMessage.protocol === "now_busy") {
+        setPoolTablesData((prev) => {
+          return prev.map((item) => {
+            if (item.id === lastJsonMessage.changed_table_id) {
+              return {
+                ...item,
+                current_session: {
+                  duration:lastJsonMessage.duration,
+                  finished_reservation:false,
+                  other_player_details: {
+                    id:lastJsonMessage.other_player_id,
+                    profile_image:lastJsonMessage.other_player_profile,
+                    user:{
+                      username:lastJsonMessage.other_player_username
+                    }
+                  },
+                  player_reserving:{
+                    id:lastJsonMessage.player_reserving_id,
+                    profile_image:lastJsonMessage.player_reserving_profile_picture,
+                    user:{
+                      username:lastJsonMessage.player_reserving_username
+                    }
+                  },
+                  start_time:lastJsonMessage.start_time
+                },
+                free:false,
+              };
+            }
+            return item;
+          });
+        });
+      }else if(lastJsonMessage.protocol === "now_free"){
+        setPoolTablesData((prev) => {
+          return prev.map((item) => {
+            if (item.id === lastJsonMessage.changed_table_id) {
+              return {
+                ...item,
+                current_session: null,
+                free:true,
+              };
+            }
+            return item;
+          });
+        });
+      }
+    }
+  }, [lastJsonMessage]);
 
   return (
     <section className="flex flex-col items-center bg-[#10141E] w-[100%] min-h-screen  pb-[120px]">

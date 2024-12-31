@@ -94,7 +94,7 @@ const Reservation = memo(
     reservationBox: boolean;
     PoolInfo: PoolHall;
   }) => {
-    const { logedIn, setReservationBox, lastJsonMessage } = useWebSocketContext();
+    const { logedIn, setReservationBox } = useWebSocketContext();
     const location = useLocation();
 
     const [tableDate, setTableDate] = useState<string>("");
@@ -481,9 +481,6 @@ const Reservation = memo(
 
     };
 
-    useEffect(() => {
-      console.log(lastJsonMessage)
-    },[lastJsonMessage]);
 
     return (
       <div className="w-[100%] md:w-auto p-[18px] md:pb-[24px] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px] ">

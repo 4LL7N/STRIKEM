@@ -57,7 +57,6 @@ function Login({setLoginBox,setSignUpBox}:any) {
           password: logPassword.current.value,
         }
       );
-      console.log(response.data)
       Cookies.set('token',response.data.access
         ,{
         secure: true,
