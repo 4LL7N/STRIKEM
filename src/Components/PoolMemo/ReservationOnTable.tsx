@@ -66,7 +66,7 @@ const ReservationOnTable = memo(({item,setReservationBox,nameLength}:{item:Table
       }, [item.current_session]);
       
   return (
-    <div style={{position:"absolute",top:`${item.top}%`,left:`${item.left}%`}} className=" flex-col z-50 w-[6%] h-[14%] p-2 bg-white rounded-md md:rounded-xl cursor-pointer flex justify-center items-center ">
+    <div style={{position:"absolute",top:`${item.top}%`,left:`${item.left}%`}} className=" flex-col z-[100] w-[6%] h-[14%] p-2 bg-white rounded-md md:rounded-xl cursor-pointer flex justify-center items-center ">
         {
           item.free ?
           <p className="text-[#fab907] text-[8px] sm:text-[12px] lg:text-[14px]">

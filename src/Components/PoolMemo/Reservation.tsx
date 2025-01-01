@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import "./CSS/Reservation.css";
+import "../CSS/Reservation.css";
 
 import { memo, useMemo, useState } from "react";
 
 import { useEffect } from "react";
-import { useWebSocketContext } from "./Websocket";
+import { useWebSocketContext } from "../Websocket";
 import { IoIosArrowDown, IoMdClose } from "react-icons/io";
 import Cookies from "js-cookie";
 import axios from "axios";

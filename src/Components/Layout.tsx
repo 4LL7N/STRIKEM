@@ -16,8 +16,8 @@ import { CiLogin, CiLogout } from "react-icons/ci";
 import Login from "./Login";
 import Signup from "./Signup";
 import { jwtDecode } from "jwt-decode";
-import Reservation from "./Reservation";
-import ResultBoxMemo from "./LayputMemo/ResultBoxMemo";
+import Reservation from "./PoolMemo/Reservation";
+import ResultBoxMemo from "./LayoutMemo/ResultBoxMemo";
 
 
 interface User {
@@ -283,6 +283,11 @@ function Layout(props: {
     }
   }, [location.pathname, sendJsonMessage]);
   
+  useEffect(() => {
+    console.log(lastJsonMessage);
+    
+  }, [lastJsonMessage]);
+
   const ResultBox = () => {
     
     const timer = setInterval(() => {
@@ -309,7 +314,7 @@ function Layout(props: {
 
   return (
     <>
-    <button className="bg-white " onClick={ResultBox} >asdwe</button>
+    {/* <button className="bg-white " onClick={ResultBox} >asdwe</button> */}
       <div
         className={` flex flex-col items-center justify-center  w-[100vw] min-h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
           loginBox ? "" : "hidden"
@@ -325,7 +330,7 @@ function Layout(props: {
         <Signup setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />
       </div>
       <div
-        className={` flex flex-col items-center justify-center  w-[100vw] ${window.innerHeight < 992?"h-[992px] md:h-screen ":"h-screen"} px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+        className={` flex flex-col items-center justify-center  w-[100vw] ${logedIn?window.innerHeight < 992?"h-[992px] md:h-screen ":"h-screen":window.innerHeight < 565?"h-[565px] md:h-screen ":"h-screen"} px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
           reservationBox && location.state? "" : "hidden"
         }  `}
       >
@@ -334,10 +339,16 @@ function Layout(props: {
       <div
         className={`w-[100vw] ${
           reservationBox ?
-            window.innerHeight < 992?
-            "h-[992px] md:h-screen"
+            logedIn?
+              window.innerHeight < 992?
+              "h-[992px] md:h-screen"
+              :
+              "h-screen "
             :
-            "h-screen "
+              window.innerHeight < 565?
+              "h-[565px] md:h-screen"
+              :
+              "h-screen "
           :
           ((location.pathname == "/matchmake" ||
             location.pathname == "/messenger") &&
