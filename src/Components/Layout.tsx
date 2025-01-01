@@ -17,6 +17,7 @@ import Login from "./Login";
 import Signup from "./Signup";
 import { jwtDecode } from "jwt-decode";
 import Reservation from "./Reservation";
+import ResultBoxMemo from "./LayputMemo/ResultBoxMemo";
 
 
 interface User {
@@ -95,6 +96,13 @@ function Layout(props: {
   const [contentH, setContentH] = useState<string>();
   const [headerHeight, setHeaderHeight] = useState<number>(100);
 
+  const [openResultBox, setOpenResultBox] = useState<number>(0);
+  const yourPointsInput = useRef<HTMLInputElement | null>(null);
+  const [yourPoints, setYourPoints] = useState<number>(0);
+  const opponentsPointsInput = useRef<HTMLInputElement | null>(null);
+  const [opponentsPoints, setOpponentsPoints] = useState<number>(0);
+
+
   const timeAgo = useCallback((timestamp: string): string => {
     const now = new Date();
     const past = new Date(timestamp);
@@ -172,7 +180,6 @@ function Layout(props: {
           headers: { Authorization: `JWT ${token}` },
         }
       );
-      console.log(response.data.results);
       setNotifications(response.data.results);
     } catch (err) {
       console.error(err);
@@ -276,9 +283,33 @@ function Layout(props: {
     }
   }, [location.pathname, sendJsonMessage]);
   
+  const ResultBox = () => {
+    
+    const timer = setInterval(() => {
+     
+      setOpenResultBox((prev:number):number => {
+        const nextValue = Math.min(prev + 0.1, 100);
+        const roundedValue = Math.round(nextValue * 10) / 10; 
+        if (roundedValue === 100) {
+          clearInterval(timer);
+        }else if(prev == -1){
+          clearInterval(timer);
+          return 0
+        }        
+        return roundedValue;
+      });
+    }, 10);
+  
+    setTimeout(() => {
+      clearInterval(timer);
+      setOpenResultBox(0)
+    }, 10000);
+    
+  };
 
   return (
     <>
+    <button className="bg-white " onClick={ResultBox} >asdwe</button>
       <div
         className={` flex flex-col items-center justify-center  w-[100vw] min-h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
           loginBox ? "" : "hidden"
@@ -322,6 +353,8 @@ function Layout(props: {
             : " lg:flex-row lg:gap-[39px] lg:p-[32px] lg:pr-[36px] "
         }`}
       >
+        <ResultBoxMemo yourPointsInput={yourPointsInput} yourPoints={yourPoints} opponentsPointsInput={opponentsPointsInput} opponentsPoints={opponentsPoints} setYourPoints={setYourPoints} setOpponentsPoints={setOpponentsPoints} windowWidth={window.innerWidth} openResultBox={openResultBox} setOpenResultBox={setOpenResultBox} />
+        {/* Accept invitation */}
         <div
           className={` flex flex-col gap-[3px] py-[8px] px-[16px] rounded-[52px] absolute top-[40px] left-[50%] translate-x-[-50%] w-[60%] transition-transform duration-1000  ${
             props.acceptInvatation
