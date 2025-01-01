@@ -283,15 +283,11 @@ function Layout(props: {
     }
   }, [location.pathname, sendJsonMessage]);
   
-  useEffect(() => {
-    console.log(lastJsonMessage);
-    
-  }, [lastJsonMessage]);
-
+  
   const ResultBox = () => {
     
     const timer = setInterval(() => {
-     
+      
       setOpenResultBox((prev:number):number => {
         const nextValue = Math.min(prev + 0.1, 100);
         const roundedValue = Math.round(nextValue * 10) / 10; 
@@ -304,13 +300,21 @@ function Layout(props: {
         return roundedValue;
       });
     }, 10);
-  
+    
     setTimeout(() => {
       clearInterval(timer);
       setOpenResultBox(0)
     }, 10000);
     
   };
+  
+  useEffect(() => {
+    console.log(lastJsonMessage);
+    if (lastJsonMessage && lastJsonMessage?.protocol == "now_free") {
+      localStorage.setItem("sessionId", lastJsonMessage.game_session_id);
+      ResultBox()
+    }
+  }, [lastJsonMessage]);
 
   return (
     <>
