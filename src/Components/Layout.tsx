@@ -98,7 +98,7 @@ function Layout(props: {
   const [contentH, setContentH] = useState<string>();
   const [headerHeight, setHeaderHeight] = useState<number>(100);
 
-  const [openResultBox, setOpenResultBox] = useState<number>(0);
+  const [openResultBox, setOpenResultBox] = useState<boolean>(false);
   const yourPointsInput = useRef<HTMLInputElement | null>(null);
   const [yourPoints, setYourPoints] = useState<number>(0);
   const opponentsPointsInput = useRef<HTMLInputElement | null>(null);
@@ -286,35 +286,35 @@ function Layout(props: {
   }, [location.pathname, sendJsonMessage]);
   
   
-  const ResultBox = () => {
+  // const ResultBox = () => {
     
-    const timer = setInterval(() => {
+  //   const timer = setInterval(() => {
       
-      setOpenResultBox((prev:number):number => {
-        const nextValue = Math.min(prev + 0.1, 100);
-        const roundedValue = Math.round(nextValue * 10) / 10; 
-        if (roundedValue === 100) {
-          clearInterval(timer);
-        }else if(prev == -1){
-          clearInterval(timer);
-          return 0
-        }        
-        return roundedValue;
-      });
-    }, 10);
+  //     setOpenResultBox((prev:number):number => {
+  //       const nextValue = Math.min(prev + 0.1, 100);
+  //       const roundedValue = Math.round(nextValue * 10) / 10; 
+  //       if (roundedValue === 100) {
+  //         clearInterval(timer);
+  //       }else if(prev == -1){
+  //         clearInterval(timer);
+  //         return 0
+  //       }        
+  //       return roundedValue;
+  //     });
+  //   }, 10);
     
-    setTimeout(() => {
-      clearInterval(timer);
-      setOpenResultBox(0)
-    }, 10000);
+  //   setTimeout(() => {
+  //     clearInterval(timer);
+  //     setOpenResultBox(0)
+  //   }, 10000);
     
-  };
+  // };
   
   useEffect(() => {
     // console.log(lastJsonMessage);
     if (lastJsonMessage && lastJsonMessage?.protocol == "now_free") {
       localStorage.setItem("sessionId", lastJsonMessage.game_session_id);
-      ResultBox()
+      setOpenResultBox(true);
     }
   }, [lastJsonMessage]);
 
@@ -337,7 +337,7 @@ function Layout(props: {
           <div className="flex flex-col w-full h-full overflow-y-auto notificationsScroll ">
             {notifications?.map((item: Message, i: number) => {
               // console.log(item);
-              return <NotificationsBoxItemsMemo key={item.id} item={item} i={i} goProfile={goProfile} messageContent={messageContent} timeAgo={timeAgo} navigate={navigate} ResultBox={ResultBox} notifications={notifications} />
+              return <NotificationsBoxItemsMemo key={item.id} item={item} i={i} goProfile={goProfile} messageContent={messageContent} timeAgo={timeAgo} navigate={navigate}  notifications={notifications} setOpenResultBox={setOpenResultBox} />
             })}
           </div>
         </div>
@@ -350,7 +350,6 @@ function Layout(props: {
     messageContent,
     timeAgo,
     navigate,
-    ResultBox
   ])
 
   return (

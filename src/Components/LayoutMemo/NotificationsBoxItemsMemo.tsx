@@ -35,11 +35,11 @@ interface NotificationsBoxItemsProps {
     messageContent: (body: string) => string;
     timeAgo: (timestamp: string) => string;
     navigate: (path: string) => void;
-    ResultBox: () => void;
     notifications: Message[];
+    setOpenResultBox: (openResultBox: boolean) => void;
 }
 
-const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo,navigate,ResultBox,notifications}:NotificationsBoxItemsProps) => {
+const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo,navigate,notifications,setOpenResultBox}:NotificationsBoxItemsProps) => {
     const message = () => {
         switch (item.type) {
           case "INV":
@@ -77,7 +77,7 @@ const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo
               : item.type == "GSE"
               ? () => {
                   localStorage.setItem("sessionId", item.extra);
-                  ResultBox()
+                  setOpenResultBox(true);
                 }
               :() => {
                   ("");

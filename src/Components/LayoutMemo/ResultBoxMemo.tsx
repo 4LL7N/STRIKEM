@@ -12,8 +12,8 @@ interface ResultBoxProps {
   setYourPoints: (yourPoints: number) => void;
   setOpponentsPoints: (opponentsPoints: number) => void;
   windowWidth: number;
-  openResultBox: number;
-  setOpenResultBox: (openResultBox: number) => void;
+  openResultBox: boolean;
+  setOpenResultBox: (openResultBox: boolean) => void;
 }
 
 const ResultBoxMemo = memo(
@@ -54,10 +54,17 @@ const ResultBoxMemo = memo(
     //     console.log(error);
     //   }
     // };
+    console.log(windowWidth);
+    
           
     const handleSubmit = () => {
-      setOpenResultBox(-1);
+      setOpenResultBox(false);
     };
+
+    const handleCancel = () => {
+      setOpenResultBox(false);
+    };
+
 
     return (
       <div
@@ -175,22 +182,73 @@ const ResultBoxMemo = memo(
               </p>
             </div>
           </div>
+          <div className="flex gap-2" >
           <button
             className={`${
-              windowWidth <= 500 ? "hidden" : ""
-            } bg-[#fab907] rounded-[20px] px-[8px] py-[4px] text-[14px] text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] `}
+              windowWidth <= 556 ? "hidden" : ""
+            } bg-[#fab907] rounded-[20px] px-[8px] py-[4px] ${
+              windowWidth <= 365
+                ? "text-[10px]"
+                : windowWidth <= 400
+                ? "text-[12px]"
+                : "text-[14px] md:text-[16px]"
+            } text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] `}
             onClick={handleSubmit}
           >
             Submit
           </button>
+          <button
+            className={`${
+              windowWidth <= 556 ? "hidden" : ""
+            } bg-red-600 rounded-[20px] px-[8px] py-[4px] ${
+              windowWidth <= 365
+                ? "text-[10px]"
+                : windowWidth <= 400
+                ? "text-[12px]"
+                : "text-[14px] md:text-[16px]"
+            } text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] `}
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+          </div>
         </div>
-
-        <div
+        <div className={`flex gap-2 ${windowWidth <= 556 ? "" : "hidden"}`} >
+        <button
+            className={`${
+              windowWidth <= 556 ? "" : "hidden"
+            } bg-[#fab907] rounded-[20px] px-[8px] py-[4px] ${
+              windowWidth <= 365
+                ? "text-[10px]"
+                : windowWidth <= 400
+                ? "text-[12px]"
+                : "text-[14px] md:text-[16px]"
+            } text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] w-full `}
+            onClick={handleSubmit}
+          >
+            Submit
+          </button>
+          <button
+            className={`${
+              windowWidth <= 556 ? "" : "hidden"
+            } bg-red-600 rounded-[20px] px-[8px] py-[4px] ${
+              windowWidth <= 365
+                ? "text-[10px]"
+                : windowWidth <= 400
+                ? "text-[12px]"
+                : "text-[14px] md:text-[16px]"
+            } text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] w-full `}
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+          </div>
+        {/* <div
           style={{ width: `${openResultBox}%` }}
           className={`h-1 rounded-[4px] bg-[#fab907] mx-2 mt-1
-               ${openResultBox == 0 ? "hidden" : ""} 
+               ${openResultBox == false ? "hidden" : ""} 
             `}
-        />
+        /> */}
       </div>
     );
   }
