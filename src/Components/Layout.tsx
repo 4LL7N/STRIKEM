@@ -18,6 +18,7 @@ import Signup from "./Signup";
 import { jwtDecode } from "jwt-decode";
 import Reservation from "./PoolMemo/Reservation";
 import ResultBoxMemo from "./LayoutMemo/ResultBoxMemo";
+import InvitationAcceptMemo from "./LayoutMemo/invitationAcceptMemo";
 
 
 interface User {
@@ -370,52 +371,7 @@ function Layout(props: {
       >
         <ResultBoxMemo yourPointsInput={yourPointsInput} yourPoints={yourPoints} opponentsPointsInput={opponentsPointsInput} opponentsPoints={opponentsPoints} setYourPoints={setYourPoints} setOpponentsPoints={setOpponentsPoints} windowWidth={window.innerWidth} openResultBox={openResultBox} setOpenResultBox={setOpenResultBox} />
         {/* Accept invitation */}
-        <div
-          className={` flex flex-col gap-[3px] py-[8px] px-[16px] rounded-[52px] absolute top-[40px] left-[50%] translate-x-[-50%] w-[60%] transition-transform duration-1000  ${
-            props.acceptInvatation
-              ? " translate-y-[0] "
-              : " translate-y-[-200%] "
-          } bg-[#161d2f] `}
-        >
-          <div className="flex justify-between items-center">
-            <p className="flex self-center text-[14px] text-[#fff] ml-2 ">
-              invitation accepted go to chat
-            </p>
-            <div className="flex items-center gap-[10px]">
-              <button
-                className=" bg-[#fab907] rounded-[20px] px-[8px] py-[4px] text-[14px] text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] "
-                onClick={
-                  lastJsonMessage?.protocol == "handling_invite_response"
-                    ? () => {
-                        navigate("/messenger");
-                        localStorage.setItem(
-                          "matchupId",
-                          lastJsonMessage.matchup_id
-                        );
-                        props.setAcceptInvatation(-1);
-                      }
-                    : () => {}
-                }
-              >
-                Chat
-              </button>
-              <button
-                className=" bg-red-600  rounded-[20px] px-[8px] py-[4px]  text-[14px] text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] "
-                onClick={() => {
-                  props.setAcceptInvatation(-1);
-                }}
-              >
-                Ignore
-              </button>
-            </div>
-          </div>
-          <div
-            style={{ width: `${props.acceptInvatation}%` }}
-            className={`h-1 rounded-[4px] bg-[#fab907] mx-2 ${
-              props.acceptInvatation == 0 ? "hidden" : ""
-            } `}
-          />
-        </div>
+        <InvitationAcceptMemo acceptInvatation={props.acceptInvatation} setAcceptInvatation={props.setAcceptInvatation} lastJsonMessage={lastJsonMessage} />
         <header
           ref={header}
           style={
@@ -658,10 +614,8 @@ function Layout(props: {
                         }
                       : item.type == "GSE"
                       ? () => {
-                          // localStorage.setItem("sessio", item.extra);
                           localStorage.setItem("sessionId", item.extra);
                           ResultBox()
-                          
                         }
                       :() => {
                           ("");
