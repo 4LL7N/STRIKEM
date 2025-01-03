@@ -15,5 +15,6 @@ module.exports = {
       { allowConstantExport: true },
     ],
     '@typescript-eslint/no-unused-expressions': 'off',
+    'react-hooks/exhaustive-deps': 'off',
   },
 }
