@@ -319,6 +319,9 @@ function Layout(props: {
   }, [lastJsonMessage]);
 
   const notificationsList = useMemo(() => {
+
+    if (!notificationsOpen) return null;
+
     return(
       <div
           className={` overflow-hidden absolute top-[80px] md:top-[110px]  right-[50px] md:right-[100px] ${
