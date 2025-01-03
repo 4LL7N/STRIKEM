@@ -61,7 +61,7 @@ const ResultBoxMemo = memo(
 
     return (
       <div
-        className={` z-[100] flex flex-col gap-[3px] py-[8px] px-[16px] rounded-[52px] absolute top-[40px] left-[50%] translate-x-[-50%] w-[80%] md:w-[60%] transition-transform duration-1000 border-1 border-[#2a3759] ${
+        className={` z-[1000] flex flex-col gap-[3px] py-[8px] px-[16px] rounded-[52px] absolute top-[40px] left-[50%] translate-x-[-50%] w-[80%] md:w-[60%] transition-transform duration-1000 border-1 border-[#2a3759] ${
           openResultBox ? " translate-y-[0] " : " translate-y-[-200%] "
         } bg-[#161d2f] `}
       >

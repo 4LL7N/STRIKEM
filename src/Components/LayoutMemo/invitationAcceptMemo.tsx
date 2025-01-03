@@ -14,7 +14,7 @@ const InvitationAcceptMemo = memo(({acceptInvatation,setAcceptInvatation,lastJso
 
   return (
     <div
-              className={` flex flex-col gap-[3px] py-[8px] px-[16px] rounded-[52px] absolute top-[40px] left-[50%] translate-x-[-50%] w-[60%] transition-transform duration-1000  ${
+              className={` z-[1000] flex flex-col gap-[3px] py-[8px] px-[16px] rounded-[52px] absolute top-[40px] left-[50%] translate-x-[-50%] w-[60%] transition-transform duration-1000  ${
                 acceptInvatation
                   ? " translate-y-[0] "
                   : " translate-y-[-200%] "
