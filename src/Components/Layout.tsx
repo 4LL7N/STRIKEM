@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -19,6 +19,7 @@ import { jwtDecode } from "jwt-decode";
 import Reservation from "./PoolMemo/Reservation";
 import ResultBoxMemo from "./LayoutMemo/ResultBoxMemo";
 import InvitationAcceptMemo from "./LayoutMemo/invitationAcceptMemo";
+import NotificationsBoxItemsMemo from "./LayoutMemo/NotificationsBoxItemsMemo";
 
 
 interface User {
@@ -317,6 +318,38 @@ function Layout(props: {
     }
   }, [lastJsonMessage]);
 
+  const notificationsList = useMemo(() => {
+    return(
+      <div
+          className={` overflow-hidden absolute top-[80px] md:top-[110px]  right-[50px] md:right-[100px] ${
+            location.pathname == "/messenger" ||
+            location.pathname.includes("users") || 
+            location.pathname.includes("Pools")
+              ? " lg:top-[150px] lg:right-[150px]"
+              : " lg:top-[70px] lg:left-[150px]"
+          } w-[260px] md:w-[340px] h-[260px] md:h-[380px] bg-[#10141E] border-[1px] border-[#243257d5] rounded-[20px] z-[100] transform transition-all duration-500 ease-in-out delay-200 ${
+            notificationsOpen ? "opacity-100 " : "opacity-0 "
+          }`}
+        >
+          <div className="flex flex-col w-full h-full overflow-y-auto notificationsScroll ">
+            {notifications?.map((item: Message, i: number) => {
+              // console.log(item);
+              return <NotificationsBoxItemsMemo key={item.id} item={item} i={i} goProfile={goProfile} messageContent={messageContent} timeAgo={timeAgo} navigate={navigate} ResultBox={ResultBox} />
+            })}
+          </div>
+        </div>
+    )
+  },[
+    notifications,
+    notificationsOpen,
+    location.pathname,
+    goProfile,
+    messageContent,
+    timeAgo,
+    navigate,
+    ResultBox
+  ])
+
   return (
     <>
     {/* <button className="bg-white " onClick={ResultBox} >asdwe</button> */}
@@ -370,7 +403,6 @@ function Layout(props: {
         }`}
       >
         <ResultBoxMemo yourPointsInput={yourPointsInput} yourPoints={yourPoints} opponentsPointsInput={opponentsPointsInput} opponentsPoints={opponentsPoints} setYourPoints={setYourPoints} setOpponentsPoints={setOpponentsPoints} windowWidth={window.innerWidth} openResultBox={openResultBox} setOpenResultBox={setOpenResultBox} />
-        {/* Accept invitation */}
         <InvitationAcceptMemo acceptInvatation={props.acceptInvatation} setAcceptInvatation={props.setAcceptInvatation} lastJsonMessage={lastJsonMessage} />
         <header
           ref={header}
@@ -563,98 +595,7 @@ function Layout(props: {
             </button>
           </div>
         </header>
-        <div
-          className={` overflow-hidden absolute top-[80px] md:top-[110px]  right-[50px] md:right-[100px] ${
-            location.pathname == "/messenger" ||
-            location.pathname.includes("users") || 
-            location.pathname.includes("Pools")
-              ? " lg:top-[150px] lg:right-[150px]"
-              : " lg:top-[70px] lg:left-[150px]"
-          } w-[260px] md:w-[340px] h-[260px] md:h-[380px] bg-[#10141E] border-[1px] border-[#243257d5] rounded-[20px] z-[100] transform transition-all duration-500 ease-in-out delay-200 ${
-            notificationsOpen ? "opacity-100 " : "opacity-0 "
-          }`}
-        >
-          <div className="flex flex-col w-full h-full overflow-y-auto notificationsScroll ">
-            {notifications?.map((item: Message, i: number) => {
-              // console.log(item);
-              const message = () => {
-                switch (item.type) {
-                  case "INV":
-                    return "invited you";
-                  case "MSG":
-                    return "sent you a message.";
-                  case "REJ":
-                    return "rejected your invitation.";
-                  case "ACP":
-                    return "accepted your invitation.";
-                  case "GSE":
-                      return "enter the result of the game.";
-                  default:
-                    return "contacted you";
-                }
-              };
-
-              return (
-                <div
-                  key={item.id}
-                  className={` cursor-pointer flex items-center gap-[10px] w-[100%] h-[25%] ${
-                    i == notifications.length - 1
-                      ? ""
-                      : "border-b-[1px] border-b-[#243257d5] "
-                  } p-[10px] ${item.read ? "" : "bg-[#1d2537]"} `}
-                  onClick={
-                    item.type == "INV"
-                      ? () => {
-                          navigate(`/matchmake`);
-                        }
-                      : item.type == "MSG"
-                      ? () => {
-                          navigate(`/messenger`);
-                          localStorage.setItem("matchUpId", item.extra);
-                        }
-                      : item.type == "GSE"
-                      ? () => {
-                          localStorage.setItem("sessionId", item.extra);
-                          ResultBox()
-                        }
-                      :() => {
-                          ("");
-                        }
-                  }
-                >
-                  <img
-                    src={item?.sent_by?.profile_image}
-                    className={`h-[95%] aspect-square rounded-[50%] ${item.type == "GSE" && "hidden"} `}
-                    alt=""
-                    onClick={(e) => {
-                      goProfile(e, item.sent_by.id);
-                    }}
-                  />
-                  <div className="flex flex-col md:gap-[4px] ">
-                    <h1 className="text-[14px] md:text-[18px] text-[#fff] ">
-                      {item.type != "GSE" && item.sent_by.user.username} {message()}
-                    </h1>
-                    <div className="flex gap-[3px]  ">
-                      <p
-                        className={`${
-                          item.type == "MSG" ? "" : " hidden "
-                        } text-[10px] md:text-[14px] text-[#fff]`}
-                      >
-                        {messageContent(item.body)}
-                      </p>
-                      <p
-                        className={`text-[10px] md:text-[14px] text-[#7e7e7e] `}
-                      >
-                        {" "}
-                        {timeAgo(item.timestamp)}{" "}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
+        
         <div
           style={
             location.pathname == "/messenger"
