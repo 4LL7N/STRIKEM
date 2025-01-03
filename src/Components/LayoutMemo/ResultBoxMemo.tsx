@@ -1,8 +1,29 @@
-// import axios from "axios";
-import { memo,
-  //  useMemo 
+import axios from "axios";
+import { memo, useEffect, useState,
+   useMemo 
   } from "react";
-// import Cookies from "js-cookie";
+import Cookies from "js-cookie";
+
+interface Player {
+  id: number;
+  profile_image: string;
+  total_points: number;
+  user: {
+    email: string;
+    first_name: string;
+    last_name: string;
+    id: number;
+    username: string;
+  };
+}
+
+interface Match {
+  id: string;
+  players: Player[];
+  pooltable: number;
+  status_finished: boolean;
+}
+
 
 interface ResultBoxProps {
   yourPointsInput: React.Ref<HTMLInputElement>;
@@ -29,41 +50,69 @@ const ResultBoxMemo = memo(
     setOpenResultBox,
   }: ResultBoxProps) => {
 
-    // const currentUser = useMemo(() => {
-    //         return localStorage.getItem("currentUser") 
-    //           ? JSON.parse(localStorage.getItem("currentUser")!) 
-    //           : null;
-    //       }, []);
-    // const sessionId = localStorage.getItem("sessionId");
+    const currentUser = useMemo(() => {
+            return localStorage.getItem("currentUser") 
+              ? JSON.parse(localStorage.getItem("currentUser")!) 
+              : null;
+          }, []);
+    const sessionId = localStorage.getItem("sessionId");
 
-    // const postResult = async () => {
-    //   const token = Cookies.get("token");
-    //   try {
-    //     const response = await axios.post(
-    //       `https://strikem.site/api/players/${currentUser.id}/history/`,
-    //       {
-    //         game_session: sessionId,
-    //         yourPoints: yourPoints,
-    //         opponentsPoints: opponentsPoints,
-    //       },
-    //       {
-    //         headers: { Authorization: `JWT ${token}` },
-    //       }
-    //     );
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    // };
-    console.log(windowWidth);
-    
+    const [currentSession, setCurrentSession] = useState<Match>();
+
+    const fetchCurrentSession = async () => {
+      const token = Cookies.get("token");
+      try {
+        const CurrentSessionResponse = await axios(
+          `https://strikem.site/api/game-session/${sessionId}/`,
+          {
+            headers: { Authorization: `JWT ${token}` },
+          }
+        );
+        console.log(CurrentSessionResponse.data);
+        setCurrentSession(CurrentSessionResponse.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    const postResult = async () => {
+      const token = Cookies.get("token");
+      
+      try {
+        const response = await axios.post(
+          `https://strikem.site/api/players/${currentUser.id}/history/`,
+          {
+            game_session: sessionId,
+            winner_player: yourPoints > opponentsPoints ? currentUser.id : currentUser.id==currentSession?.players[0].id? currentSession?.players[1].id:currentSession?.players[0].id,
+            loser_player: yourPoints < opponentsPoints ? currentUser.id : currentUser.id==currentSession?.players[0].id? currentSession?.players[1].id:currentSession?.players[0].id,
+            result_winner: yourPoints > opponentsPoints? yourPoints:opponentsPoints,
+            result_loser: yourPoints < opponentsPoints? yourPoints:opponentsPoints
+          },
+          {
+            headers: { Authorization: `JWT ${token}` },
+          }
+        );
+        console.log(response.data);
+        
+      } catch (error) {
+        console.log(error);
+      }
+    };
           
     const handleSubmit = () => {
+      postResult()
+      localStorage.removeItem("sessionId")
       setOpenResultBox(false);
     };
 
     const handleCancel = () => {
+      localStorage.removeItem("sessionId")
       setOpenResultBox(false);
     };
+
+    useEffect(() => {      
+      sessionId && fetchCurrentSession();
+    }, [openResultBox,sessionId]);
 
 
     return (
@@ -178,7 +227,7 @@ const ResultBoxMemo = memo(
                     : "text-[14px] md:text-[16px]"
                 } text-red-600 `}
               >
-                Opponent
+                {currentUser.id==currentSession?.players[0].id? currentSession?.players[1].user.username:currentSession?.players[0].user.username}
               </p>
             </div>
           </div>
