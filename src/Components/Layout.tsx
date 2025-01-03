@@ -309,7 +309,7 @@ function Layout(props: {
   };
   
   useEffect(() => {
-    console.log(lastJsonMessage);
+    // console.log(lastJsonMessage);
     if (lastJsonMessage && lastJsonMessage?.protocol == "now_free") {
       localStorage.setItem("sessionId", lastJsonMessage.game_session_id);
       ResultBox()
@@ -658,9 +658,10 @@ function Layout(props: {
                         }
                       : item.type == "GSE"
                       ? () => {
-                         console.log(item);
-                         localStorage.setItem("resultId", item.extra);
-                         
+                          // localStorage.setItem("sessio", item.extra);
+                          localStorage.setItem("sessionId", item.extra);
+                          ResultBox()
+                          
                         }
                       :() => {
                           ("");
