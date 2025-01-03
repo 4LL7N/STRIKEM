@@ -1,6 +1,45 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { memo } from "react";
 
-const NotificationsBoxItemsMemo = memo(() => {
+interface User {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  username: string;
+}
+
+
+interface SentBy {
+  id: number;
+  profile_image: string;
+  total_points: number;
+  user: User;
+}
+
+interface Message {
+  id: number;
+  body: string;
+  type: string;
+  timestamp: string; // Use `Date` instead if you'd like to work with Date objects.
+  read: boolean;
+  player: number;
+  sent_by: SentBy;
+  extra: string;
+}
+
+interface NotificationsBoxItemsProps {
+    item: Message;
+    i: number;
+    goProfile: (e: any, id: number) => void;
+    messageContent: (body: string) => string;
+    timeAgo: (timestamp: string) => string;
+    navigate: (path: string) => void;
+    ResultBox: () => void;
+    notifications: Message[];
+}
+
+const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo,navigate,ResultBox,notifications}:NotificationsBoxItemsProps) => {
     const message = () => {
         switch (item.type) {
           case "INV":
@@ -20,7 +59,6 @@ const NotificationsBoxItemsMemo = memo(() => {
 
       return (
         <div
-          key={item.id}
           className={` cursor-pointer flex items-center gap-[10px] w-[100%] h-[25%] ${
             i == notifications.length - 1
               ? ""
