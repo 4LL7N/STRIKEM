@@ -80,11 +80,11 @@ const ResultBoxMemo = memo(
       
       try {
         const response = await axios.post(
-          `https://strikem.site/api/players/${currentUser.id}/history/`,
+          `https://strikem.site/api/players/${currentUser?.id}/history/`,
           {
             game_session: sessionId,
-            winner_player: yourPoints > opponentsPoints ? currentUser.id : currentUser.id==currentSession?.players[0].id? currentSession?.players[1].id:currentSession?.players[0].id,
-            loser_player: yourPoints < opponentsPoints ? currentUser.id : currentUser.id==currentSession?.players[0].id? currentSession?.players[1].id:currentSession?.players[0].id,
+            winner_player: yourPoints > opponentsPoints ? currentUser?.id : currentUser?.id==currentSession?.players[0]?.id? currentSession?.players[1]?.id:currentSession?.players[0]?.id,
+            loser_player: yourPoints < opponentsPoints ? currentUser?.id : currentUser?.id==currentSession?.players[0]?.id? currentSession?.players[1]?.id:currentSession?.players[0]?.id,
             result_winner: yourPoints > opponentsPoints? yourPoints:opponentsPoints,
             result_loser: yourPoints < opponentsPoints? yourPoints:opponentsPoints
           },
@@ -227,7 +227,7 @@ const ResultBoxMemo = memo(
                     : "text-[14px] md:text-[16px]"
                 } text-red-600 `}
               >
-                {currentUser.id==currentSession?.players[0].id? currentSession?.players[1].user.username:currentSession?.players[0].user.username}
+                {currentUser?.id==currentSession?.players[0]?.id? currentSession?.players[1].user.username:currentSession?.players[0].user.username}
               </p>
             </div>
           </div>
