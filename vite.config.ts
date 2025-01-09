@@ -21,4 +21,7 @@ export default defineConfig({
       '@fullcalendar/core/preact.js': path.resolve('node_modules/@fullcalendar/core/preact.js'),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1500,
+  },
 })
