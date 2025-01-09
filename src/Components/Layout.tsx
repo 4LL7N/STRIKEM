@@ -19,7 +19,7 @@ import { jwtDecode } from "jwt-decode";
 import Reservation from "./PoolMemo/Reservation";
 import ResultBoxMemo from "./LayoutMemo/ResultBoxMemo";
 import NotificationsBoxItemsMemo from "./LayoutMemo/NotificationsBoxItemsMemo";
-
+import InvitationAcceptMemo from "./LayoutMemo/InvitationAcceptMemo";
 
 interface User {
   email: string;
@@ -353,7 +353,6 @@ function Layout(props: {
     navigate,
   ])
 
-  // const InvitationsAccept = lazy(() => import("./LayoutMemo/InvitationAcceptMemo"));
 
   return (
     <>
@@ -408,7 +407,7 @@ function Layout(props: {
         }`}
       >
         <ResultBoxMemo yourPointsInput={yourPointsInput} yourPoints={yourPoints} opponentsPointsInput={opponentsPointsInput} opponentsPoints={opponentsPoints} setYourPoints={setYourPoints} setOpponentsPoints={setOpponentsPoints} windowWidth={window.innerWidth} openResultBox={openResultBox} setOpenResultBox={setOpenResultBox} />
-        {/* <InvitationsAccept acceptInvatation={props.acceptInvatation} setAcceptInvatation={props.setAcceptInvatation} lastJsonMessage={lastJsonMessage} /> */}
+        <InvitationAcceptMemo acceptInvatation={props.acceptInvatation} setAcceptInvatation={props.setAcceptInvatation} lastJsonMessage={lastJsonMessage} />
         <header
           ref={header}
           style={
