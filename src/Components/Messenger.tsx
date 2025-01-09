@@ -17,7 +17,7 @@ import { useWebSocketContext } from "./Websocket";
 import ChatBubble from "./MessengerMemo/ChatBubble";
 import MessageItem from "./MessengerMemo/MessageItem";
 import { useNavigate } from "react-router-dom";
-import { FaArrowLeft } from "react-icons/fa6";
+import { FaArrowLeft, FaRegMessage } from "react-icons/fa6";
 
 interface chatMessage {
   after_outdated?: boolean;
@@ -126,9 +126,9 @@ function Messenger() {
   const MatchUpId = localStorage.getItem("matchUpId"); 
   const Fetch = async () => {
     
-    if (MatchUpId) {
-      setOpenChat(MatchUpId);
-    }
+    // if (MatchUpId) {
+    //   setOpenChat(MatchUpId);
+    // }
     try {
       const response = await axios("https://strikem.site/api/matchups/", {
         headers: {
@@ -138,8 +138,7 @@ function Messenger() {
       setNextMessages(response.data.next);
       setMessages(response.data.results);
       if (response.data.results.length > 0) {
-        if (!openChat) {
-          setOpenChat(response.data.results[0].id);
+        
           let otherPlayer =
             response.data.results[0].player_accepting.id == currentUser?.id
               ? response.data.results[0].player_inviting
@@ -168,26 +167,28 @@ function Messenger() {
           }
 
           setMessageTo(otherPlayer);
+        if(MatchUpId){
+          messagesFetch(MatchUpId);
         }
-        const Chatresponse = await axios(
-          `https://strikem.site/api/matchups/${
-            MatchUpId
-              ? MatchUpId
-              : openChat
-              ? openChat
-              : response.data.results[0].id
-          }/chat`,
-          {
-            headers: {
-              Authorization: `JWT ${token}`,
-            },
-          }
-        );
-        const chatData = Chatresponse.data.results;
-        const nextChatsEndpoint = Chatresponse.data.next;
-        setNextChats(nextChatsEndpoint);
-        setChat(chatData);
-        localStorage.setItem("matchUpId", "");
+        // const Chatresponse = await axios(
+        //   `https://strikem.site/api/matchups/${
+        //     MatchUpId
+        //       ? MatchUpId
+        //       : openChat
+        //       ? openChat
+        //       : response.data.results[0].id
+        //   }/chat`,
+        //   {
+        //     headers: {
+        //       Authorization: `JWT ${token}`,
+        //     },
+        //   }
+        // );
+        // const chatData = Chatresponse.data.results;
+        // const nextChatsEndpoint = Chatresponse.data.next;
+        // setNextChats(nextChatsEndpoint);
+        // setChat(chatData);
+        // localStorage.setItem("matchUpId", "");
       }
     } catch (err) {
       console.log(err);
@@ -373,6 +374,8 @@ function Messenger() {
   }, []);
 
   useEffect(() => {    
+    console.log(chat);
+    
     if (addNextChat && nextChats) {
       addChats();
     }
@@ -547,6 +550,7 @@ function Messenger() {
             }}
           />
         </div>
+        {chat.length ?
         <div className="flex gap-[10px] h-[100%] ">
           <div className=" flex flex-col h-[100%] justify-evenly items-end ">
             <h1
@@ -570,6 +574,7 @@ function Messenger() {
             />
           </div>
         </div>
+        :null}
       </div>
       <main
         ref={chatBox}
@@ -580,6 +585,13 @@ function Messenger() {
           // style={{ height: `${chatHeight}px` }}
           className="flex flex-col-reverse flex-grow  w-[100%] relative overflow-y-auto chatScroll "
         >
+          {!MatchUpId ? (
+            <div className="flex flex-col justify-center items-center h-[100%]  ">
+              <FaRegMessage style={{ color: "#fab907", width: "118px", height: "118px" }}/>
+              <p className="text-[24px] text-[#fab907]" >Chose chat</p>
+                            
+            </div>
+          ) : null}
           {chatMessages}
         </section>
         <div className="flex gap-[1%] h-[46px] ">

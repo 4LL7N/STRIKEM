@@ -18,7 +18,7 @@ import Signup from "./Signup";
 import { jwtDecode } from "jwt-decode";
 import Reservation from "./PoolMemo/Reservation";
 import ResultBoxMemo from "./LayoutMemo/ResultBoxMemo";
-import InvitationAcceptMemo from "./LayoutMemo/invitationAcceptMemo";
+import InvitationAcceptMemo from "./LayoutMemo/InvitationAcceptMemo";
 import NotificationsBoxItemsMemo from "./LayoutMemo/NotificationsBoxItemsMemo";
 
 
@@ -171,6 +171,8 @@ function Layout(props: {
     setHeaderHeight(
       isSpecialPage || viewportWidth < 1024 ? 100 : window.innerHeight - 65
     );
+    console.log(location.pathname);
+    
   }, [location.pathname]);
 
   const fetchNoti = useCallback(async () => {
