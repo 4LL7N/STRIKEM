@@ -186,7 +186,8 @@ function Pool() {
         `https://strikem.site/api/poolhouses/${id}/ratings/`
       );
       const poolResponse = await axios.get(`https://strikem.site/api/poolhouses/${id}/`)
-
+      console.log(poolResponse.data);
+      
       setPoolInfo(poolResponse.data)
       setPoolTablesData(poolResponse.data.tables)
       setRatings(response.data);
@@ -465,18 +466,18 @@ function Pool() {
   };
 
   const TableReservationList = useMemo(() => {
-    return poolTablesData.map((item,i)=>{
-      // console.log(item)
+    // return poolTablesData.map((item,i)=>{
+    //   // console.log(item)
       
-      return(
-        <ReservationOnTable
-          key={i}
-          item={item}
-          setReservationBox={setReservationBox}
-          nameLength={nameLength}
-        />
-      )
-    })
+    //   return(
+    //     <ReservationOnTable
+    //       key={i}
+    //       item={item}
+    //       setReservationBox={setReservationBox}
+    //       nameLength={nameLength}
+    //     />
+    //   )
+    // })
   },[poolTablesData,nameLength])
 
   useEffect(() => {
@@ -649,7 +650,7 @@ function Pool() {
                     }}
                     className="div-container fade-in"
                   >
-                    {TableReservationList}
+                    {/* {TableReservationList} */}
                     <img
                       ref={img}
                       src={poolInfo.room_image}
@@ -806,7 +807,7 @@ function Pool() {
           ) : coords ? (
             <div className="w-[100%]">
               <MapContainer
-                center={[poolInfo?.latitude, poolInfo?.longitude]}
+                // center={[poolInfo?.latitude, poolInfo?.longitude]}
                 zoom={15}
                 minZoom={13}
                 maxZoom={18}
@@ -816,14 +817,14 @@ function Pool() {
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
-                <Marker
+                {/* <Marker
                   position={[poolInfo?.latitude, poolInfo?.longitude]}
                   icon={markerIcon}
                 >
                   <Tooltip direction="top" offset={[0, -20]} permanent>
                     {poolInfo.title}
                   </Tooltip>
-                </Marker>
+                </Marker> */}
                 {Cookies.get("token") && Cookies.get("token") != "logout" ? (
                   <Marker
                     position={[coords.latitude, coords.longitude]}

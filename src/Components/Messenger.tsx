@@ -123,8 +123,9 @@ function Messenger() {
   const chatInput = useRef<any>();
 
   const token = Cookies.get("token");
+  const MatchUpId = localStorage.getItem("matchUpId"); 
   const Fetch = async () => {
-    const MatchUpId = localStorage.getItem("matchUpId");
+    
     if (MatchUpId) {
       setOpenChat(MatchUpId);
     }
@@ -193,6 +194,8 @@ function Messenger() {
     }
   };
 
+
+
   const messagesFetch = useCallback(
     async (id: string) => {
       try {
@@ -201,6 +204,8 @@ function Messenger() {
           { headers: { Authorization: `JWT ${token}` } }
         );
         const chatData = Chatresponse.data.results;
+        const nextChatsEndpoint = Chatresponse.data.next;
+        setNextChats(nextChatsEndpoint);
         setChat(chatData);
       } catch (err) {
         console.log(err);
@@ -280,7 +285,6 @@ function Messenger() {
   };
 
   const addChats = async () => {
-    console.log('nextChats');
     
     const url = nextChats?.replace("http", "https");
     if (nextChats && url) {
@@ -291,7 +295,6 @@ function Messenger() {
         const chatData = ChatResponse.data.results;
         const newChat = [...chatData, ...chat];
         setChat(newChat);
-        console.log('newChat');
         
       } catch (err) {
         console.log(err);
@@ -321,13 +324,9 @@ function Messenger() {
     const target = e.target as HTMLElement;
 
     const onTopOne= (target.scrollHeight - -target.scrollTop) -2 < target.clientHeight;
-      // console.log((target.scrollHeight - -target.scrollTop) -2 , target.clientHeight)
     if (onTopOne ) {
-      console.log(true)
       setAddNextChat(true);
     } else {
-      console.log(false);
-      
       setAddNextChat(false);
     }
   };
@@ -373,9 +372,7 @@ function Messenger() {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(addNextChat && nextChats," addNextChat && nextChats");
-    
+  useEffect(() => {    
     if (addNextChat && nextChats) {
       addChats();
     }

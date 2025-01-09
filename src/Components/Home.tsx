@@ -159,7 +159,7 @@ function Home(props: {
                           <div className="w-[2px] h-[2px] bg-[#FFF] bg-opacity-50 " />
                           <div className="flex items-center gap-[4px]">
                             <p className="  text-[#FFF] text-[11px] font-light opacity-75 md:text-[13px] ">
-                              {item.tables.length}
+                              {item.table_count}
                             </p>
                           </div>
                           <div className="w-[2px] h-[2px] bg-[#FFF] bg-opacity-50 "></div>
@@ -210,7 +210,7 @@ function Home(props: {
                           <div className="w-[2px] h-[2px] bg-[#FFF] bg-opacity-50 " />
                           <div className="flex items-center gap-[4px]">
                             <p className="  text-[#FFF] text-[11px] font-light opacity-75 md:text-[13px] ">
-                              {item.tables.length}
+                              {item.table_count}
                             </p>
                           </div>
                           <div className="w-[2px] h-[2px] bg-[#FFF] bg-opacity-50 "></div>
