@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { lazy, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
@@ -19,7 +19,6 @@ import { jwtDecode } from "jwt-decode";
 import Reservation from "./PoolMemo/Reservation";
 import ResultBoxMemo from "./LayoutMemo/ResultBoxMemo";
 import NotificationsBoxItemsMemo from "./LayoutMemo/NotificationsBoxItemsMemo";
-// import InvitationAcceptMemo from "./LayoutMemo/InvitationAcceptMemo";
 
 
 interface User {
@@ -354,7 +353,7 @@ function Layout(props: {
     navigate,
   ])
 
-  const InvitationsAccept = lazy(() => import("./LayoutMemo/InvitationAcceptMemo"));
+  // const InvitationsAccept = lazy(() => import("./LayoutMemo/InvitationAcceptMemo"));
 
   return (
     <>
@@ -409,7 +408,7 @@ function Layout(props: {
         }`}
       >
         <ResultBoxMemo yourPointsInput={yourPointsInput} yourPoints={yourPoints} opponentsPointsInput={opponentsPointsInput} opponentsPoints={opponentsPoints} setYourPoints={setYourPoints} setOpponentsPoints={setOpponentsPoints} windowWidth={window.innerWidth} openResultBox={openResultBox} setOpenResultBox={setOpenResultBox} />
-        <InvitationsAccept acceptInvatation={props.acceptInvatation} setAcceptInvatation={props.setAcceptInvatation} lastJsonMessage={lastJsonMessage} />
+        {/* <InvitationsAccept acceptInvatation={props.acceptInvatation} setAcceptInvatation={props.setAcceptInvatation} lastJsonMessage={lastJsonMessage} /> */}
         <header
           ref={header}
           style={
