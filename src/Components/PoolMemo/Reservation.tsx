@@ -137,13 +137,10 @@ const Reservation = memo(
 
     const tableID = localStorage && localStorage.getItem("tableId");
 
-    // const tillClose =
-    //   poolInfo &&
-    //   dayjs(poolInfo?.close_time,"YYYY/MM/DD hh:mm A").hour() < dayjs(poolInfo?.open_time,"YYYY/MM/DD hh:mm A").hour() &&
-    //   dayjs(poolInfo?.close_time,"YYYY/MM/DD hh:mm A").hour() != 0
-    //     ? true
-    //     : false;
+    const tillClose =  dayjs(poolInfo?.close_time,"HH:mm:ss").isAfter(dayjs(poolInfo?.open_time,"HH:mm:ss")) ?false:dayjs(poolInfo?.close_time,"HH:mm:ss").isAfter(dayjs().format("HH:mm:ss"))
 
+    console.log(poolInfo);
+    
 
     useEffect(() => {
       setPoolInfo(location.state);
@@ -180,6 +177,14 @@ const Reservation = memo(
         
         return dateNow.format("YYYY-MM-DD");
       }
+      // const presentTime = dayjs().format("HH:mm:ss")
+      // console.log(poolInfo?.close_time);
+      // console.log(poolInfo?.open_time);
+      
+      // console.log(dayjs(poolInfo?.close_time,"HH:mm:ss").isAfter(dayjs(poolInfo?.open_time,"HH:mm:ss")));
+      
+      // console.log(dayjs().format("HH:mm:ss"));
+      console.log(tillClose);
       
       try {
         const [todayResponse, tomorrowResponse, afterTomorrowResponse] =
@@ -188,21 +193,21 @@ const Reservation = memo(
               `https://strikem.site/api/poolhouses/${
                 poolInfo?.id
               }/tables/${tableID}/reserve/?date=${
-                // tillClose ? date(-1) :
+                tillClose ? date(-1) :
                  date(0)}`
             ),
             axios.get(
               `https://strikem.site/api/poolhouses/${
                 poolInfo?.id
               }/tables/${tableID}/reserve/?date=${
-                // tillClose ? date(0) :
+                tillClose ? date(0) :
                  date(1)}`
             ),
             axios.get(
               `https://strikem.site/api/poolhouses/${
                 poolInfo?.id
               }/tables/${tableID}/reserve/?date=${
-                // tillClose ? date(1) :
+                tillClose ? date(1) :
                  date(2)}`
             ),
           ]);
@@ -252,12 +257,12 @@ const Reservation = memo(
       const selectData = [];
       for (let i = 0; i < 3; i++) {
         const Day = (
-          // tillClose ? Number(day) + i - 1 :
+          tillClose ? Number(day) + i - 1 :
          Number(day) + i)
           .toString()
           .padStart(2, "0");
         const NextDay = (
-          // tillClose ? Number(nextDay) + i - 1 :
+          tillClose ? Number(nextDay) + i - 1 :
           Number(nextDay) + i
         )
           .toString()
