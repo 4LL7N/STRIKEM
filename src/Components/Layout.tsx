@@ -18,8 +18,8 @@ import Signup from "./Signup";
 import { jwtDecode } from "jwt-decode";
 import Reservation from "./PoolMemo/Reservation";
 import ResultBoxMemo from "./LayoutMemo/ResultBoxMemo";
-import InvitationAcceptMemo from "./LayoutMemo/InvitationAcceptMemo";
 import NotificationsBoxItemsMemo from "./LayoutMemo/NotificationsBoxItemsMemo";
+import InvitationAcceptMemo from "./LayoutMemo/InvitationAcceptMemo";
 
 
 interface User {
@@ -208,7 +208,7 @@ function Layout(props: {
   const goProfile = (e: any, id: number) => {
     setNotificationsOpen(false);
     e.stopPropagation();
-    navigate(`/users/${id}`);
+    id && navigate(`/users/${id}`);
   };
 
   const logOut = () => {
