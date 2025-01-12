@@ -137,10 +137,7 @@ const Reservation = memo(
 
     const tableID = localStorage && localStorage.getItem("tableId");
 
-    const tillClose =  dayjs(poolInfo?.close_time,"HH:mm:ss").isAfter(dayjs(poolInfo?.open_time,"HH:mm:ss")) ?false:dayjs(poolInfo?.close_time,"HH:mm:ss").isAfter(dayjs().format("HH:mm:ss"))
-
-    console.log(poolInfo);
-    
+    const tillClose =  dayjs(poolInfo?.close_time,"HH:mm:ss").isAfter(dayjs(poolInfo?.open_time,"HH:mm:ss")) ?false:dayjs(poolInfo?.close_time,"HH:mm:ss").isAfter(dayjs())    
 
     useEffect(() => {
       setPoolInfo(location.state);
@@ -252,7 +249,9 @@ const Reservation = memo(
       const day = date.getDate().toString().padStart(2, "0");
       const nextDay = (Number(day) + 1).toString().padStart(2, "0");
 
-      const formattedDate = `${year}/${month}/${day}-${nextDay}`;
+      const formattedDate = `${year}/${month}/${tillClose?Number(day)-1:day}-${tillClose?Number(nextDay)-1:nextDay}`;
+      console.log(formattedDate);
+      
       setTableDate(formattedDate);
       const selectData = [];
       for (let i = 0; i < 3; i++) {
@@ -267,7 +266,14 @@ const Reservation = memo(
         )
           .toString()
           .padStart(2, "0");
+
+        console.log(`${year}/${month}/${Day}-${NextDay}`);
+        console.log(dayjs(poolInfo?.close_time,"HH:mm:ss").format("HH:mm:ss"),(dayjs()));
+        console.log(dayjs(poolInfo?.close_time,"HH:mm:ss").isAfter(dayjs()));
+        
         selectData.push(`${year}/${month}/${Day}-${NextDay}`);
+        // console.log(selectData,tillClose);
+        
       }
       setSelectDates(selectData);
 
