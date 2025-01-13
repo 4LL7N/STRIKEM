@@ -388,8 +388,10 @@ function Messenger() {
   },[addNextMessages])
 
   useEffect(() => {
+    
     if (lastJsonMessage) {
-      if (lastJsonMessage.matchup_id == openChat) {
+      console.log(lastJsonMessage.matchup_id,"...",openChat,"...",MatchUpId);
+      if (lastJsonMessage.matchup_id == MatchUpId) {
         const lastMessage = {
           body: lastJsonMessage.message,
           sender: {
