@@ -294,7 +294,7 @@ function Messenger() {
           headers: { Authorization: `JWT ${token}` },
         });
         const chatData = ChatResponse.data.results;
-        const newChat = [...chatData, ...chat];
+        const newChat = [...chat,...chatData];
         setChat(newChat);
         
       } catch (err) {
