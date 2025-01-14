@@ -245,6 +245,7 @@ function Messenger() {
         opponent_username: messageTo.user.username,
         matchup_id: openChat,
       });
+      console.log(messages);
       const user = { ...currentUser.user };
       const newMessage = {
         body: chatInput.current.value,
@@ -258,7 +259,25 @@ function Messenger() {
       };
       const chatContent = [newMessage, ...chat];
       setChat(chatContent);
+
+      if(!messages) {
+        chatInput.current.value = ""
+        return;
+      } 
+      console.log(messages);
+      
+      const MessagesList: any = [...messages];
+        for (let i = 0; i < MessagesList?.length; i++) {
+          if (MessagesList[i].id == MatchUpId) {
+            const [chat] = MessagesList.splice(i, 1);
+            chat.last_message.body = chatInput.current.value;
+            chat.read = true;
+            MessagesList.splice(0, 0, chat);
+          }
+        }
+        setMessages(MessagesList);
       chatInput.current.value = "";
+
     }
   };
 
@@ -390,7 +409,6 @@ function Messenger() {
   useEffect(() => {
     
     if (lastJsonMessage) {
-      console.log(lastJsonMessage.matchup_id,"...",openChat,"...",MatchUpId);
       if (lastJsonMessage.matchup_id == MatchUpId) {
         const lastMessage = {
           body: lastJsonMessage.message,
@@ -401,7 +419,7 @@ function Messenger() {
         };
         const chatContent = [lastMessage, ...chat];
         setChat(chatContent);
-
+        
         if (!messages) return;
         const MessagesList: any = [...messages];
         for (let i = 0; i < MessagesList?.length; i++) {
