@@ -110,8 +110,8 @@ const ResultBoxMemo = memo(
       setOpenResultBox(false);
     };
 
-    useEffect(() => {      
-      sessionId && fetchCurrentSession();
+    useEffect(() => {            
+      openResultBox && sessionId && fetchCurrentSession();
     }, [openResultBox,sessionId]);
 
 
