@@ -271,7 +271,8 @@ function Messenger() {
             const [chat] = MessagesList.splice(i, 1);
             console.log(chat,"1");
             
-            chat.last_message?chat.last_message.body = chatInput.current.value:null
+            chat.last_message = {body:chatInput.current.value,sender:{id:currentUser.id,user:{username:currentUser.user.username}}};
+            // ?chat.last_message.body = chatInput.current.value:null
             chat.read = true;
             MessagesList.splice(0, 0, chat);
           }
@@ -423,14 +424,14 @@ function Messenger() {
         const chatContent = [lastMessage, ...chat];
         setChat(chatContent);
         
-        if (messages.length == 1) return;
+        if (messages.length == 0) return;
         const MessagesList: any = [...messages];
         for (let i = 0; i < MessagesList?.length; i++) {
           if (MessagesList[i].id == lastJsonMessage.matchup_id) {
             const [chat] = MessagesList.splice(i, 1);
             console.log(chat,"2");
             
-            chat.last_message.body = lastJsonMessage.message;
+            chat.last_message = {body:lastJsonMessage.message,id:lastJsonMessage.sender_player_id,user:{username:lastJsonMessage.username}};
             chat.read = false;
             MessagesList.splice(0, 0, chat);
           }
@@ -438,14 +439,14 @@ function Messenger() {
 
         setMessages(MessagesList);
       } else {
-        if (messages.length == 1) return;
+        if (messages.length == 0) return;
         const MessagesList: any = [...messages];
         for (let i = 0; i < MessagesList?.length; i++) {
           if (MessagesList[i].id == lastJsonMessage.matchup_id) {
             const [chat] = MessagesList.splice(i, 1);
             console.log(chat,"3");
             
-            chat.last_message.body = lastJsonMessage.message;
+            chat.last_message = {body:lastJsonMessage.message,id:lastJsonMessage.sender_player_id,user:{username:lastJsonMessage.username}};
             chat.read = false;
             MessagesList.splice(0, 0, chat);
           }
