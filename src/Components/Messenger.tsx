@@ -259,7 +259,7 @@ function Messenger() {
       const chatContent = [newMessage, ...chat];
       setChat(chatContent);
 
-      if(!messages) {
+      if(messages.length == 0) {
         chatInput.current.value = ""
         return;
       } 
@@ -419,7 +419,7 @@ function Messenger() {
         const chatContent = [lastMessage, ...chat];
         setChat(chatContent);
         
-        if (!messages) return;
+        if (messages.length == 0) return;
         const MessagesList: any = [...messages];
         for (let i = 0; i < MessagesList?.length; i++) {
           if (MessagesList[i].id == lastJsonMessage.matchup_id) {
@@ -432,7 +432,7 @@ function Messenger() {
 
         setMessages(MessagesList);
       } else {
-        if (!messages) return;
+        if (messages.length == 0) return;
         const MessagesList: any = [...messages];
         for (let i = 0; i < MessagesList?.length; i++) {
           if (MessagesList[i].id == lastJsonMessage.matchup_id) {
