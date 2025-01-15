@@ -269,6 +269,8 @@ function Messenger() {
         for (let i = 0; i < MessagesList?.length; i++) {
           if (MessagesList[i].id == MatchUpId) {
             const [chat] = MessagesList.splice(i, 1);
+            console.log(chat,"1");
+            
             chat.last_message.body = chatInput.current.value;
             chat.read = true;
             MessagesList.splice(0, 0, chat);
@@ -424,6 +426,8 @@ function Messenger() {
         for (let i = 0; i < MessagesList?.length; i++) {
           if (MessagesList[i].id == lastJsonMessage.matchup_id) {
             const [chat] = MessagesList.splice(i, 1);
+            console.log(chat,"2");
+            
             chat.last_message.body = lastJsonMessage.message;
             chat.read = false;
             MessagesList.splice(0, 0, chat);
@@ -437,6 +441,8 @@ function Messenger() {
         for (let i = 0; i < MessagesList?.length; i++) {
           if (MessagesList[i].id == lastJsonMessage.matchup_id) {
             const [chat] = MessagesList.splice(i, 1);
+            console.log(chat,"3");
+            
             chat.last_message.body = lastJsonMessage.message;
             chat.read = false;
             MessagesList.splice(0, 0, chat);
