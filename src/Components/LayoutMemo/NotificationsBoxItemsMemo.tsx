@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import axios from "axios";
 import { memo } from "react";
+import Cookies from "js-cookie";
 
 interface User {
   id: number;
@@ -57,32 +59,36 @@ const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo
         }
       };
 
+      const ReadNotifications = async()=>{
+        const token = Cookies.get("token");
+        axios.put(`https://strikem.site/api/notifications/${item.id}/`,
+        {
+          headers: { Authorization: `JWT ${token}` },
+        },{})
+      }
+
+      const handleNotificationClick = () => {
+        if (item.type == "INV") {
+          navigate(`/matchmake`);
+        } else if (item.type == "MSG") {
+          navigate(`/messenger`);
+          localStorage.setItem("matchUpId", item.extra);
+        } else if (item.type == "GSE") {
+          localStorage.setItem("sessionId", item.extra);
+          setOpenResultBox(true);
+        }
+        
+        ReadNotifications();
+      }
+
       return (
         <div
           className={` cursor-pointer flex items-center gap-[10px] w-[100%] h-[25%] ${
             i == notifications.length - 1
               ? ""
               : "border-b-[1px] border-b-[#243257d5] "
-          } p-[10px] ${item.read ? "" : "bg-[#1d2537]"} `}
-          onClick={
-            item.type == "INV"
-              ? () => {
-                  navigate(`/matchmake`);
-                }
-              : item.type == "MSG"
-              ? () => {
-                  navigate(`/messenger`);
-                  localStorage.setItem("matchUpId", item.extra);
-                }
-              : item.type == "GSE"
-              ? () => {
-                  localStorage.setItem("sessionId", item.extra);
-                  setOpenResultBox(true);
-                }
-              :() => {
-                  ("");
-                }
-          }
+          } p-[12px] md:p-[14px] lg:p-4 ${item.read ? "" : "bg-[#1d2537]"} `}
+          onClick={handleNotificationClick}
         >
           <img
             src={item?.sent_by?.profile_image}

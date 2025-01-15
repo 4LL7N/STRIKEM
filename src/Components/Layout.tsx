@@ -319,23 +319,47 @@ function Layout(props: {
     }
   }, [lastJsonMessage]);
 
+  const AllRead = async () => {
+    const token = Cookies.get("token");
+    try {
+      await axios.put(
+        "https://strikem.site/api/mark-all-read/",
+        {},
+        {
+          headers: { Authorization: `JWT ${token}` },
+        }
+      );
+      
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+    const handleAllRead = ()=>{
+      AllRead()
+    }
+
   const notificationsList = useMemo(() => {
 
     if (!notificationsOpen) return null;
 
+    
+
     return(
       <div
-          className={` overflow-hidden absolute top-[80px] md:top-[110px]  right-[50px] md:right-[100px] ${
+          className={` overflow-hidden absolute top-[80px] md:top-[110px] p-[16px] pt-[24px] right-[50px] md:right-[100px] ${
             location.pathname == "/messenger" ||
             location.pathname.includes("users") || 
             location.pathname.includes("Pools")
               ? " lg:top-[150px] lg:right-[150px]"
               : " lg:top-[70px] lg:left-[150px]"
-          } w-[260px] md:w-[340px] h-[260px] md:h-[380px] bg-[#10141E] border-[1px] border-[#243257d5] rounded-[20px] z-[100] transform transition-all duration-500 ease-in-out delay-200 ${
+          } w-[260px] md:w-[340px] h-[260px] md:h-[380px] bg-[#10141E] border-[1px] border-[#243257d5] rounded-[20px] z-[80] transform transition-all duration-500 ease-in-out delay-200 ${
             notificationsOpen ? "opacity-100 " : "opacity-0 "
           }`}
         >
-          <div className="flex flex-col w-full h-full overflow-y-auto notificationsScroll ">
+          <p className="text-[12px] absolute top-[6px] right-[20px] z-[100] text-white " onClick={handleAllRead} >Mark all read</p>
+          <div className="flex flex-col w-full h-full overflow-y-auto notificationsScroll relative rounded-[10px] ">
+          
             {notifications?.map((item: Message, i: number) => {
               // console.log(item);
               return <NotificationsBoxItemsMemo key={i} item={item} i={i} goProfile={goProfile} messageContent={messageContent} timeAgo={timeAgo} navigate={navigate}  notifications={notifications} setOpenResultBox={setOpenResultBox} />

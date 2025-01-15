@@ -243,9 +243,8 @@ function Messenger() {
         message: chatInput.current.value,
         username: currentUser.user.username,
         opponent_username: messageTo.user.username,
-        matchup_id: openChat,
+        matchup_id: MatchUpId,
       });
-      console.log(messages);
       const user = { ...currentUser.user };
       const newMessage = {
         body: chatInput.current.value,
