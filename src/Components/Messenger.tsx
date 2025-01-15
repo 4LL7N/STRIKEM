@@ -547,7 +547,7 @@ function Messenger() {
       className="lg:flex-grow flex flex-col lg:flex-row m-[10px] w-[100%] border-[1px] border-[#243257d5]  rounded-[20px] overflow-hidden relative  "
     >
       <div
-        className={` lg:hidden absolute top-0 left-0 z-50 transition-transform duration-1000 ease-in-out ${
+        className={` lg:hidden absolute top-0 left-0 z-50 transition-transform duration-300 ease-in-out ${
           isSwiped ? "translate-x-0" : "-translate-x-full"
         } w-full h-full bg-[#10141E] text-white `}
       >
