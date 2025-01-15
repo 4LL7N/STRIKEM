@@ -271,7 +271,7 @@ function Messenger() {
             const [chat] = MessagesList.splice(i, 1);
             console.log(chat,"1");
             
-            chat.last_message.body = chatInput.current.value;
+            chat.last_message?chat.last_message.body = chatInput.current.value:null
             chat.read = true;
             MessagesList.splice(0, 0, chat);
           }
@@ -410,6 +410,8 @@ function Messenger() {
   useEffect(() => {
     
     if (lastJsonMessage) {
+      console.log(lastJsonMessage);
+      
       if (lastJsonMessage.matchup_id == MatchUpId) {
         const lastMessage = {
           body: lastJsonMessage.message,

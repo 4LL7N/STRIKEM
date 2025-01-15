@@ -72,7 +72,7 @@ const MessageItem = React.memo(({ item, isSelected, onClick,goToProfile }: Messa
           </h2>
         </div>
         <p className={`text-[14px] md:text-[18px] text-[#fff] ${item.read?'font-normal':'font-bold'} `}>
-          {item.last_message?.sender ? "you: " : `${otherPlayer.user.username}: `}
+          {item.last_message?.sender.id == currentUser.id ? "you: " : `${otherPlayer.user.username}: `}
           {item.last_message?.body}
         </p>
       </div>
