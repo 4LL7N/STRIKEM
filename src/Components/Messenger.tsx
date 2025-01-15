@@ -423,7 +423,7 @@ function Messenger() {
         const chatContent = [lastMessage, ...chat];
         setChat(chatContent);
         
-        if (messages.length == 0) return;
+        if (messages.length == 1) return;
         const MessagesList: any = [...messages];
         for (let i = 0; i < MessagesList?.length; i++) {
           if (MessagesList[i].id == lastJsonMessage.matchup_id) {
@@ -438,7 +438,7 @@ function Messenger() {
 
         setMessages(MessagesList);
       } else {
-        if (messages.length == 0) return;
+        if (messages.length == 1) return;
         const MessagesList: any = [...messages];
         for (let i = 0; i < MessagesList?.length; i++) {
           if (MessagesList[i].id == lastJsonMessage.matchup_id) {
