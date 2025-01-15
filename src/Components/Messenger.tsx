@@ -170,25 +170,7 @@ function Messenger() {
         if(MatchUpId){
           messagesFetch(MatchUpId);
         }
-        // const Chatresponse = await axios(
-        //   `https://strikem.site/api/matchups/${
-        //     MatchUpId
-        //       ? MatchUpId
-        //       : openChat
-        //       ? openChat
-        //       : response.data.results[0].id
-        //   }/chat`,
-        //   {
-        //     headers: {
-        //       Authorization: `JWT ${token}`,
-        //     },
-        //   }
-        // );
-        // const chatData = Chatresponse.data.results;
-        // const nextChatsEndpoint = Chatresponse.data.next;
-        // setNextChats(nextChatsEndpoint);
-        // setChat(chatData);
-        // localStorage.setItem("matchUpId", "");
+       
       }
     } catch (err) {
       console.log(err);
@@ -273,7 +255,7 @@ function Messenger() {
             
             newChat.last_message = {body:chatInput.current.value,sender:{id:currentUser.id,user:{username:currentUser.user.username}}};
             // ?chat.last_message.body = chatInput.current.value:null
-            // newChat.read = true;
+            newChat.read = true;
             console.log(newChat,"2");
             
             MessagesList.splice(0, 0, newChat);
@@ -483,7 +465,7 @@ function Messenger() {
               action: "change_matchup",
               matchup_id: item.id,
             });
-            readChat(item.id);
+            item.last_message.sender.id === currentUser?.id || item.read?null: readChat(item.id);
           }}
           goToProfile={(e) => {
             e.stopPropagation();

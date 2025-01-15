@@ -57,6 +57,7 @@ interface MessageItemProps {
 const MessageItem = React.memo(({ item, isSelected, onClick,goToProfile }: MessageItemProps) => {
   const currentUser = JSON.parse(localStorage?.getItem("currentUser") || '{}');
   const otherPlayer = item.player_accepting.id === currentUser.id ? item.player_inviting : item.player_accepting;
+  console.log(item.last_message?.sender.id == currentUser.id,"asdaf",item,currentUser);
   
   return (
     <div
@@ -66,14 +67,14 @@ const MessageItem = React.memo(({ item, isSelected, onClick,goToProfile }: Messa
       <img src={otherPlayer.profile_image} className="h-[100%] aspect-square rounded-[50%]" alt="Profile" />
       <div className="flex flex-col gap-[10px] justify-center items-start">
         <div className="flex items-end">
-          <h1 className={` text-[16px] md:text-[24px] text-[#fff] mr-[2px] cursor-pointer ${item.read?'font-normal':'font-bold'} `} onClick={goToProfile} >{otherPlayer.user.username}</h1>
-          <h2 className={` text-[14px]  text-[#ffffff57] ${item.last_message?.sender.id == currentUser.id ?'font-normal':'font-bold'} `}>
+          <h1 className={` text-[16px] md:text-[24px] text-[#fff] mr-[2px] cursor-pointer ${item.last_message?.sender.id == currentUser.id ?'font-normal': item.read?'font-normal':'font-bold'} `} onClick={goToProfile} >{otherPlayer.user.username}</h1>
+          <h2 className={` text-[14px]  text-[#ffffff57] ${item.last_message?.sender.id == currentUser.id ?'font-normal': item.read?'font-normal':'font-bold'} `}>
             ({otherPlayer.user.first_name} {otherPlayer.user.last_name})
           </h2>
         </div>
-        <p className={`text-[14px] md:text-[18px] text-[#fff] ${item.read?'font-normal':'font-bold'} `}>
+        <p className={`text-[14px] md:text-[18px] text-[#fff] ${item.last_message?.sender.id == currentUser.id ?'font-normal': item.read?'font-normal':'font-bold'} `}>
           {item.last_message?.sender.id == currentUser.id ? "you: " : `${item.last_message?.sender.user.username}: `}
-          {item.last_message?.body}
+          {item.last_message?.body?item.last_message?.body:""}
         </p>
       </div>
     </div>
