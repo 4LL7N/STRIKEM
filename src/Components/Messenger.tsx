@@ -431,7 +431,7 @@ function Messenger() {
             const [chat] = MessagesList.splice(i, 1);
             console.log(chat,"2");
             
-            chat.last_message = {body:lastJsonMessage.message,id:lastJsonMessage.sender_player_id,user:{username:lastJsonMessage.username}};
+            chat.last_message = {body:lastJsonMessage.message,sender:{id:lastJsonMessage.sender_player_id,user:{username:lastJsonMessage.username}}};
             chat.read = false;
             MessagesList.splice(0, 0, chat);
           }
@@ -446,7 +446,7 @@ function Messenger() {
             const [chat] = MessagesList.splice(i, 1);
             console.log(chat,"3");
             
-            chat.last_message = {body:lastJsonMessage.message,id:lastJsonMessage.sender_player_id,user:{username:lastJsonMessage.username}};
+            chat.last_message = {body:lastJsonMessage.message,sender:{id:lastJsonMessage.sender_player_id,user:{username:lastJsonMessage.username}}};
             chat.read = false;
             MessagesList.splice(0, 0, chat);
           }
