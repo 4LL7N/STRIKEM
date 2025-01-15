@@ -263,20 +263,26 @@ function Messenger() {
         chatInput.current.value = ""
         return;
       } 
-      console.log(messages);
       
       const MessagesList: any = [...messages];
         for (let i = 0; i < MessagesList?.length; i++) {
           if (MessagesList[i].id == MatchUpId) {
             const [chat] = MessagesList.splice(i, 1);
-            console.log(chat,"1");
+            const newChat = {...chat}
+            console.log(newChat,"1");
             
-            chat.last_message = {body:chatInput.current.value,sender:{id:currentUser.id,user:{username:currentUser.user.username}}};
+            newChat.last_message = {body:chatInput.current.value,sender:{id:currentUser.id,user:{username:currentUser.user.username}}};
             // ?chat.last_message.body = chatInput.current.value:null
-            chat.read = true;
-            MessagesList.splice(0, 0, chat);
+            // newChat.read = true;
+            console.log(newChat,"2");
+            
+            MessagesList.splice(0, 0, newChat);
+            console.log(MessagesList,"MessagesList");
+            
           }
         }
+        console.log(MessagesList,"MessagesList 2");
+        
         setMessages(MessagesList);
       chatInput.current.value = "";
 
@@ -395,7 +401,6 @@ function Messenger() {
   }, []);
 
   useEffect(() => {    
-    console.log(chat);
     
     if (addNextChat && nextChats) {
       addChats();
@@ -429,7 +434,6 @@ function Messenger() {
         for (let i = 0; i < MessagesList?.length; i++) {
           if (MessagesList[i].id == lastJsonMessage.matchup_id) {
             const [chat] = MessagesList.splice(i, 1);
-            console.log(chat,"2");
             
             chat.last_message = {body:lastJsonMessage.message,sender:{id:lastJsonMessage.sender_player_id,user:{username:lastJsonMessage.username}}};
             chat.read = false;
@@ -444,7 +448,6 @@ function Messenger() {
         for (let i = 0; i < MessagesList?.length; i++) {
           if (MessagesList[i].id == lastJsonMessage.matchup_id) {
             const [chat] = MessagesList.splice(i, 1);
-            console.log(chat,"3");
             
             chat.last_message = {body:lastJsonMessage.message,sender:{id:lastJsonMessage.sender_player_id,user:{username:lastJsonMessage.username}}};
             chat.read = false;

@@ -57,7 +57,6 @@ interface MessageItemProps {
 const MessageItem = React.memo(({ item, isSelected, onClick,goToProfile }: MessageItemProps) => {
   const currentUser = JSON.parse(localStorage?.getItem("currentUser") || '{}');
   const otherPlayer = item.player_accepting.id === currentUser.id ? item.player_inviting : item.player_accepting;
-  console.log(item.last_message,"123");
   
   return (
     <div
@@ -68,7 +67,7 @@ const MessageItem = React.memo(({ item, isSelected, onClick,goToProfile }: Messa
       <div className="flex flex-col gap-[10px] justify-center items-start">
         <div className="flex items-end">
           <h1 className={` text-[16px] md:text-[24px] text-[#fff] mr-[2px] cursor-pointer ${item.read?'font-normal':'font-bold'} `} onClick={goToProfile} >{otherPlayer.user.username}</h1>
-          <h2 className={` text-[14px]  text-[#ffffff57] ${item.read?'font-normal':'font-bold'} `}>
+          <h2 className={` text-[14px]  text-[#ffffff57] ${item.last_message?.sender.id == currentUser.id ?'font-normal':'font-bold'} `}>
             ({otherPlayer.user.first_name} {otherPlayer.user.last_name})
           </h2>
         </div>
