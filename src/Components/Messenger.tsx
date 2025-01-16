@@ -390,8 +390,6 @@ function Messenger() {
       setChatBoxHeight();
     });
 
-    console.log(MatchUpId, "MatchUpId");
-    console.log(messageTo, "messageTo");
     
     const localMessageTo = localStorage.getItem("MessageTo");
     localMessageTo ? setMessageTo(JSON.parse(localMessageTo)) : null;

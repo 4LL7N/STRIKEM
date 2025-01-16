@@ -503,7 +503,7 @@ function Layout(props: {
               to={"/messenger"}
               className="w-[25px] h-[25px] md:w-[32px] md:h-[32px] "
               onClick={() => {
-                localStorage.setItem("matchUpId", "");
+                location.pathname != "/messenger" && localStorage.setItem("matchUpId", "");
               }}
             >
               <FaRegMessage
