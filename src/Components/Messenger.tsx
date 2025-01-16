@@ -252,7 +252,15 @@ function Messenger() {
         },
         time_sent: currentTime,
       };
-      if(chat.length == 0 || dayjs().diff(chat[0].time_sent,"minute") >=2) newMessage.after_outdated = true;
+      console.log(dayjs().diff(chat[0].time_sent,"minute"),dayjs().diff(chat[0].time_sent,"minute") >=1,"123123");
+      
+      if(chat.length == 0 || dayjs().diff(chat[0].time_sent,"minute") >=1) {
+        console.log("asdasd");
+        
+        newMessage.after_outdated = true;
+      }
+      console.log(newMessage,"newMessage");
+      
       const chatContent = [newMessage, ...chat];
       setChat(chatContent);
 
@@ -266,12 +274,10 @@ function Messenger() {
           if (MessagesList[i].id == MatchUpId) {
             const [chat] = MessagesList.splice(i, 1);
             const newChat = {...chat}
-            console.log(newChat,"1");
             
             newChat.last_message = {body:chatInput.current.value,sender:{id:currentUser.id,user:{username:currentUser.user.username}}};
             // ?chat.last_message.body = chatInput.current.value:null
             newChat.read = true;
-            console.log(newChat,"2");
             
             MessagesList.splice(0, 0, newChat);
             
@@ -505,7 +511,7 @@ function Messenger() {
       const author = item?.sender?.id === currentUser?.id;
 
       let rounded = "rounded-[40px]";
-      let timeAppear = false
+      // let timeAppear = false
       if (author) {
         if (chat[i + 1] && chat[i]?.sender.id === chat[i + 1]?.sender.id) {
           rounded =
@@ -532,11 +538,11 @@ function Messenger() {
         }
       }
 
-      if(chat[i]?.sender.id == chat[i+1]?.sender.id){
-        timeAppear = false
-      }else{
-        timeAppear = true
-      }
+      // if(chat[i]?.sender.id == chat[i+1]?.sender.id){
+      //   timeAppear = false
+      // }else{
+      //   timeAppear = true
+      // }
 
       const margin =
         i === chat.length - 1
@@ -552,7 +558,7 @@ function Messenger() {
           isCurrentUser={author}
           rounded={rounded}
           margin={margin}
-          timeAppear={timeAppear}
+          // timeAppear={timeAppear}
         />
       );
     });

@@ -29,11 +29,11 @@ interface ChatBubbleProps {
   isCurrentUser: boolean;
   rounded: string;
   margin: string;
-  timeAppear:boolean
+  // timeAppear:boolean
 }
 
 const ChatBubble = React.memo(
-  ({ item, isCurrentUser, rounded, margin,timeAppear }: ChatBubbleProps) => {
+  ({ item, isCurrentUser, rounded, margin }: ChatBubbleProps) => {
     const alignmentClass = isCurrentUser
       ? " bg-[#fab907] text-[#fff]"
       : " bg-slate-300 text-neutral-900";
@@ -57,14 +57,15 @@ const ChatBubble = React.memo(
     formattedDate?.replace("a",",")
 
 
-
+    console.log(item);
+    
     return (
       <div
         className={`w-[100%] relative flex ${
           isCurrentUser ? "justify-end" : "justify-start"
-        } ${item.after_outdated && timeAppear ? ' pt-4 ' : ''} `}
+        } ${item.after_outdated ? ' pt-4 ' : ''} `}
       >
-        { item.after_outdated && timeAppear && <p className=" text-gray-500 text-xs absolute left-[50%] translate-x-[-50%] translate-y-1/2 top-0 " >{formattedDate?.split(',')[1].split('at')[0]}/{formattedDate?.split(',')[0]}/{formattedDate?.split(',')[1].split('at')[1]}</p>}
+        { item.after_outdated? <p className=" text-gray-500 text-xs absolute left-[50%] translate-x-[-50%] translate-y-1/2 top-0 " >{formattedDate?.split(',')[1].split('at')[0]}/{formattedDate?.split(',')[0]}/{formattedDate?.split(',')[1].split('at')[1]}</p>:null}
         <div
           className={`max-w-[70%] px-[16px] py-[8px] ${margin} ${rounded} ${alignmentClass}`}
         >
