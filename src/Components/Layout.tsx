@@ -170,7 +170,6 @@ function Layout(props: {
     setHeaderHeight(
       isSpecialPage || viewportWidth < 1024 ? 100 : window.innerHeight - 65
     );
-    console.log(location.pathname);
     
   }, [location.pathname]);
 

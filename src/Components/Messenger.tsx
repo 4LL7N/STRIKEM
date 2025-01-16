@@ -264,11 +264,9 @@ function Messenger() {
             console.log(newChat,"2");
             
             MessagesList.splice(0, 0, newChat);
-            console.log(MessagesList,"MessagesList");
             
           }
         }
-        console.log(MessagesList,"MessagesList 2");
         
         setMessages(MessagesList);
       chatInput.current.value = "";
@@ -374,7 +372,8 @@ function Messenger() {
     console.log(MatchUpId, "MatchUpId");
     console.log(messageTo, "messageTo");
     
-    
+    const localMessageTo = localStorage.getItem("MessageTo");
+    localMessageTo ? setMessageTo(JSON.parse(localMessageTo)) : null;
 
     if (messageChat.current && messengersBox.current) {
       messageChat.current.scrollTop = messageChat.current.scrollHeight;
@@ -384,6 +383,7 @@ function Messenger() {
 
     return () => {
       setMessageTo(null)
+      localStorage.removeItem("MessageTo");
     }
   }, []);
 
@@ -470,6 +470,7 @@ function Messenger() {
             localStorage.setItem("matchUpId", `${item.id}`);
             messagesFetch(item.id);
             setMessageTo(otherPlayer);
+            localStorage.setItem("MessageTo", JSON.stringify(otherPlayer));
             if (window.innerWidth < 1024) {
               setIsSwiped(false);
             }
