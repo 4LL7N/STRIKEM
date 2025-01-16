@@ -192,6 +192,8 @@ function Messenger() {
         );
         const chatData = Chatresponse.data.results;
         const nextChatsEndpoint = Chatresponse.data.next;
+        
+        
         setNextChats(nextChatsEndpoint);
         setChat(chatData);
       } catch (err) {
@@ -259,7 +261,6 @@ function Messenger() {
         
         newMessage.after_outdated = true;
       }
-      console.log(newMessage,"newMessage");
       
       const chatContent = [newMessage, ...chat];
       setChat(chatContent);
@@ -321,8 +322,12 @@ function Messenger() {
         const ChatResponse = await axios(url, {
           headers: { Authorization: `JWT ${token}` },
         });
+        console.log(ChatResponse.data);
+        
         const chatData = ChatResponse.data.results;
+        const nextChatsEndpoint = ChatResponse.data.next;
         const newChat = [...chat,...chatData];
+        setNextChats(nextChatsEndpoint);
         setChat(newChat);
         
       } catch (err) {
