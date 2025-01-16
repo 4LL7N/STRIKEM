@@ -252,9 +252,9 @@ function Messenger() {
         },
         time_sent: currentTime,
       };
-      console.log(dayjs().diff(chat[0].time_sent,"minute"),dayjs().diff(chat[0].time_sent,"minute") >=1,"123123");
+      console.log(dayjs().diff(chat[0].time_sent,"minute"),dayjs().diff(chat[0].time_sent,"minute") >=20,"123123");
       
-      if(chat.length == 0 || dayjs().diff(chat[0].time_sent,"minute") >=1) {
+      if(chat.length == 0 || dayjs().diff(chat[0].time_sent,"minute") >=20) {
         console.log("asdasd");
         
         newMessage.after_outdated = true;
