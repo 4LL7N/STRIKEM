@@ -18,6 +18,7 @@ import ChatBubble from "./MessengerMemo/ChatBubble";
 import MessageItem from "./MessengerMemo/MessageItem";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaRegMessage } from "react-icons/fa6";
+import dayjs from "dayjs";
 
 interface chatMessage {
   after_outdated?: boolean;
@@ -227,8 +228,11 @@ function Messenger() {
         opponent_username: messageTo.user.username,
         matchup_id: MatchUpId,
       });
+      console.log(chat);
+      
       const user = { ...currentUser.user };
       const newMessage = {
+        after_outdated:false,
         body: chatInput.current.value,
         sender: {
           id: currentUser.id,
@@ -238,6 +242,7 @@ function Messenger() {
         },
         time_sent: getFormattedTime,
       };
+      if(chat.length == 0 || dayjs().diff(chat[0].time_sent,"minute") >=20) newMessage.after_outdated = true;
       const chatContent = [newMessage, ...chat];
       setChat(chatContent);
 
@@ -366,7 +371,10 @@ function Messenger() {
       setChatBoxHeight();
     });
 
-
+    console.log(MatchUpId, "MatchUpId");
+    console.log(messageTo, "messageTo");
+    
+    
 
     if (messageChat.current && messengersBox.current) {
       messageChat.current.scrollTop = messageChat.current.scrollHeight;
@@ -451,7 +459,6 @@ function Messenger() {
         item.player_accepting?.id == currentUser?.id
           ? item.player_inviting
           : item.player_accepting;
-      console.log(otherPlayer, "otherPlayer");
       
       return (
         <MessageItem
