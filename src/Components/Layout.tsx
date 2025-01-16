@@ -563,7 +563,7 @@ function Layout(props: {
           </div>
           <div
             className={` flex ${
-              location.pathname.includes("Pool") || location.pathname.includes("users")
+              location.pathname.includes("Pool") || location.pathname.includes("users") || location.pathname == "/messenger"
                 ? "lg:gap-[20px] items-center"
                 : "lg:flex-col justify-center "
             } gap-[10px] md:gap-[14px] ${logedIn && "hidden"} `}

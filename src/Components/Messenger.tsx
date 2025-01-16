@@ -115,7 +115,7 @@ function Messenger() {
   const [openChat, setOpenChat] = useState<string>("");
   const [chat, setChat] = useState<chatMessage[]>([]);
 
-  const [messageTo, setMessageTo] = useState<any>();
+  const [messageTo, setMessageTo] = useState<any|null>(null);
 
   // const [chatHeight, setChatHeight] = useState<number>(0);
   const [boxHeight, setBoxHeight] = useState<number>(0);
@@ -139,34 +139,34 @@ function Messenger() {
       setMessages(response.data.results);
       if (response.data.results.length > 0) {
         
-          let otherPlayer =
-            response.data.results[0].player_accepting.id == currentUser?.id
-              ? response.data.results[0].player_inviting
-              : response.data.results[0].player_accepting;
-          if (MatchUpId) {
-            const findMatuchUp = response.data.results.find(
-              (item: any) => item.id == MatchUpId
-            );
-            otherPlayer =
-              findMatuchUp.player_accepting.id == currentUser?.id
-                ? findMatuchUp.player_inviting
-                : findMatuchUp.player_accepting;
-          } else if (openChat) {
-            const findMatuchUp = response.data.results.find(
-              (item: any) => item.id == openChat
-            );
-            otherPlayer =
-              findMatuchUp.player_accepting.id == currentUser?.id
-                ? findMatuchUp.player_inviting
-                : findMatuchUp.player_accepting;
-          } else {
-            otherPlayer =
-              response.data.results[0].player_accepting.id == currentUser?.id
-                ? response.data.results[0].player_inviting
-                : response.data.results[0].player_accepting;
-          }
+          // let otherPlayer =
+          //   response.data.results[0].player_accepting.id == currentUser?.id
+          //     ? response.data.results[0].player_inviting
+          //     : response.data.results[0].player_accepting;
+          // if (MatchUpId) {
+          //   const findMatuchUp = response.data.results.find(
+          //     (item: any) => item.id == MatchUpId
+          //   );
+          //   otherPlayer =
+          //     findMatuchUp.player_accepting.id == currentUser?.id
+          //       ? findMatuchUp.player_inviting
+          //       : findMatuchUp.player_accepting;
+          // } else if (openChat) {
+          //   const findMatuchUp = response.data.results.find(
+          //     (item: any) => item.id == openChat
+          //   );
+          //   otherPlayer =
+          //     findMatuchUp.player_accepting.id == currentUser?.id
+          //       ? findMatuchUp.player_inviting
+          //       : findMatuchUp.player_accepting;
+          // } else {
+          //   otherPlayer =
+          //     response.data.results[0].player_accepting.id == currentUser?.id
+          //       ? response.data.results[0].player_inviting
+          //       : response.data.results[0].player_accepting;
+          // }
 
-          setMessageTo(otherPlayer);
+          // setMessageTo(otherPlayer);
         if(MatchUpId){
           messagesFetch(MatchUpId);
         }
@@ -373,6 +373,10 @@ function Messenger() {
       messageChat.current.addEventListener("scroll", handleChatScroll);
       messengersBox.current.addEventListener("scroll", handleMessagesScroll);
     }
+
+    return () => {
+      setMessageTo(null)
+    }
   }, []);
 
 
@@ -447,7 +451,8 @@ function Messenger() {
         item.player_accepting?.id == currentUser?.id
           ? item.player_inviting
           : item.player_accepting;
-
+      console.log(otherPlayer, "otherPlayer");
+      
       return (
         <MessageItem
           key={item.id}
@@ -465,7 +470,7 @@ function Messenger() {
               action: "change_matchup",
               matchup_id: item.id,
             });
-            item.last_message.sender.id === currentUser?.id || item.read?null: readChat(item.id);
+            item.last_message?.sender?.id === currentUser?.id || item.read?null: readChat(item.id);
           }}
           goToProfile={(e) => {
             e.stopPropagation();
@@ -535,6 +540,8 @@ function Messenger() {
     });
   }, [chat]);
 
+ 
+
   return (
     <section
       style={{ height: `${boxHeight}px` }}
@@ -563,7 +570,7 @@ function Messenger() {
             }}
           />
         </div>
-        {chat.length ?
+        {messageTo ?
         <div className="flex gap-[10px] h-[100%] ">
           <div className=" flex flex-col h-[100%] justify-evenly items-end ">
             <h1
@@ -598,7 +605,7 @@ function Messenger() {
           // style={{ height: `${chatHeight}px` }}
           className="flex flex-col-reverse flex-grow  w-[100%] relative overflow-y-auto chatScroll "
         >
-          {!MatchUpId ? (
+          {!MatchUpId && !messageTo ? (
             <div className="flex flex-col justify-center items-center h-[100%]  ">
               <FaRegMessage style={{ color: "#fab907", width: "118px", height: "118px" }}/>
               <p className="text-[24px] text-[#fab907]" >Chose chat</p>
@@ -607,7 +614,8 @@ function Messenger() {
           ) : null}
           {chatMessages}
         </section>
-        <div className="flex gap-[1%] h-[46px] ">
+        { MatchUpId && messageTo ?
+          <div className="flex gap-[1%] h-[46px] ">
           <div className="bg-slate-300 rounded-[40px]  px-[16px] py-[8px] flex-grow ">
             <input
               ref={chatInput}
@@ -626,6 +634,7 @@ function Messenger() {
             />
           </button>
         </div>
+        :null}
       </main>
     </section>
   );
