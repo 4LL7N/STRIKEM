@@ -242,7 +242,7 @@ function Messenger() {
         },
         time_sent: getFormattedTime,
       };
-      if(chat.length == 0 || dayjs().diff(chat[0].time_sent,"minute") >=20) newMessage.after_outdated = true;
+      if(chat.length == 0 || dayjs().diff(chat[0].time_sent,"minute") >=2) newMessage.after_outdated = true;
       const chatContent = [newMessage, ...chat];
       setChat(chatContent);
 
