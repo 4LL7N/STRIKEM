@@ -19,6 +19,9 @@ import MessageItem from "./MessengerMemo/MessageItem";
 import { useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaRegMessage } from "react-icons/fa6";
 import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
 
 interface chatMessage {
   after_outdated?: boolean;
@@ -198,21 +201,21 @@ function Messenger() {
     [token, setChat]
   );
 
-  const getFormattedTime = useMemo(() => {
-    const date = new Date();
+  // const getFormattedTime = useMemo(() => {
+  //   const date = new Date();
 
-    const formattedDate = date.toISOString().slice(0, -1); // Remove trailing "Z"
+  //   const formattedDate = date.toISOString().slice(0, -1); // Remove trailing "Z"
 
-    // Get timezone offset in `+HH:MM` format
-    const offset = -date.getTimezoneOffset();
-    const hours = Math.floor(Math.abs(offset) / 60)
-      .toString()
-      .padStart(2, "0");
-    const minutes = (Math.abs(offset) % 60).toString().padStart(2, "0");
-    const sign = offset >= 0 ? "+" : "-";
+  //   // Get timezone offset in `+HH:MM` format
+  //   const offset = -date.getTimezoneOffset();
+  //   const hours = Math.floor(Math.abs(offset) / 60)
+  //     .toString()
+  //     .padStart(2, "0");
+  //   const minutes = (Math.abs(offset) % 60).toString().padStart(2, "0");
+  //   const sign = offset >= 0 ? "+" : "-";
 
-    return `${formattedDate}${sign}${hours}:${minutes}`;
-  }, []);
+  //   return `${formattedDate}${sign}${hours}:${minutes}`;
+  // }, []);
 
   const sendMessage = () => {
     if (
@@ -230,6 +233,13 @@ function Messenger() {
       });
       console.log(chat);
       
+      dayjs.extend(utc);
+      dayjs.extend(timezone);
+      dayjs.extend(customParseFormat);
+
+// Get the current time with timezone offset
+      const currentTime = dayjs().tz(dayjs.tz.guess()).format('YYYY-MM-DDTHH:mm:ss.SSSSSSZ');
+
       const user = { ...currentUser.user };
       const newMessage = {
         after_outdated:false,
@@ -240,7 +250,7 @@ function Messenger() {
           total_points: currentUser.total_points,
           user,
         },
-        time_sent: getFormattedTime,
+        time_sent: currentTime,
       };
       if(chat.length == 0 || dayjs().diff(chat[0].time_sent,"minute") >=2) newMessage.after_outdated = true;
       const chatContent = [newMessage, ...chat];
