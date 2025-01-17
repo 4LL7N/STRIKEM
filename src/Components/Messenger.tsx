@@ -496,6 +496,7 @@ function Messenger() {
             sendJsonMessage({
               action: "change_matchup",
               matchup_id: item.id,
+              opponent_username: otherPlayer.user.username,
             });
             item.last_message?.sender?.id === currentUser?.id || item.read?null: readChat(item.id);
           }}
