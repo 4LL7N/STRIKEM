@@ -84,6 +84,7 @@ function Layout(props: {
   const [notificationsOpen, setNotificationsOpen] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<Message[]>();
   const [unReadNotifications, setUnReadNotifications] = useState<number>();
+  const [unReadMatchUps, setUnReadMatchUps] = useState<number>();
 
   const [loginBox, setLoginBox] = useState<boolean>(false);
   const [signUpBox, setSignUpBox] = useState<boolean>(false);
@@ -191,17 +192,26 @@ function Layout(props: {
   const FetchUnreadNotifications = useCallback(async () => {
     const token = Cookies.get("token");
     try {
-      const unreadResponse = await axios.get(
-        "https://strikem.site/api/unread-matchups/",
-        {
-          headers: { Authorization: `JWT ${token}` },
-        }
-      );
-      setUnReadNotifications(unreadResponse.data.unread);
+      const [unreadMatchUps,unreadNotifications] = await Promise.all([
+        axios.get("https://strikem.site/api/unread-matchups/",
+          {
+            headers: { Authorization: `JWT ${token}` },
+          }
+        ),
+        axios.get("https://strikem.site/api/unread-notifications/",
+          {
+            headers: { Authorization: `JWT ${token}` },
+          }
+        )
+      ]) 
+      setUnReadNotifications(unreadNotifications.data.unread);
+      setUnReadMatchUps(unreadMatchUps.data.unread);
     } catch (err) {
       console.error(err);
     }
   }, []);
+
+  
 
   const goProfile = (e: any, id: number) => {
     setNotificationsOpen(false);
@@ -501,11 +511,14 @@ function Layout(props: {
           >
             <Link
               to={"/messenger"}
-              className="w-[25px] h-[25px] md:w-[32px] md:h-[32px] "
+              className="w-[25px] h-[25px] md:w-[32px] md:h-[32px] relative "
               onClick={() => {
                 location.pathname != "/messenger" && localStorage.setItem("matchUpId", "");
               }}
             >
+              <div className={` ${!unReadMatchUps && 'hidden'}  ${ location.pathname == "/messenger" || location.pathname.includes("Pools") || location.pathname.includes("users")? '' :'lg:hidden'} flex  items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 `} >
+                <p className="text-[12px] text-white " >{unReadMatchUps}</p>
+              </div>
               <FaRegMessage
                 style={{ color: "#fab907", width: "100%", height: "100%" }}
               />
