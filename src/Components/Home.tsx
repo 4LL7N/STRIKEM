@@ -4,6 +4,8 @@ import axios from "axios";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CSS/home.css";
+import { MdTableRestaurant } from "react-icons/md";
+import { CiStar } from "react-icons/ci";
 
 interface PoolHall {
   id: number;
@@ -149,13 +151,27 @@ function Home(props: { search: string }) {
 
                   {/* Details Section */}
                   <div className="flex flex-col gap-1 p-2">
-                    <p className="text-white text-xs font-light opacity-75 md:text-sm">
+                    <p className="text-white text-xs font-light opacity-75 md:text-sm truncate  ">
                       {item.address}
                     </p>
                     <div className="flex items-center gap-1 text-white text-xs font-light opacity-75 md:text-sm">
-                      <span>{item.table_count}</span>
+                      <span className="flex gap-[4px] md:gap-[6px]">
+                        <MdTableRestaurant
+                          className=" w-[16px] md:w-[20px] h-[16px] md:h-[20px] "
+                          style={{ color: "white" }}
+                        />
+                        <p>{item.table_count}</p>
+                      </span>
                       <span className="w-0.5 h-0.5 bg-white bg-opacity-50 rounded-full mx-1"></span>
-                      <span>{item.avg_rating}</span>
+                      <span className="flex gap-[4px] md:gap-[6px]">
+                        <CiStar
+                        className=" w-[16px] md:w-[20px] h-[16px] md:h-[20px] "
+                          style={{
+                            color: "white",
+                          }}
+                        />
+                        <p>{item.avg_rating.toFixed(1)}</p>
+                      </span>
                     </div>
                     <h2 className="text-white text-sm font-medium md:text-lg">
                       {item.title}
