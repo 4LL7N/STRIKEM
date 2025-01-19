@@ -83,8 +83,8 @@ function Layout(props: {
 
   const [notificationsOpen, setNotificationsOpen] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<Message[]>();
-  const [unReadNotifications, setUnReadNotifications] = useState<number>();
-  const [unReadMatchUps, setUnReadMatchUps] = useState<number>();
+  const [unReadNotifications, setUnReadNotifications] = useState<number>(0);
+  const [unReadMatchUps, setUnReadMatchUps] = useState<number>(0);
 
   const [loginBox, setLoginBox] = useState<boolean>(false);
   const [signUpBox, setSignUpBox] = useState<boolean>(false);
@@ -332,7 +332,7 @@ function Layout(props: {
         setOpenResultBox(true);
       }
       if(lastJsonMessage?.update_message_count) {
-        setUnReadMatchUps((prev:number | undefined):number => (prev ?? 0) + 1);
+        setUnReadMatchUps((prev:number):number => prev + 1);
       }
     }
   }, [lastJsonMessage]);
