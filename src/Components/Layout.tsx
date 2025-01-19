@@ -204,6 +204,10 @@ function Layout(props: {
           }
         )
       ]) 
+      console.log(unreadNotifications.data.unread);
+      console.log(unreadMatchUps.data.unread);
+      
+      
       setUnReadNotifications(unreadNotifications.data.unread);
       setUnReadMatchUps(unreadMatchUps.data.unread);
     } catch (err) {
@@ -321,10 +325,15 @@ function Layout(props: {
   // };
   
   useEffect(() => {
-    // console.log(lastJsonMessage);
-    if (lastJsonMessage && lastJsonMessage?.protocol == "now_free") {
-      localStorage.setItem("sessionId", lastJsonMessage.game_session_id);
-      setOpenResultBox(true);
+    console.log(lastJsonMessage);
+    if (lastJsonMessage) {
+      if(lastJsonMessage?.protocol == "now_free") {
+        localStorage.setItem("sessionId", lastJsonMessage.game_session_id);
+        setOpenResultBox(true);
+      }
+      if(lastJsonMessage?.update_message_count) {
+        setUnReadMatchUps((prev:number | undefined):number => (prev ?? 0) + 1);
+      }
     }
   }, [lastJsonMessage]);
 
