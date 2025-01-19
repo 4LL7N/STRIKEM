@@ -322,7 +322,6 @@ function Messenger() {
         const ChatResponse = await axios(url, {
           headers: { Authorization: `JWT ${token}` },
         });
-        console.log(ChatResponse.data);
         
         const chatData = ChatResponse.data.results;
         const nextChatsEndpoint = ChatResponse.data.next;
@@ -519,33 +518,75 @@ function Messenger() {
         if (chat[i + 1] && chat[i]?.sender.id === chat[i + 1]?.sender.id) {
           rounded =
             chat[i - 1] && chat[i]?.sender.id === chat[i - 1]?.sender.id
-              ? "rounded-[40px_0px_0px_40px]"
-              : "rounded-[40px_0px_40px_40px]";
+              ?
+                item.after_outdated
+                  ?
+                    chat[i-1].after_outdated
+                      ?
+                        "rounded-[40px_40px_40px_40px]"
+                      :
+                        "rounded-[40px_40px_0px_40px]"
+                  : 
+                    chat[i-1].after_outdated
+                      ?
+                        "rounded-[40px_0px_40px_40px]"
+                      :
+                        "rounded-[40px_0px_0px_40px]"
+              : 
+                item.after_outdated
+                  ?
+                    "rounded-[40px_40px_40px_40px]"
+                  :
+                    "rounded-[40px_0px_40px_40px]";
         } else if (
           chat[i - 1] &&
           chat[i].sender?.id === chat[i - 1]?.sender.id
         ) {
-          rounded = "rounded-[40px_40px_0px_40px]";
+          rounded = 
+            chat[i-1].after_outdated
+              ?
+                "rounded-[40px_40px_40px_40px]"
+              :
+                "rounded-[40px_40px_0px_40px]";
         }
       } else {
         if (chat[i + 1] && chat[i]?.sender.id === chat[i + 1]?.sender.id) {
           rounded =
             chat[i - 1] && chat[i]?.sender.id === chat[i - 1]?.sender.id
-              ? "rounded-[0px_40px_40px_0px]"
-              : "rounded-[0px_40px_40px_40px]";
+              ? 
+                item.after_outdated
+                  ?
+                    chat[i-1].after_outdated
+                      ?
+                        "rounded-[40px_40px_40px_40px]"
+                      :
+                        "rounded-[40px_40px_40px_0px]"
+                  :
+                    chat[i-1].after_outdated
+                      ?
+                        "rounded-[0px_40px_40px_40px]"
+                      :
+                        "rounded-[0px_40px_40px_0px]"
+              : 
+                item.after_outdated
+                  ?
+                    "rounded-[40px_40px_40px_40px]"
+                  :  
+                    "rounded-[0px_40px_40px_40px]";
         } else if (
           chat[i - 1] &&
           chat[i].sender?.id === chat[i - 1]?.sender.id
         ) {
-          rounded = "rounded-[40px_40px_40px_0px]";
+          rounded = 
+            chat[i-1].after_outdated
+              ?
+                "rounded-[40px_40px_40px_40px]"
+              :
+                "rounded-[40px_40px_40px_0px]";
         }
       }
 
-      // if(chat[i]?.sender.id == chat[i+1]?.sender.id){
-      //   timeAppear = false
-      // }else{
-      //   timeAppear = true
-      // }
+     
 
       const margin =
         i === chat.length - 1
