@@ -325,7 +325,6 @@ function Layout(props: {
   // };
   
   useEffect(() => {
-    console.log(lastJsonMessage);
     if (lastJsonMessage) {
       if(lastJsonMessage?.protocol == "now_free") {
         localStorage.setItem("sessionId", lastJsonMessage.game_session_id);

@@ -175,13 +175,7 @@ const Reservation = memo(
         return dateNow.format("YYYY-MM-DD");
       }
       // const presentTime = dayjs().format("HH:mm:ss")
-      // console.log(poolInfo?.close_time);
-      // console.log(poolInfo?.open_time);
       
-      // console.log(dayjs(poolInfo?.close_time,"HH:mm:ss").isAfter(dayjs(poolInfo?.open_time,"HH:mm:ss")));
-      
-      // console.log(dayjs().format("HH:mm:ss"));
-      console.log(tillClose);
       
       try {
         const [todayResponse, tomorrowResponse, afterTomorrowResponse] =
@@ -208,7 +202,6 @@ const Reservation = memo(
                  date(2)}`
             ),
           ]);
-          // console.log(todayResponse.data);
           
         setTodayReservation(todayResponse.data);
         setTomorrowReservation(tomorrowResponse.data);
@@ -250,7 +243,6 @@ const Reservation = memo(
       const nextDay = (Number(day) + 1).toString().padStart(2, "0");
 
       const formattedDate = `${year}/${month}/${tillClose?Number(day)-1:day}-${tillClose?Number(nextDay)-1:nextDay}`;
-      console.log(formattedDate);
       
       setTableDate(formattedDate);
       const selectData = [];
@@ -267,12 +259,8 @@ const Reservation = memo(
           .toString()
           .padStart(2, "0");
 
-        console.log(`${year}/${month}/${Day}-${NextDay}`);
-        console.log(dayjs(poolInfo?.close_time,"HH:mm:ss").format("HH:mm:ss"),(dayjs()));
-        console.log(dayjs(poolInfo?.close_time,"HH:mm:ss").isAfter(dayjs()));
         
         selectData.push(`${year}/${month}/${Day}-${NextDay}`);
-        // console.log(selectData,tillClose);
         
       }
       setSelectDates(selectData);
@@ -298,7 +286,6 @@ const Reservation = memo(
     };
 
     const events = () => {
-      // console.log(todayReservation);
       
       const schedule =
       tableDate == selectDates[0]
@@ -317,7 +304,6 @@ const Reservation = memo(
       });
       
       return arr.map((time) => {
-        // console.log(time);
         
         const start = time?.start_time;
         const end = dayjs(start)
@@ -383,8 +369,6 @@ const Reservation = memo(
           : tableDate == selectDates[1]
           ? tomorrowReservation
           : afterTomorrowReservation;
-
-          // console.log(schedule);
           
 
       const afterMidnight =
@@ -419,14 +403,12 @@ const Reservation = memo(
                 
                 overlap = false 
               }else{
-                console.log(true)
                 overlap = true
               }
             }else{
               overlap=false
             }
           }else{
-            console.log(true)
             overlap = true
           }
         }else if(dayjs(start1).hour()>start2.hour()){
@@ -434,30 +416,23 @@ const Reservation = memo(
               if(end2.hour()==dayjs(start1).hour()){
                 if((dayjs(start1).minute()-end2.minute()) >= 5){
                   overlap = false 
-                }else{
-                  console.log(start1,start2);
-                  
-                  console.log(true)
+                }else{                  
                  overlap = true
                 }
               }else{
                 overlap=false
               }
             }else{
-              console.log(true)
               overlap = true
             }
         }else{
-          console.log(true)
           overlap = true
         }
         
         return overlap 
       }
 
-      if(dayjs(newReserveTime).add(selectedDuration,"minute").isBefore(dayjs())){
-        console.log(newReserveTime,dayjs(newReserveTime),dayjs());
-        
+      if(dayjs(newReserveTime).add(selectedDuration,"minute").isBefore(dayjs())){        
         setReserverError('Cannot reserve time before current time')
         return
       }

@@ -68,6 +68,8 @@ const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo
       }
 
       const handleNotificationClick = () => {
+        console.log(item);
+        
         if (item.type == "INV") {
           navigate(`/matchmake`);
         } else if (item.type == "MSG") {
@@ -78,7 +80,7 @@ const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo
           setOpenResultBox(true);
         }
         
-        ReadNotifications();
+        !item.read && ReadNotifications();
       }
 
       return (
