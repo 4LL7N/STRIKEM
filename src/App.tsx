@@ -7,6 +7,7 @@ import User from './Components/User';
 import Messenger from './Components/Messenger';
 import Matchup from './Components/Matchup';
 import { WebSocketProvider } from './Components/Websocket';
+import EmailVerifivation from './Components/UsersMemo/EmailVerifivation';
 
 
 
@@ -45,8 +46,12 @@ function App() {
           path:'/matchmake',
           element:<Matchup usersSearch={usersSearch} setUsersSearch={setUsersSearch} setAcceptInvatation={setAcceptInvatation}  />
         }
-      ]
+      ],
     },
+    {
+      element:<EmailVerifivation/>,
+      path:'/:uid/:token'
+    }
   ])
 
   
