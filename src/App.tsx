@@ -50,7 +50,7 @@ function App() {
     },
     {
       element:<EmailVerifivation/>,
-      path:'/:uid/:token'
+      path:'/activate/:uid/:token'
     }
   ])
 

@@ -36,7 +36,7 @@ function EmailVerifivation() {
           </div>
           :
           <div className="flex flex-col gap-6 items-center" >
-            <h1 className="text-white text-6xl ">Verifing...</h1>
+            <h1 className="text-white text-6xl ">Verifying...</h1>
           </div>
 
         }
