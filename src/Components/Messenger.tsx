@@ -91,7 +91,7 @@ interface Message {
 }
 
 function Messenger() {
-  const { sendJsonMessage, lastJsonMessage } = useWebSocketContext();
+  const { sendJsonMessage, lastJsonMessage,setUnReadMatchUps } = useWebSocketContext();
 
   const naviagte = useNavigate();
 
@@ -496,7 +496,7 @@ function Messenger() {
               action: "change_matchup",
               matchup_id: item.id,
             });
-            item.last_message?.sender?.id === currentUser?.id || item.read?null: readChat(item.id);
+            item.last_message?.sender?.id === currentUser?.id || item.read?null: readChat(item.id),setUnReadMatchUps((i:number)=>i-1);
           }}
           goToProfile={(e) => {
             e.stopPropagation();

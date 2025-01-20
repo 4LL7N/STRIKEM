@@ -76,7 +76,7 @@ function Layout(props: {
   acceptInvatation: number;
   setAcceptInvatation: (acceptInvatation: number) => void;
 }) {
-  const { sendJsonMessage, lastJsonMessage, logedIn, setLogedIn ,reservationBox} =
+  const { sendJsonMessage, lastJsonMessage, logedIn, setLogedIn ,reservationBox,unReadMatchUps,setUnReadMatchUps} =
     useWebSocketContext();
   const navigate = useNavigate();
   const location = useLocation();
@@ -84,7 +84,7 @@ function Layout(props: {
   const [notificationsOpen, setNotificationsOpen] = useState<boolean>(false);
   const [notifications, setNotifications] = useState<Message[]>();
   const [unReadNotifications, setUnReadNotifications] = useState<number>(0);
-  const [unReadMatchUps, setUnReadMatchUps] = useState<number>(0);
+  
 
   const [loginBox, setLoginBox] = useState<boolean>(false);
   const [signUpBox, setSignUpBox] = useState<boolean>(false);
