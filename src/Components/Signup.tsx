@@ -27,6 +27,8 @@ function Signup({setSignUpBox,setLoginBox}:any) {
   const [axiosError,setAxiosError] = useState<string>('')
   // const [repPassErr, setRepPassErr] = useState(false);
 
+  const [changeToVerify, setChangeToVerify] = useState<boolean>(false);
+
   let emptyUsernameChk = false;
   let emptyFirstNameChk = false;
   let emptyLastNameChk = false;
@@ -87,26 +89,6 @@ function Signup({setSignUpBox,setLoginBox}:any) {
       setEmptyLastName(false);
       emptyLastNameChk = false;
     }
-
-    // if (!repPassword.current?.value) {
-    //   setrepEmptyPassword(true);
-    //   repEmptyPasswordChk = true;
-    // } else {
-    //   setrepEmptyPassword(false);
-    //   repEmptyPasswordChk = false;
-    // }
-
-    // if (
-    //   password.current &&
-    //   repPassword.current &&
-    //   password.current.value !== repPassword.current.value
-    // ) {
-    //   setRepPassErr(true);
-    //   repPassErrChk = true;
-    // } else {
-    //   setRepPassErr(false);
-    //   repPassErrChk = false;
-    // }
     
 
     if (
@@ -122,26 +104,13 @@ function Signup({setSignUpBox,setLoginBox}:any) {
       signUp()
     }
     
-    Switch();
+    
   }
-  function Switch() {
-    if (
-      !emptyUsernameChk &&
-      !emailErrChk &&
-      // !repPassErrChk &&
-      !emptyEmailChk &&
-      !emptyPasswordChk &&
-      !emptyFirstNameChk &&
-      !emptyLastNameChk
-      // !repEmptyPasswordChk &&
-    ) {
-       console.log('register')
-    }
-  }
+ 
 
   const signUp = async () => {
     try {
-      const response = await axios.post(
+      await axios.post(
         "https://strikem.site/auth/users/",
         {
           username: userName.current?.value,
@@ -151,7 +120,6 @@ function Signup({setSignUpBox,setLoginBox}:any) {
           last_name:lastName.current?.value
         }
       );
-      console.log(response)
       setEmptyEmail(false);
       setEmailerr(false);
       setEmptyPassword(false);
@@ -164,9 +132,8 @@ function Signup({setSignUpBox,setLoginBox}:any) {
       email.current.value = ''
       firstName.current.value = ''
       lastName.current.value = ''
-      setSignUpBox(false)
-      setLoginBox(true)
-
+      
+      setChangeToVerify(true)
 
     } catch (err:any) {  
       const errorArr = Object.values(err?.response.data)
@@ -176,17 +143,25 @@ function Signup({setSignUpBox,setLoginBox}:any) {
       console.log(errorArr);
     }
   };
+ 
 
   return (
     <>
      
       <div className="w-[100%] md:w-[536px] p-[24px] pb-[32] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px]">
-    <div className="w-[100%] flex justify-between items-center mb-[40px] " >
-        <h1 className="text-[32px] text-[#FFF] font-light tarcking-[-0.5px] self-start	">
+      
+     <div className="w-[100%] flex justify-between items-center mb-[40px] " >
+        <h1 className="text-[32px] text-[#FFF] font-light tracking-[-0.5px] self-start	">
           Sign Up
         </h1>
-        <IoMdClose style={{color:'white',width:'24px',height:'24px',cursor:'pointer'}} onClick={()=>{setSignUpBox(false)}} />
+        <IoMdClose style={{color:'white',width:'24px',height:'24px',cursor:'pointer'}} onClick={()=>{setSignUpBox(false),setChangeToVerify(false)}} />
         </div>
+        {changeToVerify?
+        <div className="flex flex-col gap-6 items-center" >
+            <h1 className="text-white text-[32px] font-light text-center ">Thank you for signing up! Please check your email and verify your address to activate your account. You’ll need to complete this step before logging in.</h1>
+          </div>
+          :
+          <div className="w-[100%]" >
         <div
           className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
             emptyUsername ? "border-b-[#FC4747]" : null
@@ -249,27 +224,7 @@ function Signup({setSignUpBox,setLoginBox}:any) {
           </a>
         </div>
 
-        {/* <div
-          className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F]  hover:border-b-[#FFF] ${usedEmail?"mb-[24px]" :"mb-[40px]"} pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  ${
-            repemptyPassword || repPassErr ? "border-b-[#FC4747]" : null
-          } `}
-        >
-          <input
-            className="w-[130px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none  md:w-[200px] lg:w-[230px]"
-            type="password"
-            name="repeatPassword"
-            id="repeatPassword"
-            placeholder="Repeat Password"
-            ref={repPassword}
-          />
-          <a className="text-[13px] text-[#FC4747] font-light">
-            {repemptyPassword
-              ? "Can’t be empty"
-              : repPassErr
-              ? "Must repet password"
-              : null}
-          </a>
-        </div> */}
+        
         <div
           className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
             emptyFirstName ? "border-b-[#FC4747]" : null
@@ -314,20 +269,21 @@ function Signup({setSignUpBox,setLoginBox}:any) {
           <p className="text-red-500 text-[12px] absolute top-0 " >{axiosError}</p>
         <button
           className="w-[100%] bg-[#fab907] rounded-[6px] py-[15px] text-[15px] text-[#FFF] font-light mb-[24px] hover:bg-[#8b7127] hover:text-[#161D2F]"
-          onClick={() => HandleSignup()}
+          onClick={HandleSignup}
         >
           Create an account
         </button>
         </div>
-        <span className=" flex">
+        <span className=" flex justify-center items-center" >
           <a className="w-[166px] text-[15px] text-[#FFF] font-light mr-[9px]">
             Do you have an account?
           </a>
           <p className="text-[15px] text-[#fab907] font-light " onClick={()=>{setSignUpBox(false);setLoginBox(true)}} >
             Log In
           </p>
-        </span>
-
+        </span> 
+              </div>
+              }
       </div>
       
     </>
