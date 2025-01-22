@@ -187,12 +187,10 @@ function Pool() {
         axios.get(`https://strikem.site/api/poolhouses/${id}/`),
         axios.get(`https://strikem.site/api/poolhouses/${id}/tables/`)
       ])
-      // const poolResponse = await 
-      // console.log(tableResponse.data);
-      
+         
       setPoolInfo(poolResponse.data)
       setPoolTablesData(tableResponse.data)
-      setRatings(ratingResponse.data);
+      setRatings(ratingResponse.data.results);
     } catch (err) {
       console.error(err);
     }
