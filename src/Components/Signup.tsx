@@ -4,10 +4,13 @@ import { useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { CredentialResponse } from "@react-oauth/google";
+import Cookies from 'js-cookie';
+import { useNavigate } from "react-router-dom";
 
 
 function Signup({ setSignUpBox, setLoginBox }: any) {
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+  const navigate = useNavigate();
 
   const userName = useRef<any>(null);
   const firstName = useRef<any>(null);
@@ -146,19 +149,30 @@ function Signup({ setSignUpBox, setLoginBox }: any) {
 
   const googleToBack = async () => {
     try{
-      const response = axios.post("https://strikem.site/users/google-auth/", {
+      const response = await axios.post("https://strikem.site/users/google-auth/", {
         id_token: googleToken,
         username: userName.current?.value,
         from: "register"
       })
+      
+      console.log(response.data);
+      
       setSignUpBox(false)
       setGoogleRegistration(false)
       setGoogleToken("")
       setGoogleError("")
       userName.current.value = ""
-      const data = await response;
-      console.log(data);
       
+      Cookies.set('token',response.data.access
+        ,{
+        secure: true,
+        sameSite: 'Strict',
+        expires:1      
+      })
+      
+      navigate("/home")
+      window.location.reload()
+
     }catch(err:any){
       const errorArr = Object.values(err?.response.data);
       let error: string = "";
@@ -166,7 +180,7 @@ function Signup({ setSignUpBox, setLoginBox }: any) {
         error += item;
       });
       setAxiosError(error);
-      console.log(errorArr);
+      console.log(err);
 
     }
   }
@@ -191,6 +205,20 @@ function Signup({ setSignUpBox, setLoginBox }: any) {
     setGoogleRegistration(true);
   };
   
+  const signupClose = () => {
+    setSignUpBox(false)
+    setChangeToVerify(false)
+    setGoogleRegistration(false)
+    setGoogleToken("")
+    setGoogleError("")
+    setAxiosError("")
+    if (userName)userName.current.value = ""
+    if(password)password.current.value = "";
+    if(userName)userName.current.value = "";
+    if(email)email.current.value = "";
+    if(firstName)firstName.current.value = "";
+    if(lastName)lastName.current.value = "";
+  }
 
   return (
     <>
@@ -206,9 +234,7 @@ function Signup({ setSignUpBox, setLoginBox }: any) {
               height: "24px",
               cursor: "pointer",
             }}
-            onClick={() => {
-              setSignUpBox(false), setChangeToVerify(false), setGoogleRegistration(false),setGoogleToken(""),setGoogleError("");
-            }}
+            onClick={signupClose}
           />
         </div>
         {changeToVerify ? (

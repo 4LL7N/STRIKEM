@@ -93,17 +93,29 @@ function Login({setLoginBox,setSignUpBox}:any) {
 
   const googleToBack = async () => {
     try{
-      const response = axios.post("https://strikem.site/users/google-auth/", {
+      const response = await axios.post("https://strikem.site/users/google-auth/", {
         id_token: googleToken,
         username: logUsername.current?.value,
       })
+      console.log(response);
+
       setSignUpBox(false)
       setGoogleLogin(false)
       setGoogleToken("")
       setGoogleError("")
       logUsername.current.value = ""
-      const data = await response;
-      console.log(data);
+
+      Cookies.set('token',response.data.access
+        ,{
+        secure: true,
+        sameSite: 'Strict',
+        expires:1      
+      }
+    )
+
+    setLoginBox(false)
+    logNavigation("/home");
+    window.location.reload()
       
     }catch(err:any){
       const errorArr = Object.values(err?.response.data);
