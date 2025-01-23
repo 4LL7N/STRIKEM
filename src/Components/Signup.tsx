@@ -36,7 +36,7 @@ function Signup({ setSignUpBox, setLoginBox }: any) {
 
   const [changeToVerify, setChangeToVerify] = useState<boolean>(false);
 
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const clientId = "350212676070-7iflui6iruag475r9hla0hq0amtkqvk4.apps.googleusercontent.com";
 
   let emptyUsernameChk = false;
   let emptyFirstNameChk = false;

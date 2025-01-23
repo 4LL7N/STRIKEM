@@ -24,7 +24,7 @@ function Login({setLoginBox,setSignUpBox}:any) {
   const [googleToken, setGoogleToken] = useState<string>("");
   const [googleError, setGoogleError] = useState<string>("");
 
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const clientId = "350212676070-7iflui6iruag475r9hla0hq0amtkqvk4.apps.googleusercontent.com";
 
   let emptyLogEmailErrChk = false;
   let emptyLogPassErrChk = false;
