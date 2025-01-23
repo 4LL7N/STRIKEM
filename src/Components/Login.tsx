@@ -219,6 +219,7 @@ function Login({setLoginBox,setSignUpBox}:any) {
         <p className="text-red-500 text-[12px] absolute top-0 ">
                 {axiosError}{googleError}
               </p>
+              <div className="w-full mb-[24px]" >
         <button
           className="w-[100%] bg-[#fab907] rounded-[6px] py-[15px] text-[15px] text-[#FFF] font-light mb-[24px] hover:bg-[#FFF] hover:text-[#161D2F] "
           onClick={() => {googleLogin?HandleGoogle():HandleLogin();}}
@@ -236,6 +237,7 @@ function Login({setLoginBox,setSignUpBox}:any) {
                 />
               </GoogleOAuthProvider>
               }
+              </div>
         <span className=" flex">
           <a className="w-[156px] text-[15px] text-[#FFF] font-light mr-[9px]">
             Don’t have an account?
