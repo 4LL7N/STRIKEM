@@ -163,7 +163,7 @@ function Signup({ setSignUpBox, setLoginBox }: any) {
       setGoogleError("")
       userName.current.value = ""
       
-      Cookies.set('token',response.data.access
+      Cookies.set('token',response.data.access_token
         ,{
         secure: true,
         sameSite: 'Strict',
@@ -173,14 +173,14 @@ function Signup({ setSignUpBox, setLoginBox }: any) {
       navigate("/home")
       window.location.reload()
 
-    }catch(err:any){
+    }catch(err:any){      
       const errorArr = Object.values(err?.response.data);
       let error: string = "";
       errorArr.forEach((item) => {
         error += item;
       });
       setAxiosError(error);
-      console.log(err);
+      console.log(errorArr);
 
     }
   }
@@ -212,12 +212,11 @@ function Signup({ setSignUpBox, setLoginBox }: any) {
     setGoogleToken("")
     setGoogleError("")
     setAxiosError("")
-    if (userName)userName.current.value = ""
-    if(password)password.current.value = "";
-    if(userName)userName.current.value = "";
-    if(email)email.current.value = "";
-    if(firstName)firstName.current.value = "";
-    if(lastName)lastName.current.value = "";
+    if (userName && userName.current )userName.current.value = ""
+    if(password && password.current)password.current.value = "";
+    if(email && email.current)email.current.value = "";
+    if(firstName && firstName.current)firstName.current.value = "";
+    if(lastName && lastName.current)lastName.current.value = "";
   }
 
   return (

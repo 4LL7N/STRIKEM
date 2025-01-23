@@ -125,6 +125,8 @@ function Layout(props: {
 
   const FetchCurrentUser = async () => {
     const token = Cookies.get("token");
+    console.log(token);
+    
     try {
       if (token && token != "logout") {
         const currentUserResponse = await axios.get(

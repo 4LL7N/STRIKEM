@@ -105,7 +105,7 @@ function Login({setLoginBox,setSignUpBox}:any) {
       setGoogleError("")
       logUsername.current.value = ""
 
-      Cookies.set('token',response.data.access
+      Cookies.set('token',response.data.access_token
         ,{
         secure: true,
         sameSite: 'Strict',
@@ -181,6 +181,7 @@ function Login({setLoginBox,setSignUpBox}:any) {
             Can’t be empty
           </a>{" "}
         </div>
+        {googleLogin ? null : 
         <div
           className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] ${
             userError ? "mb-[24px]" : "mb-[40px]"
@@ -206,6 +207,7 @@ function Login({setLoginBox,setSignUpBox}:any) {
             Can’t be empty
           </a>{" "}
         </div>
+        }
         <p
           className={`${
             userError ? "text-[13px] text-[#FC4747] font-light" : "hidden"
@@ -226,7 +228,7 @@ function Login({setLoginBox,setSignUpBox}:any) {
         {googleLogin ? null :
               <GoogleOAuthProvider clientId={clientId ?? ""}>
                 <GoogleLogin
-                  text={"signup_with"}
+                  text={"signin_with"}
                   logo_alignment="center"
                   onSuccess={onSuccess}
                   onError={() => {setGoogleError("Google Sign In Error")}}
