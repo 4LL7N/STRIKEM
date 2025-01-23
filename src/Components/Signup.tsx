@@ -144,23 +144,34 @@ function Signup({ setSignUpBox, setLoginBox }: any) {
     }
   };
 
-  // const googleToBack = async () => {
-  //   try{
-  //     axios.post("https://strikem.site/auth/google/", {
-  //       access_token: googleToken,
-  //       username: userName.current?.value,
-  //     })
-  //   }catch(err:any){
-  //     const errorArr = Object.values(err?.response.data);
-  //     let error: string = "";
-  //     errorArr.forEach((item) => {
-  //       error += item;
-  //     });
-  //     setAxiosError(error);
-  //     console.log(errorArr);
+  const googleToBack = async () => {
+    try{
+      const response = axios.post("https://strikem.site/users/google-auth/", {
+        id_token: googleToken,
+        username: userName.current?.value,
+        from: "register"
+      })
+      console.log("google to back");
+      setSignUpBox(false)
+      setChangeToVerify(false)
+      setGoogleRegistration(false)
+      setGoogleToken("")
+      setGoogleError("")
+      userName.current.value = ""
+      const data = await response;
+      console.log(data);
+      
+    }catch(err:any){
+      const errorArr = Object.values(err?.response.data);
+      let error: string = "";
+      errorArr.forEach((item) => {
+        error += item;
+      });
+      setAxiosError(error);
+      console.log(errorArr);
 
-  //   }
-  // }
+    }
+  }
 
   const HandleGoogle = () =>{
     if(!googleToken){
@@ -174,7 +185,7 @@ function Signup({ setSignUpBox, setLoginBox }: any) {
       setEmptyUsername(false);
       emptyUsernameChk = false;
     }
-    // googleToBack();
+    googleToBack();
   }
 
   const onSuccess = (e: CredentialResponse) => {
