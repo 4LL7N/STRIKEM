@@ -151,9 +151,7 @@ function Signup({ setSignUpBox, setLoginBox }: any) {
         username: userName.current?.value,
         from: "register"
       })
-      console.log("google to back");
       setSignUpBox(false)
-      setChangeToVerify(false)
       setGoogleRegistration(false)
       setGoogleToken("")
       setGoogleError("")

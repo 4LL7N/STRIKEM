@@ -6,24 +6,33 @@ import {
      } from "react-router-dom";
 import Cookies from 'js-cookie';
 import { IoMdClose } from "react-icons/io";
+import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 
 
 function Login({setLoginBox,setSignUpBox}:any) {
   const logNavigation = useNavigate();
 
-  const logEmail = useRef<any>(null);
+  const logUsername = useRef<any>(null);
   const logPassword = useRef<any>(null);
-  const [emptyLogEmailErr, setEmptyLogEmailErr] = useState(false);
+  const [emptyLogUsernameErr, setEmptyLogEmailErr] = useState(false);
   const [emptyLogPassErr, setEmptyLogPassErr] = useState(false);
   const [userError, setUserError] = useState(false);
   
+  const [axiosError, setAxiosError] = useState<string>("");
+
+  const [googleLogin, setGoogleLogin] = useState(false);
+  const [googleToken, setGoogleToken] = useState<string>("");
+  const [googleError, setGoogleError] = useState<string>("");
+
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
   let emptyLogEmailErrChk = false;
   let emptyLogPassErrChk = false;
   
   
   function HandleLogin() {
       
-    if(!logEmail.current?.value){
+    if(!logUsername.current?.value){
         setEmptyLogEmailErr(true)
         emptyLogEmailErrChk = true
     }else{
@@ -53,7 +62,7 @@ function Login({setLoginBox,setSignUpBox}:any) {
       const response = await axios.post(
         "https://strikem.site/auth/jwt/create",
         {
-          username: logEmail.current?.value,
+          username: logUsername.current?.value,
           password: logPassword.current.value,
         }
       );
@@ -81,6 +90,52 @@ function Login({setLoginBox,setSignUpBox}:any) {
     }
   };
 
+
+  const googleToBack = async () => {
+    try{
+      const response = axios.post("https://strikem.site/users/google-auth/", {
+        id_token: googleToken,
+        username: logUsername.current?.value,
+      })
+      setSignUpBox(false)
+      setGoogleLogin(false)
+      setGoogleToken("")
+      setGoogleError("")
+      logUsername.current.value = ""
+      const data = await response;
+      console.log(data);
+      
+    }catch(err:any){
+      const errorArr = Object.values(err?.response.data);
+      let error: string = "";
+      errorArr.forEach((item) => {
+        error += item;
+      });
+      setAxiosError(error);
+      console.log(errorArr);
+
+    }
+  }
+
+  const HandleGoogle = () =>{
+    if(!googleToken){
+      setGoogleError("something went wrong")
+      return;
+    }
+    if (!logUsername.current?.value) {
+      setEmptyLogEmailErr(true);
+      return;
+    } else {
+      setEmptyLogEmailErr(false);
+    }
+    googleToBack();
+  }
+
+  const onSuccess = (e: CredentialResponse) => {
+    setGoogleToken(e.credential ?? "");
+    setGoogleLogin(true);
+  };
+
   return (
     <>
       <div className="w-[100%] md:w-[536px] p-[24px] pb-[32] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px] ">
@@ -92,7 +147,7 @@ function Login({setLoginBox,setSignUpBox}:any) {
         </div>
         <div
           className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[16px] pb-[18px] hover:border-b-[#FFF] ${
-            emptyLogEmailErr || userError ? "border-b-[#FC4747]" : null
+            emptyLogUsernameErr || userError ? "border-b-[#FC4747]" : null
           } `}
         >
           <input
@@ -102,11 +157,11 @@ function Login({setLoginBox,setSignUpBox}:any) {
             id="LoginUsername"
             placeholder="Username"
             autoComplete="off"
-            ref={logEmail}
+            ref={logUsername}
           />{" "}
           <a
             className={`${
-              emptyLogEmailErr
+              emptyLogUsernameErr
                 ? "text-[13px] text-[#FC4747] font-light"
                 : "hidden"
             }`}
@@ -147,14 +202,26 @@ function Login({setLoginBox,setSignUpBox}:any) {
         >
           Email or password is not correct
         </p>
+        <p className="text-red-500 text-[12px] absolute top-0 ">
+                {axiosError}{googleError}
+              </p>
         <button
           className="w-[100%] bg-[#fab907] rounded-[6px] py-[15px] text-[15px] text-[#FFF] font-light mb-[24px] hover:bg-[#FFF] hover:text-[#161D2F] "
-          onClick={() => {
-            HandleLogin();
-          }}
+          onClick={() => {googleLogin?HandleGoogle():HandleLogin();}}
         >
           Login to your account
         </button>
+        {googleLogin ? null :
+              <GoogleOAuthProvider clientId={clientId ?? ""}>
+                <GoogleLogin
+                  text={"signup_with"}
+                  logo_alignment="center"
+                  onSuccess={onSuccess}
+                  onError={() => {setGoogleError("Google Sign In Error")}}
+                  auto_select={false}
+                />
+              </GoogleOAuthProvider>
+              }
         <span className=" flex">
           <a className="w-[156px] text-[15px] text-[#FFF] font-light mr-[9px]">
             Don’t have an account?
