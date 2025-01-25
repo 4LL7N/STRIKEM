@@ -1,9 +1,10 @@
 import {configureStore} from '@reduxjs/toolkit';
 
+import invitationAccept from './features/invitationAccept';
 
 export const store = configureStore({
     reducer: {
-        
+        invitationAccept,
     }
 })
 
