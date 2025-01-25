@@ -99,3 +99,11 @@ export interface Picture {
 }
 
 // Pool
+
+export interface RatingBoxState {
+    open: boolean,
+    id:number,
+    name:string
+}
+
+//uploadRatingsBox

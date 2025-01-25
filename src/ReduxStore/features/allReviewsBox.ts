@@ -1,23 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RatingBoxState } from "../../type";
 
-
-
-
-
-const uploadRatingBox = createSlice({
-    name: 'uploadRatingBox',
+const allReviewsBox = createSlice({
+    name: 'allReviewsBox',
     initialState: {
         open: false,
         id:-1,
         name:""
     },
     reducers: {
-        setUploadRatingBox: (state, action:PayloadAction<RatingBoxState>) => {
+        setAllReviewsBox: (state, action:PayloadAction<RatingBoxState>) => {
             return state = action.payload;
         }
     }
 })
-export const  {setUploadRatingBox} = uploadRatingBox.actions
+export const  {setAllReviewsBox} = allReviewsBox.actions
 
-export default uploadRatingBox.reducer
+export default allReviewsBox.reducer

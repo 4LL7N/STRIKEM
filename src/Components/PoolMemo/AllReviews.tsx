@@ -2,7 +2,7 @@ import axios from "axios";
 import { memo, useEffect, useMemo, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { rating } from "../../type";
-import { Rating } from "@mui/material";
+// import { Rating } from "@mui/material";
 import { CiStar } from "react-icons/ci";
 import "../CSS/messenger.css"
 const AllReviews = memo(() => {
