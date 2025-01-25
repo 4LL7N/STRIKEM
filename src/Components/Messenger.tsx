@@ -22,6 +22,8 @@ import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { useAppDispatch } from "../ReduxStore/ReduxHooks";
+import { unReadMatchupDecrement } from "../ReduxStore/features/unReadMatchups";
 
 interface chatMessage {
   after_outdated?: boolean;
@@ -91,7 +93,7 @@ interface Message {
 }
 
 function Messenger() {
-  const { sendJsonMessage, lastJsonMessage,setUnReadMatchUps } = useWebSocketContext();
+  const { sendJsonMessage, lastJsonMessage } = useWebSocketContext();
 
   const naviagte = useNavigate();
 
@@ -121,8 +123,9 @@ function Messenger() {
 
   const [messageTo, setMessageTo] = useState<any|null>(null);
 
-  // const [chatHeight, setChatHeight] = useState<number>(0);
   const [boxHeight, setBoxHeight] = useState<number>(0);
+
+  const dispatch = useAppDispatch();
 
   const chatInput = useRef<any>();
 
@@ -130,9 +133,7 @@ function Messenger() {
   const MatchUpId = localStorage.getItem("matchUpId"); 
   const Fetch = async () => {
     
-    // if (MatchUpId) {
-    //   setOpenChat(MatchUpId);
-    // }
+   
     try {
       const response = await axios("https://strikem.site/api/matchups/", {
         headers: {
@@ -143,34 +144,7 @@ function Messenger() {
       setMessages(response.data.results);
       if (response.data.results.length > 0) {
         
-          // let otherPlayer =
-          //   response.data.results[0].player_accepting.id == currentUser?.id
-          //     ? response.data.results[0].player_inviting
-          //     : response.data.results[0].player_accepting;
-          // if (MatchUpId) {
-          //   const findMatuchUp = response.data.results.find(
-          //     (item: any) => item.id == MatchUpId
-          //   );
-          //   otherPlayer =
-          //     findMatuchUp.player_accepting.id == currentUser?.id
-          //       ? findMatuchUp.player_inviting
-          //       : findMatuchUp.player_accepting;
-          // } else if (openChat) {
-          //   const findMatuchUp = response.data.results.find(
-          //     (item: any) => item.id == openChat
-          //   );
-          //   otherPlayer =
-          //     findMatuchUp.player_accepting.id == currentUser?.id
-          //       ? findMatuchUp.player_inviting
-          //       : findMatuchUp.player_accepting;
-          // } else {
-          //   otherPlayer =
-          //     response.data.results[0].player_accepting.id == currentUser?.id
-          //       ? response.data.results[0].player_inviting
-          //       : response.data.results[0].player_accepting;
-          // }
-
-          // setMessageTo(otherPlayer);
+         
         if(MatchUpId){
           messagesFetch(MatchUpId);
         }
@@ -203,21 +177,6 @@ function Messenger() {
     [token, setChat]
   );
 
-  // const getFormattedTime = useMemo(() => {
-  //   const date = new Date();
-
-  //   const formattedDate = date.toISOString().slice(0, -1); // Remove trailing "Z"
-
-  //   // Get timezone offset in `+HH:MM` format
-  //   const offset = -date.getTimezoneOffset();
-  //   const hours = Math.floor(Math.abs(offset) / 60)
-  //     .toString()
-  //     .padStart(2, "0");
-  //   const minutes = (Math.abs(offset) % 60).toString().padStart(2, "0");
-  //   const sign = offset >= 0 ? "+" : "-";
-
-  //   return `${formattedDate}${sign}${hours}:${minutes}`;
-  // }, []);
 
   const sendMessage = () => {
     if (
@@ -496,7 +455,7 @@ function Messenger() {
               action: "change_matchup",
               matchup_id: item.id,
             });
-            item.last_message?.sender?.id === currentUser?.id || item.read?null: readChat(item.id),setUnReadMatchUps((i:number)=>i-1);
+            item.last_message?.sender?.id === currentUser?.id || item.read?null: readChat(item.id),dispatch(unReadMatchupDecrement());
           }}
           goToProfile={(e) => {
             e.stopPropagation();

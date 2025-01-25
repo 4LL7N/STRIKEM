@@ -20,7 +20,8 @@ import Reservation from "./PoolMemo/Reservation";
 import ResultBoxMemo from "./LayoutMemo/ResultBoxMemo";
 import NotificationsBoxItemsMemo from "./LayoutMemo/NotificationsBoxItemsMemo";
 import InvitationAcceptMemo from "./LayoutMemo/InvitationAcceptMemo";
-import { useAppSelector } from "../ReduxStore/ReduxHooks";
+import { useAppDispatch, useAppSelector } from "../ReduxStore/ReduxHooks";
+import { setUnReadMatchup, unReadMatchupIncrement } from "../ReduxStore/features/unReadMatchups";
 
 interface User {
   email: string;
@@ -77,7 +78,7 @@ function Layout(props: {
   acceptInvitation: number;
   setAcceptInvitation: (acceptInvatation: number) => void;
 }) {
-  const { sendJsonMessage, lastJsonMessage, logedIn, setLogedIn ,setUnReadMatchUps} =
+  const { sendJsonMessage, lastJsonMessage, logedIn, setLogedIn } =
     useWebSocketContext();
   const navigate = useNavigate();
   const location = useLocation();
@@ -107,6 +108,7 @@ function Layout(props: {
 
   const reservationBox = useAppSelector((state) => state.reservationBox);
   const unReadMatchUps = useAppSelector((state) => state.unreadMatchUps);
+  const dispatch = useAppDispatch();
 
   const timeAgo = useCallback((timestamp: string): string => {
     const now = new Date();
@@ -209,12 +211,13 @@ function Layout(props: {
           }
         )
       ]) 
-      console.log(unreadNotifications.data.unread);
-      console.log(unreadMatchUps.data.unread);
+      // console.log(unreadNotifications.data.unread);
+      // console.log(unreadMatchUps.data.unread);
       
       
       setUnReadNotifications(unreadNotifications.data.unread);
-      setUnReadMatchUps(unreadMatchUps.data.unread);
+      // setUnReadMatchUps(unreadMatchUps.data.unread);
+      dispatch(setUnReadMatchup(unreadMatchUps.data.unread))
     } catch (err) {
       console.error(err);
     }
@@ -336,7 +339,8 @@ function Layout(props: {
         setOpenResultBox(true);
       }
       if(lastJsonMessage?.update_message_count) {
-        setUnReadMatchUps((prev:number):number => prev + 1);
+        dispatch(unReadMatchupIncrement());
+        // setUnReadMatchUps((prev:number):number => prev + 1);
       }
     }
   }, [lastJsonMessage]);
