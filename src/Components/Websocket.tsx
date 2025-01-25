@@ -14,14 +14,11 @@ const WebSocketContext = createContext<any>(null);
 export const useWebSocketContext = () => useContext(WebSocketContext);
 
 export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    // const [invitationAccept,setInvitationAccept] = useState<any>()
-    const [logedIn,setLogedIn] = useState<boolean>(false)
   const [wsUrl, setWsUrl] = useState<string|null>(null);
 
 
   const token = Cookies.get("token");
 
-  // Fetch the WebSocket token
 
   const isTokenExpired = (token:string) => {
       try {
@@ -70,7 +67,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   return (
-    <WebSocketContext.Provider value={{ sendJsonMessage, lastJsonMessage,logedIn,setLogedIn,triggerConnection}}>
+    <WebSocketContext.Provider value={{ sendJsonMessage, lastJsonMessage,triggerConnection}}>
       {children}
     </WebSocketContext.Provider>
   );

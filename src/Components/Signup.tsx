@@ -8,7 +8,7 @@ import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
 
 
-function Signup({ setSignUpBox, setLoginBox }: any) {
+function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
   const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
   const navigate = useNavigate();
 
@@ -221,6 +221,11 @@ function Signup({ setSignUpBox, setLoginBox }: any) {
 
   return (
     <>
+    <div
+        className={` flex flex-col items-center justify-center  w-[100vw] h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+          signUpBox ? "" : "hidden"
+        } `}
+      >
       <div className="w-[100%] md:w-[536px] p-[24px] pb-[32] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px]">
         <div className="w-[100%] flex justify-between items-center mb-[40px] ">
           <h1 className="text-[32px] text-[#FFF] font-light tracking-[-0.5px] self-start	">
@@ -386,6 +391,7 @@ function Signup({ setSignUpBox, setLoginBox }: any) {
 }
           </div>
         )}
+      </div>
       </div>
     </>
   );

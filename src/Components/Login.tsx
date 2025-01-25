@@ -9,7 +9,7 @@ import { IoMdClose } from "react-icons/io";
 import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 
 
-function Login({setLoginBox,setSignUpBox}:any) {
+function Login({loginBox,setLoginBox,setSignUpBox}:any) {
   const logNavigation = useNavigate();
 
   const logUsername = useRef<any>(null);
@@ -150,6 +150,11 @@ function Login({setLoginBox,setSignUpBox}:any) {
 
   return (
     <>
+    <div
+        className={` flex flex-col items-center justify-center  w-[100vw] min-h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+          loginBox ? "" : "hidden"
+        } `}
+      >
       <div className="w-[100%] md:w-[536px] p-[24px] pb-[32] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px] ">
         <div className="w-[100%] flex justify-between items-center mb-[40px] " >
         <h1 className="text-[32px] text-[#FFF] font-light tracking-[-0.5px]  self-start	">
@@ -246,6 +251,7 @@ function Login({setLoginBox,setSignUpBox}:any) {
             Sign Up
           </p>
         </span>
+      </div>
       </div>
     </>
   );

@@ -23,6 +23,7 @@ import InvitationAcceptMemo from "./LayoutMemo/InvitationAcceptMemo";
 import { useAppDispatch, useAppSelector } from "../ReduxStore/ReduxHooks";
 import { setUnReadMatchup, unReadMatchupIncrement } from "../ReduxStore/features/unReadMatchups";
 import { setUserLogIn } from "../ReduxStore/features/userLogIn";
+import UploadRating from "./PoolMemo/uploadRating";
 
 interface User {
   email: string;
@@ -409,27 +410,11 @@ function Layout(props: {
   return (
     <>
     {/* <button className="bg-white " onClick={ResultBox} >asdwe</button> */}
-      <div
-        className={` flex flex-col items-center justify-center  w-[100vw] min-h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
-          loginBox ? "" : "hidden"
-        } `}
-      >
-        <Login setLoginBox={setLoginBox} setSignUpBox={setSignUpBox} />
-      </div>
-      <div
-        className={` flex flex-col items-center justify-center  w-[100vw] h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
-          signUpBox ? "" : "hidden"
-        } `}
-      >
-        <Signup setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />
-      </div>
-      <div
-        className={` flex flex-col items-center justify-center  w-[100vw] ${userLogIn?window.innerHeight < 992?"h-[992px] md:h-screen ":"h-screen":window.innerHeight < 565?"h-[565px] md:h-screen ":"h-screen"} px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
-          reservationBox && location.state? "" : "hidden"
-        }  `}
-      >
+      
+        <Login loginBox={loginBox} setLoginBox={setLoginBox} setSignUpBox={setSignUpBox} />      
+        <Signup signUpBox={signUpBox} setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />
+        <UploadRating />
         {location.state && <Reservation reservationBox={reservationBox} PoolInfo={location.state} />}
-      </div>
       <div
         className={`w-[100vw] ${
           reservationBox ?

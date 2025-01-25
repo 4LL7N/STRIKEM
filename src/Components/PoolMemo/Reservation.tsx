@@ -131,7 +131,7 @@ const Reservation = memo(
         : null;
     }, []);
 
-    const userLogin = useAppSelector((state) => state.userLogIn);
+    const userLogIn = useAppSelector((state) => state.userLogIn);
     const dispatch = useAppDispatch()
 
     const [poolInfo, setPoolInfo] = useState<PoolHall | null>(PoolInfo);
@@ -269,7 +269,7 @@ const Reservation = memo(
       }
       setSelectDates(selectData);
 
-      if (userLogin) {
+      if (userLogIn) {
         fetchPlayers();
       }
       if (poolInfo && tableID) {
@@ -473,6 +473,11 @@ const Reservation = memo(
 
 
     return (
+      <div
+        className={` flex flex-col items-center justify-center  w-[100vw] ${userLogIn?window.innerHeight < 992?"h-[992px] md:h-screen ":"h-screen":window.innerHeight < 565?"h-[565px] md:h-screen ":"h-screen"} px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+          reservationBox && location.state? "" : "hidden"
+        }  `}
+      >
       <div className="w-[100%] md:w-auto p-[18px] md:pb-[24px] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px] ">
         <div className="w-[100%] flex justify-between items-center mb-[8px] md:mb-0 md:p-[12px_12px_0px_12px] relative ">
           <div className="flex gap-[15px] ">
@@ -513,7 +518,7 @@ const Reservation = memo(
             </div>
             <div
               className={`w-[100px] md:w-[200px] h-fit text-[10px] md:text-[16px] flex justify-between items-center p-[2px] px-[4px] md:p-1 md:px-2 border-[1px] border-white rounded-xl relative ${
-                !userLogin && "hidden"
+                !userLogIn && "hidden"
               } `}
             >
               <div className="flex gap-[10px]">
@@ -632,7 +637,7 @@ const Reservation = memo(
               }}
             />
           </div>
-          <div className={`flex flex-col gap-[10px] ${!userLogin && "hidden"} `}>
+          <div className={`flex flex-col gap-[10px] ${!userLogIn && "hidden"} `}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <StaticTimePicker
                 orientation={"portrait"}
@@ -787,6 +792,7 @@ const Reservation = memo(
             RESERVE
           </button>
         </div>
+      </div>
       </div>
     );
   }
