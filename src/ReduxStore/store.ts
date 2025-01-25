@@ -4,13 +4,15 @@ import reservationBox from './features/reservationBox';
 import unreadMatchUps from './features/unReadMatchups';
 import userLogIn from './features/userLogIn'
 import uploadRatingBox  from './features/uploadRatingBox';
+import currentUser from './features/currentUser';
 
 export const store = configureStore({
     reducer: {
         reservationBox,
         unreadMatchUps,
         userLogIn,
-        uploadRatingBox
+        uploadRatingBox,
+        currentUser
     }
 })
 
