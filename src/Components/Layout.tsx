@@ -111,6 +111,7 @@ function Layout(props: {
   const reservationBox = useAppSelector((state) => state.reservationBox);
   const unReadMatchUps = useAppSelector((state) => state.unreadMatchUps);
   const userLogIn = useAppSelector((state) => state.userLogIn);
+  const uploadRatingBox = useAppSelector((state) => state.uploadRatingBox);
   const dispatch = useAppDispatch();
 
   const timeAgo = useCallback((timestamp: string): string => {
@@ -132,9 +133,7 @@ function Layout(props: {
   }, []);
 
   const FetchCurrentUser = async () => {
-    const token = Cookies.get("token");
-    console.log(token);
-    
+    const token = Cookies.get("token");    
     try {
       if (token && token != "logout") {
         const currentUserResponse = await axios.get(
@@ -413,7 +412,7 @@ function Layout(props: {
       
         <Login loginBox={loginBox} setLoginBox={setLoginBox} setSignUpBox={setSignUpBox} />      
         <Signup signUpBox={signUpBox} setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />
-        <UploadRating />
+        <UploadRating uploadRatingBox={uploadRatingBox}/>
         {location.state && <Reservation reservationBox={reservationBox} PoolInfo={location.state} />}
       <div
         className={`w-[100vw] ${

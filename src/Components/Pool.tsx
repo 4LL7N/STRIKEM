@@ -18,6 +18,8 @@ import { MapContainer, Marker, TileLayer, Tooltip } from "react-leaflet";
 import { useGeolocated } from "react-geolocated";
 import { useWebSocketContext } from "./Websocket";
 import ReservationOnTable from "./PoolMemo/ReservationOnTable";
+import { useAppDispatch, useAppSelector } from "../ReduxStore/ReduxHooks";
+import { setUploadRatingBox } from "../ReduxStore/features/uploadRatingBox";
 
 interface Rating {
   id: number;
@@ -169,7 +171,8 @@ function Pool() {
   const [poolTablesData, setPoolTablesData] = useState<any[]>(location.state.tables);
   const [imageI, setImageI] = useState<number>(0);
 
-
+  const userLogIn = useAppSelector((state) => state.userLogIn);
+  const dispatch = useAppDispatch()
 
   let positionVertical = 1;
   let positionHorizontal = 1;
@@ -740,9 +743,15 @@ function Pool() {
           </div>
         </div>
 
-        <div className="flex justify-center md:justify-start  items-center gap-[20px] w-[100%] mt-[24px] lg:mt-[48px] ">
+        <div className="flex flex-col justify-center  items-center md:items-start gap-[20px] w-[100%] mt-[24px] lg:mt-[48px]  ">
+          <div className="flex gap-[20px] " > 
           <StarRating rating={avgRating} />
           <h1 className="text-[#fff] text-4xl md:text-5xl   ">{avgRating}</h1>
+          </div>
+          {userLogIn ?<button className="px-[10px] py-[4px] rounded-[20px] text-white text-[24px] md:text-[28px] bg-[#fab907] " onClick={()=>{dispatch(setUploadRatingBox({open:true,id:poolInfo.id,name:poolInfo.title}))}} >
+            Rate
+          </button>
+          :null}
         </div>
         <h1 className=" text-[#fff] text-[32px] md:text-[48px]  mt-[24px] lg:mt-[48px] ">
           Reviews

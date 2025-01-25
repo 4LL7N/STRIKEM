@@ -1,11 +1,22 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
- 
+
+interface uploadRatingBoxState {
+    open: boolean,
+    id:number,
+    name:string
+}
+
+
 const uploadRatingBox = createSlice({
     name: 'uploadRatingBox',
-    initialState: false,
+    initialState: {
+        open: false,
+        id:-1,
+        name:""
+    },
     reducers: {
-        setUploadRatingBox: (state, action:PayloadAction<boolean>) => {
+        setUploadRatingBox: (state, action:PayloadAction<uploadRatingBoxState>) => {
             return state = action.payload;
         }
     }
