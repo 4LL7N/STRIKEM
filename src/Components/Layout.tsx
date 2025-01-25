@@ -22,6 +22,7 @@ import NotificationsBoxItemsMemo from "./LayoutMemo/NotificationsBoxItemsMemo";
 import InvitationAcceptMemo from "./LayoutMemo/InvitationAcceptMemo";
 import { useAppDispatch, useAppSelector } from "../ReduxStore/ReduxHooks";
 import { setUnReadMatchup, unReadMatchupIncrement } from "../ReduxStore/features/unReadMatchups";
+import { setUserLogIn } from "../ReduxStore/features/userLogIn";
 
 interface User {
   email: string;
@@ -78,7 +79,7 @@ function Layout(props: {
   acceptInvitation: number;
   setAcceptInvitation: (acceptInvatation: number) => void;
 }) {
-  const { sendJsonMessage, lastJsonMessage, logedIn, setLogedIn } =
+  const { sendJsonMessage, lastJsonMessage } =
     useWebSocketContext();
   const navigate = useNavigate();
   const location = useLocation();
@@ -108,6 +109,7 @@ function Layout(props: {
 
   const reservationBox = useAppSelector((state) => state.reservationBox);
   const unReadMatchUps = useAppSelector((state) => state.unreadMatchUps);
+  const userLogIn = useAppSelector((state) => state.userLogIn);
   const dispatch = useAppDispatch();
 
   const timeAgo = useCallback((timestamp: string): string => {
@@ -232,7 +234,7 @@ function Layout(props: {
   };
 
   const logOut = () => {
-    setLogedIn(false);
+    dispatch(setUserLogIn(false));
     Cookies.set("token", "logout", {
       secure: true,
       sameSite: "Strict",
@@ -262,7 +264,7 @@ function Layout(props: {
     // console.log(token);
     
     if (token && token != "logout" && isTokenExpired(token)) {
-      setLogedIn(true);
+      dispatch(setUserLogIn(true));
       FetchCurrentUser();
       FetchUnreadNotifications();
     }
@@ -422,7 +424,7 @@ function Layout(props: {
         <Signup setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />
       </div>
       <div
-        className={` flex flex-col items-center justify-center  w-[100vw] ${logedIn?window.innerHeight < 992?"h-[992px] md:h-screen ":"h-screen":window.innerHeight < 565?"h-[565px] md:h-screen ":"h-screen"} px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+        className={` flex flex-col items-center justify-center  w-[100vw] ${userLogIn?window.innerHeight < 992?"h-[992px] md:h-screen ":"h-screen":window.innerHeight < 565?"h-[565px] md:h-screen ":"h-screen"} px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
           reservationBox && location.state? "" : "hidden"
         }  `}
       >
@@ -431,7 +433,7 @@ function Layout(props: {
       <div
         className={`w-[100vw] ${
           reservationBox ?
-            logedIn?
+          userLogIn?
               window.innerHeight < 992?
               "h-[992px] md:h-screen"
               :
@@ -506,7 +508,7 @@ function Layout(props: {
               className={` w-[32px] h-[32px] hidden ${
                 location.pathname == "/messenger" ||
                 location.pathname.includes("users") ||
-                !logedIn||
+                !userLogIn||
                 location.pathname.includes("Pools")
                   ? "hidden"
                   : "lg:block"
@@ -524,7 +526,7 @@ function Layout(props: {
               location.pathname.includes("Pools")
                 ? ""
                 : "lg:flex-col"
-            } gap-[32px] ${!logedIn && "hidden"} `}
+            } gap-[32px] ${!userLogIn && "hidden"} `}
           >
             <Link
               to={"/messenger"}
@@ -553,7 +555,7 @@ function Layout(props: {
             </Link>
           </div>
           <div
-            className={`flex ${location.pathname.includes('Pool') || location.pathname == '/messenger' || location.pathname.includes("users") ? '' :'lg:flex-col'} items-center gap-[12px] ${!logedIn && "hidden"} `}
+            className={`flex ${location.pathname.includes('Pool') || location.pathname == '/messenger' || location.pathname.includes("users") ? '' :'lg:flex-col'} items-center gap-[12px] ${!userLogIn && "hidden"} `}
           >
             <div className="relative" >
               <div className={` ${!unReadNotifications && 'hidden'}  ${ location.pathname == "/messenger" || location.pathname.includes("Pools") || location.pathname.includes("users")? '' :'lg:hidden'} flex  items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 `} >
@@ -581,7 +583,7 @@ function Layout(props: {
               }}
             />
             <button
-              className={` ${!logedIn && "hidden"}  bg-[#243257d5] rounded-[6px] w-[24px] h-[24px] lg:w-[32px] lg:h-[32px] flex items-center justify-center `}
+              className={` ${!userLogIn && "hidden"}  bg-[#243257d5] rounded-[6px] w-[24px] h-[24px] lg:w-[32px] lg:h-[32px] flex items-center justify-center `}
               onClick={logOut}
             >
               <CiLogout
@@ -595,7 +597,7 @@ function Layout(props: {
               location.pathname.includes("Pool") || location.pathname.includes("users") || location.pathname == "/messenger"
                 ? "lg:gap-[20px] items-center"
                 : "lg:flex-col justify-center "
-            } gap-[10px] md:gap-[14px] ${logedIn && "hidden"} `}
+            } gap-[10px] md:gap-[14px] ${userLogIn && "hidden"} `}
           >
             <button
               className={` px-[10px] py-[5px]  bg-[#243257d5] rounded-[20px]  ${
