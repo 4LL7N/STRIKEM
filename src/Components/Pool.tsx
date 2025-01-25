@@ -151,7 +151,7 @@ function Pool() {
       userDecisionTimeout: 5000,
     });
 
-  const { setReservationBox, lastJsonMessage } = useWebSocketContext();
+  const { lastJsonMessage } = useWebSocketContext();
 
   const location = useLocation();
   const [ratings, setRatings] = useState<Rating[]>([]);
@@ -472,7 +472,6 @@ function Pool() {
         <ReservationOnTable
           key={i}
           item={item}
-          setReservationBox={setReservationBox}
           nameLength={nameLength}
         />
       )

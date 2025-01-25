@@ -19,6 +19,8 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { useLocation } from "react-router-dom";
 import { Autocomplete, TextField } from "@mui/material";
+import { useAppDispatch } from "../../ReduxStore/ReduxHooks";
+import { setReservationBox } from "../../ReduxStore/features/reservationBox";
 
 interface Player {
   id: number;
@@ -94,7 +96,7 @@ const Reservation = memo(
     reservationBox: boolean;
     PoolInfo: PoolHall;
   }) => {
-    const { logedIn, setReservationBox } = useWebSocketContext();
+    const { logedIn } = useWebSocketContext();
     const location = useLocation();
 
     const [tableDate, setTableDate] = useState<string>("");
@@ -130,6 +132,8 @@ const Reservation = memo(
         ? JSON.parse(localStorage.getItem("currentUser")!)
         : null;
     }, []);
+
+    const dispatch = useAppDispatch()
 
     const [poolInfo, setPoolInfo] = useState<PoolHall | null>(PoolInfo);
 
@@ -228,7 +232,8 @@ const Reservation = memo(
           headers: { Authorization: `JWT ${token}` },
         })
         // window.location.reload()
-        setReservationBox(false)
+        dispatch(setReservationBox(false))
+        // setReservationBox(false)
       }catch(err){
         console.log(err)
       }
@@ -579,7 +584,8 @@ const Reservation = memo(
             }}
             className=" w-[14px] h-[14px] md:w-[24px] md:h-[24px] cursor-pointer"
             onClick={() => {
-              setReservationBox(false);
+              dispatch(setReservationBox(false))
+              // setReservationBox(false);
             }}
           />
         </div>

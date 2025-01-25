@@ -1,5 +1,7 @@
 import dayjs from "dayjs";
 import { memo, useEffect, useState } from "react"
+import { useAppDispatch } from "../../ReduxStore/ReduxHooks";
+import { setReservationBox } from "../../ReduxStore/features/reservationBox";
 
 interface current_session {
     id: number;
@@ -33,9 +35,11 @@ interface Table {
     top:number;
   }
 
-const ReservationOnTable = memo(({item,setReservationBox,nameLength}:{item:Table,setReservationBox:(ReservationBox:boolean)=>void,nameLength:number})=>{
+const ReservationOnTable = memo(({item,nameLength}:{item:Table,nameLength:number})=>{
 
     const [timeLeft, setTimeLeft] = useState<string>("");
+
+    const dispatch = useAppDispatch()
 
       useEffect(() => {
         // console.log(item)
@@ -86,7 +90,8 @@ const ReservationOnTable = memo(({item,setReservationBox,nameLength}:{item:Table
           className="w-[100%] flex justify-center  bg-[#fab907] text-white text-[8px] sm:text-[12px] py-[2px] md:py-1 rounded-[5px] md:rounded-[10px] mt-1  pointer-events-auto"
           onClick={() => {
             localStorage.setItem("tableId",item.id.toString())
-              setReservationBox(true);
+            dispatch(setReservationBox(true));
+              // setReservationBox(true);
           }}
         >
           RESERVE
