@@ -18,7 +18,6 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const [logedIn,setLogedIn] = useState<boolean>(false)
   const [wsUrl, setWsUrl] = useState<string|null>(null);
 
-  const [unReadMatchUps, setUnReadMatchUps] = useState<number>(0);
 
   const token = Cookies.get("token");
 
@@ -71,7 +70,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   return (
-    <WebSocketContext.Provider value={{ sendJsonMessage, lastJsonMessage,logedIn,setLogedIn,triggerConnection,unReadMatchUps,setUnReadMatchUps}}>
+    <WebSocketContext.Provider value={{ sendJsonMessage, lastJsonMessage,logedIn,setLogedIn,triggerConnection}}>
       {children}
     </WebSocketContext.Provider>
   );
