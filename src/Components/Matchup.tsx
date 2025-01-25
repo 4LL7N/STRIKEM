@@ -91,7 +91,7 @@ interface Invitation {
 };
 }
 
-function Matchup({ usersSearch,setUsersSearch,setAcceptInvatation }: { usersSearch: string,setUsersSearch:(userSearch:string)=>void,setAcceptInvatation:(acceptInvatation:any)=>void }) {
+function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSearch: string,setUsersSearch:(userSearch:string)=>void,setAcceptInvitation:(acceptInvitation:any)=>void }) {
     const { sendJsonMessage, lastJsonMessage } = useWebSocketContext();
     
     const currentUser = useMemo(() => {
@@ -227,7 +227,7 @@ const Fetch = useCallback(async () => {
     });
     const timer = setInterval(() => {
      
-      setAcceptInvatation((prev:number):number => {
+      setAcceptInvitation((prev:number):number => {
         const nextValue = Math.min(prev + 0.1, 100);
         const roundedValue = Math.round(nextValue * 10) / 10; 
         if (roundedValue === 100) {
@@ -242,7 +242,7 @@ const Fetch = useCallback(async () => {
   
     setTimeout(() => {
       clearInterval(timer);
-      setAcceptInvatation(0)
+      setAcceptInvitation(0)
     }, 10000);
     
   };

@@ -2,20 +2,20 @@ import { memo } from 'react'
 import { useNavigate } from 'react-router-dom';
 
 interface InvitationAcceptProps {
-    acceptInvatation: number;
-    setAcceptInvatation: (acceptInvatation: number) => void;
+    acceptInvitation: number;
+    setAcceptInvitation: (acceptInvatation: number) => void;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     lastJsonMessage: any;
 }
 
-const InvitationAcceptMemo = memo(({acceptInvatation,setAcceptInvatation,lastJsonMessage}:InvitationAcceptProps) => {
+const InvitationAcceptMemo = memo(({acceptInvitation,setAcceptInvitation,lastJsonMessage}:InvitationAcceptProps) => {
 
     const navigate = useNavigate();
 
   return (
     <div
               className={` z-[1000] flex flex-col gap-[3px] py-[8px] px-[16px] rounded-[52px] absolute top-[40px] left-[50%] translate-x-[-50%] w-[60%] transition-transform duration-1000  ${
-                acceptInvatation
+                acceptInvitation
                   ? " translate-y-[0] "
                   : " translate-y-[-200%] "
               } bg-[#161d2f] `}
@@ -35,7 +35,7 @@ const InvitationAcceptMemo = memo(({acceptInvatation,setAcceptInvatation,lastJso
                               "matchupId",
                               lastJsonMessage.matchup_id
                             );
-                            setAcceptInvatation(-1);
+                            setAcceptInvitation(-1);
                           }
                         : () => {}
                     }
@@ -45,7 +45,7 @@ const InvitationAcceptMemo = memo(({acceptInvatation,setAcceptInvatation,lastJso
                   <button
                     className=" bg-red-600  rounded-[20px] px-[8px] py-[4px]  text-[14px] text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] "
                     onClick={() => {
-                      setAcceptInvatation(-1);
+                      setAcceptInvitation(-1);
                     }}
                   >
                     Ignore
@@ -53,9 +53,9 @@ const InvitationAcceptMemo = memo(({acceptInvatation,setAcceptInvatation,lastJso
                 </div>
               </div>
               <div
-                style={{ width: `${acceptInvatation}%` }}
+                style={{ width: `${acceptInvitation}%` }}
                 className={`h-1 rounded-[4px] bg-[#fab907] mx-2 ${
-                  acceptInvatation == 0 ? "hidden" : ""
+                  acceptInvitation == 0 ? "hidden" : ""
                 } `}
               />
             </div>

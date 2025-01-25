@@ -73,8 +73,8 @@ function Layout(props: {
   setUsersSearch: (usersSearch: string) => void;
   setLogOut: any;
   logOut: boolean;
-  acceptInvatation: number;
-  setAcceptInvatation: (acceptInvatation: number) => void;
+  acceptInvitation: number;
+  setAcceptInvitation: (acceptInvatation: number) => void;
 }) {
   const { sendJsonMessage, lastJsonMessage, logedIn, setLogedIn ,reservationBox,unReadMatchUps,setUnReadMatchUps} =
     useWebSocketContext();
@@ -450,7 +450,7 @@ function Layout(props: {
         }`}
       >
         <ResultBoxMemo yourPointsInput={yourPointsInput} yourPoints={yourPoints} opponentsPointsInput={opponentsPointsInput} opponentsPoints={opponentsPoints} setYourPoints={setYourPoints} setOpponentsPoints={setOpponentsPoints} windowWidth={window.innerWidth} openResultBox={openResultBox} setOpenResultBox={setOpenResultBox} />
-        <InvitationAcceptMemo acceptInvatation={props.acceptInvatation} setAcceptInvatation={props.setAcceptInvatation} lastJsonMessage={lastJsonMessage} />
+        <InvitationAcceptMemo acceptInvitation={props.acceptInvitation} setAcceptInvitation={props.setAcceptInvitation} lastJsonMessage={lastJsonMessage} />
         <header
           ref={header}
           style={

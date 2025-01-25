@@ -14,7 +14,7 @@ const WebSocketContext = createContext<any>(null);
 export const useWebSocketContext = () => useContext(WebSocketContext);
 
 export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [invitationAccept,setInvitationAccept] = useState<any>()
+    // const [invitationAccept,setInvitationAccept] = useState<any>()
     const [logedIn,setLogedIn] = useState<boolean>(false)
     const [reservationBox,setReservationBox] = useState<boolean>(false)
   const [wsUrl, setWsUrl] = useState<string|null>(null);
@@ -72,7 +72,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   };
 
   return (
-    <WebSocketContext.Provider value={{ sendJsonMessage, lastJsonMessage,invitationAccept,setInvitationAccept,logedIn,setLogedIn,triggerConnection,reservationBox,setReservationBox,unReadMatchUps,setUnReadMatchUps}}>
+    <WebSocketContext.Provider value={{ sendJsonMessage, lastJsonMessage,logedIn,setLogedIn,triggerConnection,reservationBox,setReservationBox,unReadMatchUps,setUnReadMatchUps}}>
       {children}
     </WebSocketContext.Provider>
   );
