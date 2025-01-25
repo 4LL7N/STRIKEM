@@ -20,76 +20,9 @@ import { useWebSocketContext } from "./Websocket";
 import ReservationOnTable from "./PoolMemo/ReservationOnTable";
 import { useAppDispatch, useAppSelector } from "../ReduxStore/ReduxHooks";
 import { setUploadRatingBox } from "../ReduxStore/features/uploadRatingBox";
-
-interface Rating {
-  id: number;
-  poolhouse: {
-    address: string;
-    id: number;
-    title: string;
-  };
-  rate: number;
-  rater: {
-    profile_image: string;
-    total_points: number;
-    user: User;
-  };
-  review: string;
-}
-
-interface PoolHall {
-  id: number;
-  title: string;
-  address: string;
-  tables: Table[];
-  avg_rating: number;
-  pics: Picture[];
-  room_image:string
-  table_count: number;
-  slug: string;
-  latitude: number;
-  longitude: number;
-  open_time:string;
-  close_time:string;
-}
-
-interface Table {
-  id: number;
-  current_session: current_session;
-  free:boolean;
-  left:number;
-  top:number;
-}
-
-interface current_session {
-  id: number;
-  start_time: string; // ISO 8601 formatted date string
-  duration: number; // Duration in minutes
-  finished_reservation: boolean;
-  other_player_details: PlayerDetails;
-  player_reserving: PlayerDetails;
-}
-
-interface PlayerDetails {
-  id: number;
-  profile_image: string; // URL of the profile image
-  total_points: number;
-  user: User;
-}
-
-interface User {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  username: string;
-}
+import { PoolHall, Rating } from "../type";
 
 
-interface Picture {
-  id: number;
-  image: string;
-}
 
 const Star = ({ fillPercentage }: { fillPercentage: number }) => {
   return (

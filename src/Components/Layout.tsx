@@ -23,52 +23,18 @@ import InvitationAcceptMemo from "./LayoutMemo/InvitationAcceptMemo";
 import { useAppDispatch, useAppSelector } from "../ReduxStore/ReduxHooks";
 import { setUnReadMatchup, unReadMatchupIncrement } from "../ReduxStore/features/unReadMatchups";
 import { setUserLogIn } from "../ReduxStore/features/userLogIn";
-import UploadRating from "./PoolMemo/uploadRating";
+import { Message, Player } from "../type";
+import UploadRating from "./PoolMemo/UploadRating";
 
-interface User {
-  email: string;
-  first_name: string;
-  last_name: string;
-  username: string;
-  id: number;
-}
 
-interface SentBy {
-  id: number;
-  profile_image: string;
-  total_points: number;
-  user: User;
-}
 
-interface Message {
-  id: number;
-  body: string;
-  type: string;
-  timestamp: string; // Use `Date` instead if you'd like to work with Date objects.
-  read: boolean;
-  player: number;
-  sent_by: SentBy;
-  extra: string;
-}
 
-interface User {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  username: string;
-}
 
-interface Player {
-  id: number;
-  games_played: number;
-  games_won: number;
-  inviting_to_play: boolean;
-  opponents_met: number;
-  profile_image: string;
-  total_points: number;
-  user: User;
-}
+
+
+
+
+
 
 function Layout(props: {
   search: string;
