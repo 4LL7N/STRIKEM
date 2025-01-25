@@ -5,7 +5,6 @@ import "../CSS/Reservation.css";
 import { memo, useMemo, useState } from "react";
 
 import { useEffect } from "react";
-import { useWebSocketContext } from "../Websocket";
 import { IoIosArrowDown, IoMdClose } from "react-icons/io";
 import Cookies from "js-cookie";
 import axios from "axios";
@@ -19,7 +18,7 @@ import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import { useLocation } from "react-router-dom";
 import { Autocomplete, TextField } from "@mui/material";
-import { useAppDispatch } from "../../ReduxStore/ReduxHooks";
+import { useAppDispatch, useAppSelector } from "../../ReduxStore/ReduxHooks";
 import { setReservationBox } from "../../ReduxStore/features/reservationBox";
 
 interface Player {
@@ -96,7 +95,6 @@ const Reservation = memo(
     reservationBox: boolean;
     PoolInfo: PoolHall;
   }) => {
-    const { logedIn } = useWebSocketContext();
     const location = useLocation();
 
     const [tableDate, setTableDate] = useState<string>("");
@@ -133,6 +131,7 @@ const Reservation = memo(
         : null;
     }, []);
 
+    const userLogin = useAppSelector((state) => state.userLogIn);
     const dispatch = useAppDispatch()
 
     const [poolInfo, setPoolInfo] = useState<PoolHall | null>(PoolInfo);
@@ -270,7 +269,7 @@ const Reservation = memo(
       }
       setSelectDates(selectData);
 
-      if (logedIn) {
+      if (userLogin) {
         fetchPlayers();
       }
       if (poolInfo && tableID) {
@@ -514,7 +513,7 @@ const Reservation = memo(
             </div>
             <div
               className={`w-[100px] md:w-[200px] h-fit text-[10px] md:text-[16px] flex justify-between items-center p-[2px] px-[4px] md:p-1 md:px-2 border-[1px] border-white rounded-xl relative ${
-                !logedIn && "hidden"
+                !userLogin && "hidden"
               } `}
             >
               <div className="flex gap-[10px]">
@@ -633,7 +632,7 @@ const Reservation = memo(
               }}
             />
           </div>
-          <div className={`flex flex-col gap-[10px] ${!logedIn && "hidden"} `}>
+          <div className={`flex flex-col gap-[10px] ${!userLogin && "hidden"} `}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <StaticTimePicker
                 orientation={"portrait"}

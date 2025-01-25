@@ -11,3 +11,5 @@ const userLogIn = createSlice({
 })
 
 export const {setUserLogIn} = userLogIn.actions
+
+export default userLogIn.reducer
