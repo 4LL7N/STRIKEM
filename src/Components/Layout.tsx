@@ -26,6 +26,7 @@ import { setUserLogIn } from "../ReduxStore/features/userLogIn";
 import { Message } from "../type";
 import UploadRating from "./PoolMemo/UploadRating";
 import { setCurrentUser } from "../ReduxStore/features/currentUser";
+import AllReviews from "./PoolMemo/AllReviews";
 
 
 
@@ -78,7 +79,7 @@ function Layout(props: {
   const reservationBox = useAppSelector((state) => state.reservationBox);
   const unReadMatchUps = useAppSelector((state) => state.unreadMatchUps);
   const userLogIn = useAppSelector((state) => state.userLogIn);
-  const uploadRatingBox = useAppSelector((state) => state.uploadRatingBox);
+  
   const currentUser = useAppSelector((state) => state.currentUser);
   const dispatch = useAppDispatch();
 
@@ -376,7 +377,8 @@ function Layout(props: {
       
         <Login loginBox={loginBox} setLoginBox={setLoginBox} setSignUpBox={setSignUpBox} />      
         <Signup signUpBox={signUpBox} setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />
-        <UploadRating uploadRatingBox={uploadRatingBox}/>
+        <UploadRating/>
+        <AllReviews/>
         {location.state && <Reservation reservationBox={reservationBox} PoolInfo={location.state} />}
       <div
         className={`w-[100vw] ${

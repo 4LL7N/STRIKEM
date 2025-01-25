@@ -20,7 +20,7 @@ import { useWebSocketContext } from "./Websocket";
 import ReservationOnTable from "./PoolMemo/ReservationOnTable";
 import { useAppDispatch, useAppSelector } from "../ReduxStore/ReduxHooks";
 import { setUploadRatingBox } from "../ReduxStore/features/uploadRatingBox";
-import { PoolHall, Rating } from "../type";
+import { PoolHall, rating } from "../type";
 
 
 
@@ -89,7 +89,7 @@ function Pool() {
   const { lastJsonMessage } = useWebSocketContext();
 
   const location = useLocation();
-  const [ratings, setRatings] = useState<Rating[]>([]);
+  const [ratings, setRatings] = useState<rating[]>([]);
 
   const [whiteBoxHeight, setWhiteBoxHeight] = useState<number>(0);
   const [whiteBoxWidth, setWhiteBoxWidth] = useState<number>(0);
@@ -690,7 +690,7 @@ function Pool() {
           Reviews
         </h1>
         <div className=" flex flex-col md:flex-row gap-[20px] md:gap-0 justify-evenly mt-[24px] lg:mt-[48px] ">
-          {ratings?.map((item: Rating, i: number) => {
+          {ratings?.map((item: rating, i: number) => {
             return (
               <div
                 key={i}

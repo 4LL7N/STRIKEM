@@ -1,19 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { memo, useState } from "react";
-import { useAppDispatch } from "../../ReduxStore/ReduxHooks";
+import { useAppDispatch, useAppSelector } from "../../ReduxStore/ReduxHooks";
 import { IoMdClose } from "react-icons/io";
 import { setUploadRatingBox } from "../../ReduxStore/features/uploadRatingBox";
 import { Rating, Stack } from "@mui/material";
 
-const UploadRating = memo(
-  ({
-    uploadRatingBox,
-  }: {
-    uploadRatingBox: { open: boolean; id: number; name: string };
-  }) => {
+const UploadRating = memo(() => {
     const [selectedStars, setSelectedStars] = useState<number>(1);
     const [ratingDescription, setRatingDescription] = useState<string>("");
 
+    const uploadRatingBox = useAppSelector((state) => state.uploadRatingBox);
     const dispatch = useAppDispatch();
 
     return (
@@ -33,11 +29,13 @@ const UploadRating = memo(
               }}
               onClick={() => {
                 dispatch(setUploadRatingBox({ open: false, id: -1, name: "" }));
+                setRatingDescription("");
+                setSelectedStars(1);
               }}
             />
           </div>
           <h1 className="text-white text-[18px] md:text-[24px] ">
-            Add rating on {uploadRatingBox.name}
+            Add review on {uploadRatingBox.name}
           </h1>
           <div className="flex items-center gap-[20px] mt-[24px] ">
             <Stack spacing={1}>
@@ -63,6 +61,7 @@ const UploadRating = memo(
             className="w-[100%] bg-transparent rounded-[20px] border-[1px] border-[#fab907] mt-[24px] resize-none focus:outline-none p-[10px] text-white "
             name="description"
             rows={3}
+            value={ratingDescription}
             onChange={(e) => {                
               setRatingDescription(e.target.value);
             }}

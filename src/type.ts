@@ -37,7 +37,7 @@ interface SentBy {
 
 // Layout
 
-export interface Rating {
+export interface rating {
   id: number;
   poolhouse: {
     address: string;
