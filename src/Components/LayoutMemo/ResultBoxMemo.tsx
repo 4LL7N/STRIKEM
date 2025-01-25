@@ -1,8 +1,7 @@
 import axios from "axios";
-import { memo, useEffect, useState,
-   useMemo 
-  } from "react";
+import { memo, useEffect, useState} from "react";
 import Cookies from "js-cookie";
+import { useAppSelector } from "../../ReduxStore/ReduxHooks";
 
 interface Player {
   id: number;
@@ -50,12 +49,9 @@ const ResultBoxMemo = memo(
     setOpenResultBox,
   }: ResultBoxProps) => {
 
-    const currentUser = useMemo(() => {
-            return localStorage.getItem("currentUser") 
-              ? JSON.parse(localStorage.getItem("currentUser")!) 
-              : null;
-          }, []);
     const sessionId = localStorage.getItem("sessionId");
+
+    const currentUser = useAppSelector((state) => state.currentUser);
 
     const [currentSession, setCurrentSession] = useState<Match>();
 

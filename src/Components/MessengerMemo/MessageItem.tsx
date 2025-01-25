@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // MessageItem.tsx
 import React from 'react';
+import { useAppSelector } from '../../ReduxStore/ReduxHooks';
 
 interface Message {
     id: string;
@@ -55,7 +56,8 @@ interface MessageItemProps {
 }
 
 const MessageItem = React.memo(({ item, isSelected, onClick,goToProfile }: MessageItemProps) => {
-  const currentUser = JSON.parse(localStorage?.getItem("currentUser") || '{}');
+  
+  const currentUser = useAppSelector((state) => state.currentUser);
   const otherPlayer = item.player_accepting.id === currentUser.id ? item.player_inviting : item.player_accepting;
   // console.log(item.last_message?.sender.id == currentUser.id,"asdaf",item,currentUser);
   

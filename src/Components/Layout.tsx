@@ -23,8 +23,9 @@ import InvitationAcceptMemo from "./LayoutMemo/InvitationAcceptMemo";
 import { useAppDispatch, useAppSelector } from "../ReduxStore/ReduxHooks";
 import { setUnReadMatchup, unReadMatchupIncrement } from "../ReduxStore/features/unReadMatchups";
 import { setUserLogIn } from "../ReduxStore/features/userLogIn";
-import { Message, Player } from "../type";
+import { Message } from "../type";
 import UploadRating from "./PoolMemo/UploadRating";
+import { setCurrentUser } from "../ReduxStore/features/currentUser";
 
 
 
@@ -61,7 +62,7 @@ function Layout(props: {
 
   const [resize,setResize] = useState<boolean>(false)
 
-  const [currentUser, setCurrentUser] = useState<Player>();
+  // const [currentUser, setCurrentUser] = useState<Player>();
 
   const header = useRef<any>();
   const [contentW, setContentW] = useState<string>();
@@ -78,6 +79,7 @@ function Layout(props: {
   const unReadMatchUps = useAppSelector((state) => state.unreadMatchUps);
   const userLogIn = useAppSelector((state) => state.userLogIn);
   const uploadRatingBox = useAppSelector((state) => state.uploadRatingBox);
+  const currentUser = useAppSelector((state) => state.currentUser);
   const dispatch = useAppDispatch();
 
   const timeAgo = useCallback((timestamp: string): string => {
@@ -108,11 +110,7 @@ function Layout(props: {
             headers: { Authorization: `JWT ${token}` },
           }
         );        
-        setCurrentUser(currentUserResponse.data);
-        localStorage.setItem(
-          "currentUser",
-          JSON.stringify(currentUserResponse.data)
-        );
+        dispatch(setCurrentUser(currentUserResponse.data));
       }
     } catch (err) {
       console.error(err);

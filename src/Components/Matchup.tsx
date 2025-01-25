@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { CiStar } from "react-icons/ci";
 import { LuMapPin } from "react-icons/lu";
 import Cookies from "js-cookie";
@@ -12,6 +12,7 @@ import PlayerCard from "./MatchMakeMemo/PlayerCard";
 import MatchMakesCard from "./MatchMakeMemo/MatchMakesCard";
 import InvitationsCard from "./MatchMakeMemo/InvitationsCard";
 import { IoRefreshSharp } from "react-icons/io5";
+import { useAppSelector } from "../ReduxStore/ReduxHooks";
 
 interface User {
   id: number;
@@ -93,13 +94,6 @@ interface Invitation {
 
 function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSearch: string,setUsersSearch:(userSearch:string)=>void,setAcceptInvitation:(acceptInvitation:any)=>void }) {
     const { sendJsonMessage, lastJsonMessage } = useWebSocketContext();
-    
-    const currentUser = useMemo(() => {
-        return localStorage.getItem("currentUser") 
-          ? JSON.parse(localStorage.getItem("currentUser")!) 
-          : null;
-      }, []);
-    
 
       const [isSpinning, setIsSpinning] = useState(false);
 
@@ -113,6 +107,8 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
     const [sentInvitations,setSentInvitations] = useState<{id:number,player_invited:number}[]>([])
     const matchupSectionRef = useRef<any>();
     const [isOn, setIsOn] = useState(false);
+
+    const currentUser = useAppSelector((state) => state.currentUser);
 
     const handleCheckboxChange = (num: number) => {
       let newFilter = [...filter]

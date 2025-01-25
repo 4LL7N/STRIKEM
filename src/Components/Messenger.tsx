@@ -22,7 +22,7 @@ import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import { useAppDispatch } from "../ReduxStore/ReduxHooks";
+import { useAppDispatch, useAppSelector } from "../ReduxStore/ReduxHooks";
 import { unReadMatchupDecrement } from "../ReduxStore/features/unReadMatchups";
 
 interface chatMessage {
@@ -103,11 +103,7 @@ function Messenger() {
   const chatBox = useRef<any>();
   const messengersBox = useRef<any>();
 
-  const currentUser = useMemo(() => {
-    return localStorage.getItem("currentUser")
-      ? JSON.parse(localStorage.getItem("currentUser")!)
-      : null;
-  }, []);
+  
 
   // const location = useLocation()
   const [nextMessages, setNextMessages] = useState<string | null>(null);
@@ -125,6 +121,7 @@ function Messenger() {
 
   const [boxHeight, setBoxHeight] = useState<number>(0);
 
+  const currentUser = useAppSelector((state) => state.currentUser);
   const dispatch = useAppDispatch();
 
   const chatInput = useRef<any>();

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "../CSS/Reservation.css";
 
-import { memo, useMemo, useState } from "react";
+import { memo, useState } from "react";
 
 import { useEffect } from "react";
 import { IoIosArrowDown, IoMdClose } from "react-icons/io";
@@ -125,13 +125,8 @@ const Reservation = memo(
       Reservation[]
     >([]);
 
-    const currentUser = useMemo(() => {
-      return localStorage.getItem("currentUser")
-        ? JSON.parse(localStorage.getItem("currentUser")!)
-        : null;
-    }, []);
-
     const userLogIn = useAppSelector((state) => state.userLogIn);
+    const currentUser = useAppSelector((state) => state.currentUser);
     const dispatch = useAppDispatch()
 
     const [poolInfo, setPoolInfo] = useState<PoolHall | null>(PoolInfo);
