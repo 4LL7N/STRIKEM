@@ -1,10 +1,10 @@
 import {configureStore} from '@reduxjs/toolkit';
 
-import invitationAccept from './features/invitationAccept';
+import reservationBox from './features/reservationBox';
 
 export const store = configureStore({
     reducer: {
-        invitationAccept,
+        reservationBox,
     }
 })
 

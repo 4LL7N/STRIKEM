@@ -20,6 +20,7 @@ import Reservation from "./PoolMemo/Reservation";
 import ResultBoxMemo from "./LayoutMemo/ResultBoxMemo";
 import NotificationsBoxItemsMemo from "./LayoutMemo/NotificationsBoxItemsMemo";
 import InvitationAcceptMemo from "./LayoutMemo/InvitationAcceptMemo";
+import { useAppSelector } from "../ReduxStore/ReduxHooks";
 
 interface User {
   email: string;
@@ -76,7 +77,7 @@ function Layout(props: {
   acceptInvitation: number;
   setAcceptInvitation: (acceptInvatation: number) => void;
 }) {
-  const { sendJsonMessage, lastJsonMessage, logedIn, setLogedIn ,reservationBox,unReadMatchUps,setUnReadMatchUps} =
+  const { sendJsonMessage, lastJsonMessage, logedIn, setLogedIn ,unReadMatchUps,setUnReadMatchUps} =
     useWebSocketContext();
   const navigate = useNavigate();
   const location = useLocation();
@@ -104,6 +105,7 @@ function Layout(props: {
   const opponentsPointsInput = useRef<HTMLInputElement | null>(null);
   const [opponentsPoints, setOpponentsPoints] = useState<number>(0);
 
+  const reservationBox = useAppSelector((state) => state.reservationBox);
 
   const timeAgo = useCallback((timestamp: string): string => {
     const now = new Date();
