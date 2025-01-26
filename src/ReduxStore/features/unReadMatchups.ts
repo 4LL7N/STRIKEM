@@ -8,7 +8,7 @@ const unReadMatchup = createSlice({
             return state = action.payload;
         },
         unReadMatchupDecrement: (state) => {
-            return state - 1;
+            return state > 0?state - 1:state;
         },
         unReadMatchupIncrement: (state) => {
             return state + 1;

@@ -272,7 +272,6 @@ function Messenger() {
 
   const addChats = async () => {
     
-    // const url = nextChats?.replace("http", "https");
     if (nextChats) {
       try {
         const ChatResponse = await axios(nextChats, {
@@ -292,7 +291,6 @@ function Messenger() {
   };
 
   const addMessages = async () => {
-    // const url = nextMessages?.replace("http", "https");
     
     if (nextMessages) {
       try {
