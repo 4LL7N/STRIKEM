@@ -21,6 +21,7 @@ import ReservationOnTable from "./PoolMemo/ReservationOnTable";
 import { useAppDispatch, useAppSelector } from "../ReduxStore/ReduxHooks";
 import { setUploadRatingBox } from "../ReduxStore/features/uploadRatingBox";
 import { PoolHall, rating } from "../type";
+import { setAllReviewsBox } from "../ReduxStore/features/allReviewsBox";
 
 
 
@@ -686,9 +687,12 @@ function Pool() {
           </button>
           :null}
         </div>
-        <h1 className=" text-[#fff] text-[32px] md:text-[48px]  mt-[24px] lg:mt-[48px] ">
+        <div className="flex items-center gap-[20px]  mt-[24px] lg:mt-[48px]" >
+        <h1 className=" text-[#fff] text-[32px] md:text-[48px]  ">
           Reviews
         </h1>
+        <button className="px-[8px] py-[2px] rounded-[20px] text-white text-[20px] bg-[#fab907] h-fit " onClick={()=>{dispatch(setAllReviewsBox({open:true,id:poolInfo.id,name:poolInfo.title}))}} >See all</button>
+        </div>
         <div className=" flex flex-col md:flex-row gap-[20px] md:gap-0 justify-evenly mt-[24px] lg:mt-[48px] ">
           {ratings?.map((item: rating, i: number) => {
             return (
