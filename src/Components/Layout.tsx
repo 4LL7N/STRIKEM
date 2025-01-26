@@ -82,6 +82,7 @@ function Layout(props: {
   
   const currentUser = useAppSelector((state) => state.currentUser);
   const allReviewsBox = useAppSelector((state) => state.allReviewsBox);
+  const uploadRatingBox = useAppSelector((state) => state.uploadRatingBox);
   const dispatch = useAppDispatch();
 
   const timeAgo = useCallback((timestamp: string): string => {
@@ -376,9 +377,9 @@ function Layout(props: {
     <>
     {/* <button className="bg-white " onClick={ResultBox} >asdwe</button> */}
       
-        <Login loginBox={loginBox} setLoginBox={setLoginBox} setSignUpBox={setSignUpBox} />      
-        <Signup signUpBox={signUpBox} setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />
-        <UploadRating/>
+        {loginBox && <Login loginBox={loginBox} setLoginBox={setLoginBox} setSignUpBox={setSignUpBox} />}      
+        {signUpBox && <Signup signUpBox={signUpBox} setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />}
+        {uploadRatingBox && <UploadRating uploadRatingBox={uploadRatingBox} />}
         {allReviewsBox.open && <AllReviews allReviewsBox={allReviewsBox} />}
         {location.state && <Reservation reservationBox={reservationBox} PoolInfo={location.state} />}
       <div

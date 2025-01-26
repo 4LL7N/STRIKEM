@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { memo, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../ReduxStore/ReduxHooks";
+import { useAppDispatch } from "../../ReduxStore/ReduxHooks";
 import { IoMdClose } from "react-icons/io";
 import { setUploadRatingBox } from "../../ReduxStore/features/uploadRatingBox";
 import { Rating, Stack } from "@mui/material";
+import { RatingBoxState } from "../../type";
 
-const UploadRating = memo(() => {
+const UploadRating = memo(({uploadRatingBox}:{uploadRatingBox:RatingBoxState}) => {
     const [selectedStars, setSelectedStars] = useState<number>(1);
     const [ratingDescription, setRatingDescription] = useState<string>("");
 
-    const uploadRatingBox = useAppSelector((state) => state.uploadRatingBox);
+    
     const dispatch = useAppDispatch();
 
     return (
