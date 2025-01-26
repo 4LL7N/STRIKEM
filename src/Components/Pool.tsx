@@ -106,6 +106,7 @@ function Pool() {
   const [imageI, setImageI] = useState<number>(0);
 
   const userLogIn = useAppSelector((state) => state.userLogIn);
+  const uploadRatingBox = useAppSelector((state) => state.uploadRatingBox);
   const dispatch = useAppDispatch()
 
   let positionVertical = 1;
@@ -467,6 +468,26 @@ function Pool() {
     }
   }, [lastJsonMessage]);
 
+
+  const fetchNewRatings = async () => {
+    try {
+      const response = await axios.get(
+        `https://strikem.site/api/poolhouses/${id}/ratings/`
+      );
+      setRatings(response.data.results);
+      dispatch(setUploadRatingBox({open:false,id:0,name:""}))
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  useEffect(() => {
+    if(uploadRatingBox.id == -1){
+      fetchNewRatings()
+    }
+  },[uploadRatingBox])  
+
+
   return (
     <section className="flex flex-col items-center bg-[#10141E] w-[100%] min-h-screen  pb-[120px]">
       <main className="w-[100%] px-[16px] mt-[24px] lg:p-0 lg:mt-0 ">
@@ -694,7 +715,7 @@ function Pool() {
         <button className="px-[8px] py-[2px] rounded-[20px] text-white text-[20px] bg-[#fab907] h-fit " onClick={()=>{dispatch(setAllReviewsBox({open:true,id:poolInfo.id,name:poolInfo.title}))}} >See all</button>
         </div>
         <div className=" flex flex-col md:flex-row gap-[20px] md:gap-0 justify-evenly mt-[24px] lg:mt-[48px] ">
-          {ratings?.map((item: rating, i: number) => {
+          {ratings?.map((item: rating, i: number) => {            
             return (
               <div
                 key={i}

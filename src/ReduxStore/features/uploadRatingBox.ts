@@ -9,7 +9,7 @@ const uploadRatingBox = createSlice({
     name: 'uploadRatingBox',
     initialState: {
         open: false,
-        id:-1,
+        id:0,
         name:""
     },
     reducers: {

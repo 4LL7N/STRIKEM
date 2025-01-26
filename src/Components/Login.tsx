@@ -151,7 +151,7 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
   return (
     <>
     <div
-        className={` flex flex-col items-center justify-center  w-[100vw] min-h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+        className={` flex flex-col items-center justify-center fixed top-0 w-[100vw] min-h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 z-50  ${
           loginBox ? "" : "hidden"
         } `}
       >

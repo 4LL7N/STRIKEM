@@ -5,12 +5,39 @@ import { IoMdClose } from "react-icons/io";
 import { setUploadRatingBox } from "../../ReduxStore/features/uploadRatingBox";
 import { Rating, Stack } from "@mui/material";
 import { RatingBoxState } from "../../type";
+import Cookies from "js-cookie";
+import axios from "axios";
 
 const UploadRating = memo(({uploadRatingBox}:{uploadRatingBox:RatingBoxState}) => {
     const [selectedStars, setSelectedStars] = useState<number>(1);
     const [ratingDescription, setRatingDescription] = useState<string>("");
+    const [error,setError] = useState<string>("")
 
+    const postRating = async () => {
+      const token = Cookies.get("token");
+      try{
+        await axios.post(`https://strikem.site/api/poolhouses/${uploadRatingBox.id}/ratings/`,{
+          rate:selectedStars,
+          review:ratingDescription
+        }, {
+          headers: { Authorization: `JWT ${token}` },
+        })
+        setRatingDescription("")
+        setSelectedStars(1)
+        dispatch(setUploadRatingBox({ open: false, id: -1, name: "" }));
+      }catch(err){
+        console.error(err)
+      }
+    }
     
+    const HandleSubmit = () => {
+      if(ratingDescription.length < 10){
+        setError("Description must be at least 10 characters long")
+        return
+      }
+      postRating()
+    }
+
     const dispatch = useAppDispatch();
 
     return (
@@ -68,8 +95,9 @@ const UploadRating = memo(({uploadRatingBox}:{uploadRatingBox:RatingBoxState}) =
             }}
             maxLength={100}
           ></textarea>
-          <div className="flex justify-end mt-[24px]" >
-            <button className="bg-[#fab907] text-white px-[6px] py-[2px] rounded-[12px] " >Submit</button>
+          <div className="flex justify-end mt-[24px] relative" >
+            {error && <p className="text-red-600 absolute top-0 left-0 " >{error}</p>}
+            <button className="bg-[#fab907] text-white px-[6px] py-[2px] rounded-[12px] " onClick={HandleSubmit} >Submit</button>
           </div>
         </section>
       </div>

@@ -399,7 +399,7 @@ function Layout(props: {
           ((location.pathname == "/matchmake" ||
             location.pathname == "/messenger") &&
             window.innerWidth > 1024) ||
-          loginBox || signUpBox 
+           signUpBox 
             ? "h-screen"
             : "min-h-screen"
         } relative overflow-hidden md:overflow-auto bg-[#10141E] flex flex-col md:p-[25px] ${
