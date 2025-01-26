@@ -272,10 +272,10 @@ function Messenger() {
 
   const addChats = async () => {
     
-    const url = nextChats?.replace("http", "https");
-    if (nextChats && url) {
+    // const url = nextChats?.replace("http", "https");
+    if (nextChats) {
       try {
-        const ChatResponse = await axios(url, {
+        const ChatResponse = await axios(nextChats, {
           headers: { Authorization: `JWT ${token}` },
         });
         
@@ -292,11 +292,11 @@ function Messenger() {
   };
 
   const addMessages = async () => {
-    const url = nextMessages?.replace("http", "https");
+    // const url = nextMessages?.replace("http", "https");
     
-    if (nextMessages && url) {
+    if (nextMessages) {
       try {
-        const MessagesResponse = await axios(url, {
+        const MessagesResponse = await axios(nextMessages, {
           headers: { Authorization: `JWT ${token}` },
         });
         const messagesData = MessagesResponse.data.results;
