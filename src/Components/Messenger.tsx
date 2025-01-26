@@ -24,31 +24,9 @@ import timezone from 'dayjs/plugin/timezone';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { useAppDispatch, useAppSelector } from "../ReduxStore/ReduxHooks";
 import { unReadMatchupDecrement } from "../ReduxStore/features/unReadMatchups";
+import { chatMessage } from "../type";
 
-interface chatMessage {
-  after_outdated?: boolean;
-  body: string;
-  id?: number;
-  sender: Sender;
-  time_sent?: string;
-}
-
-interface Sender {
-  id?: number;
-  profile_image?: string;
-  total_points?: number;
-  user?: User;
-}
-
-interface User {
-  email: string;
-  first_name: string;
-  id: number;
-  last_name: string;
-  username: string;
-}
-
-interface Message {
+export interface Message {
   id: string;
   last_message: {
     body: string;
@@ -91,6 +69,8 @@ interface Message {
   };
   read: boolean;
 }
+
+
 
 function Messenger() {
   const { sendJsonMessage, lastJsonMessage } = useWebSocketContext();

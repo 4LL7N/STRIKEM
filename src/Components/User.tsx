@@ -5,56 +5,15 @@ import Cookies from 'js-cookie';
 import { useLocation } from "react-router-dom";
 import ProfileInfo from "./UsersMemo/ProfileInfo";
 import TabsNavigation from "./UsersMemo/TabsNavigation";
+import { GameResult, Player } from "../type";
 
 
-interface User {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  username:string;
-}
 
-interface Profile {
-  games_played: number;
-  games_won: number;
-  id: number;
-  inviting_to_play: boolean;
-  opponents_met: number;
-  profile_image: string;
-  total_points: number;
-  user:User
-}
-
-  
-  interface Player {
-    user: User;
-    profile_image: string;
-    total_points: number;
-  }
-  
-  interface Poolhouse {
-    id: number;
-    title: string;
-    address: string;
-  }
-  
-  interface GameResult {
-    winner_player: Player;
-    loser_player: Player;
-    result_winner: number;
-    result_loser: number;
-    points_given: number;
-    penalty_points: number;
-    tie: boolean;
-    timestamp: string; 
-    poolhouse: Poolhouse;
-  }
   
 
 function User() {
   const location = useLocation()
-  const [userInfo, setUserInfo] = useState<Profile|null>(null);
+  const [userInfo, setUserInfo] = useState<Player|null>(null);
   const [gameHistory,setGameHistory] = useState<GameResult[]>()
   // const [winHistory,setWinHistory] = useState<GameResult[]>()
   // const [loseHistory,setLoseHistory] = useState<GameResult[]>()

@@ -3,56 +3,56 @@
 import React from 'react';
 import { useAppSelector } from '../../ReduxStore/ReduxHooks';
 
-interface Message {
-    id: string;
-    last_message: {
-      body: string;
-      sender: {
-        id: number;
-        profile_image: string;
-        total_points: number;
-        user: {
-          email: string;
-          first_name: string;
-          id: number;
-          last_name: string;
-          username: string;
-        };
-      };
-    };
-    player_accepting: {
-      id: number;
-      profile_image: string;
-      total_points: number;
-      user: {
-        email: string;
-        first_name: string;
-        id: number;
-        last_name: string;
-        username: string;
-      };
-    };
-    player_inviting: {
-      id: number;
-      profile_image: string;
-      total_points: number;
-      user: {
-        email: string;
-        first_name: string;
-        id: number;
-        last_name: string;
-        username: string;
-      };
-    };
-    read:boolean
-  }
-  
 
-interface MessageItemProps {
+export interface Message {
+  id: string;
+  last_message: {
+    body: string;
+    sender: {
+      id: number;
+      profile_image: string;
+      total_points: number;
+      user: {
+        email: string;
+        first_name: string;
+        id: number;
+        last_name: string;
+        username: string;
+      };
+    };
+  };
+  player_accepting: {
+    id: number;
+    profile_image: string;
+    total_points: number;
+    user: {
+      email: string;
+      first_name: string;
+      id: number;
+      last_name: string;
+      username: string;
+    };
+  };
+  player_inviting: {
+    id: number;
+    profile_image: string;
+    total_points: number;
+    user: {
+      email: string;
+      first_name: string;
+      id: number;
+      last_name: string;
+      username: string;
+    };
+  };
+  read: boolean;
+}
+
+ interface MessageItemProps {
   item: Message;
   isSelected: boolean;
   onClick: () => void;
-  goToProfile: (e:any) => void;
+  goToProfile: (e:React.MouseEvent<HTMLHeadingElement>) => void;
 }
 
 const MessageItem = React.memo(({ item, isSelected, onClick,goToProfile }: MessageItemProps) => {

@@ -9,6 +9,7 @@ export interface Player {
     user: User;
 }
 
+
 export interface User {
     id: number;
     email: string;
@@ -107,3 +108,36 @@ export interface RatingBoxState {
 }
 
 //uploadRatingsBox
+  
+ export interface GameResult {
+    winner_player: SentBy;
+    loser_player: SentBy;
+    result_winner: number;
+    result_loser: number;
+    points_given: number;
+    penalty_points: number;
+    tie: boolean;
+    timestamp: string; 
+    poolhouse: PoolHall;
+  }
+
+// user
+
+export interface chatMessage {
+  after_outdated?: boolean;
+  body: string;
+  id?: number;
+  sender: Sender;
+  time_sent?: string;
+}
+
+interface Sender {
+  id?: number;
+  profile_image?: string;
+  total_points?: number;
+  user?: User;
+}
+
+
+
+// Messenger

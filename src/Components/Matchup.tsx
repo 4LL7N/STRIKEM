@@ -13,25 +13,8 @@ import MatchMakesCard from "./MatchMakeMemo/MatchMakesCard";
 import InvitationsCard from "./MatchMakeMemo/InvitationsCard";
 import { IoRefreshSharp } from "react-icons/io5";
 import { useAppSelector } from "../ReduxStore/ReduxHooks";
+import { Player } from "../type";
 
-interface User {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  username: string;
-}
-
-interface Profile {
-  games_played: number;
-  games_won: number;
-  id: number;
-  inviting_to_play: boolean;
-  opponents_met: number;
-  profile_image: string;
-  total_points: number;
-  user: User;
-}
 
 interface Message {
   id: string;
@@ -99,8 +82,8 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
 
     const [filter, setFilter] = useState<number[]>([]);
     
-    const [playersData, setPlayersData] = useState<Profile[]>([]);
-    const [playersDataSearch,setPlayersDataSearch] = useState<Profile[]>([])
+    const [playersData, setPlayersData] = useState<Player[]>([]);
+    const [playersDataSearch,setPlayersDataSearch] = useState<Player[]>([])
 
     const [matchMakes, setMatchMakes] = useState<Message[]>([]);
     const [invitations, setInvitations] = useState<Invitation[]>([]);
@@ -124,8 +107,8 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
       const playersResponse = await axios(url,{
         headers: { Authorization: `JWT ${token}` },
       })
-      let PlayersData:Profile[] = [...playersResponse.data]
-        PlayersData = IsOn? [...PlayersData]:PlayersData.filter((item:Profile)=> item.id != currentUser.id)
+      let PlayersData:Player[] = [...playersResponse.data]
+        PlayersData = IsOn? [...PlayersData]:PlayersData.filter((item:Player)=> item.id != currentUser.id)
         setPlayersData(PlayersData);
         setPlayersDataSearch(PlayersData)
     }
@@ -144,8 +127,8 @@ const Fetch = useCallback(async () => {
             }),
           ]);
       
-        let PlayersData:Profile[] = [...playersResponse.data]
-        PlayersData = !(invitationsResponse?.data?.inviting_to_play)? PlayersData.filter((item:Profile)=> item.id != invitationsResponse?.data.id):[...PlayersData]
+        let PlayersData:Player[] = [...playersResponse.data]
+        PlayersData = !(invitationsResponse?.data?.inviting_to_play)? PlayersData.filter((item:Player)=> item.id != invitationsResponse?.data.id):[...PlayersData]
         setPlayersData(PlayersData);
         setPlayersDataSearch(PlayersData)
         setMatchMakes(matchMakesResponse.data.results);
@@ -254,9 +237,6 @@ const Fetch = useCallback(async () => {
   };
 
   useEffect(() => {
-    const currentUser: Profile  = localStorage.getItem("currentUser") 
-    ? JSON.parse(localStorage.getItem("currentUser")!) 
-    : null;
     setIsOn(currentUser.inviting_to_play)
       
     Fetch();
@@ -278,7 +258,7 @@ const Fetch = useCallback(async () => {
   }, []);
 
   const filteredPlayers = useCallback(() => {
-    const newArr = playersDataSearch.filter((item: Profile) =>
+    const newArr = playersDataSearch.filter((item: Player) =>
       item.user.username.startsWith(usersSearch)
     );
   
@@ -297,9 +277,9 @@ const Fetch = useCallback(async () => {
             'protocol': 'control_user'
         }
     );
-    let PlayersData:Profile[] = [...playersData]
+    let PlayersData:Player[] = [...playersData]
     if(isOn){
-      PlayersData = PlayersData.filter((item:Profile)=> item.id != currentUser.id)
+      PlayersData = PlayersData.filter((item:Player)=> item.id != currentUser.id)
       setPlayersData(PlayersData)
     }else{
       fetchPlayers([...filter],true)
@@ -326,8 +306,8 @@ const Fetch = useCallback(async () => {
       const response = await axios(`https://strikem.site/api/filter-ratings/?${filter.includes(2)?'filter=rating':''}${filter.length==2?"&":""}${filter.includes(1)?"filter_location=true":""}`,{
         headers: { Authorization: `JWT ${token}` },
       })
-      let PlayersData:Profile[] = [...response.data]
-        PlayersData = isOn? [...PlayersData]:PlayersData.filter((item:Profile)=> item.id != currentUser.id)
+      let PlayersData:Player[] = [...response.data]
+        PlayersData = isOn? [...PlayersData]:PlayersData.filter((item:Player)=> item.id != currentUser.id)
       
       if (!deepEqual(playersData, PlayersData)) { 
         setPlayersDataSearch(PlayersData)
@@ -451,7 +431,7 @@ const Fetch = useCallback(async () => {
           </div>
           <div className="lg:flex-1 min-h-[360px] max-h-[360px]  md:min-h-[480px] md:max-h-[480px] lg:min-h-[100%] lg:max-h-[100%]  lg:h-[100%]  ">
             <div className="flex flex-col gap-[10px] h-[100%]  overflow-y-auto playersScroll lg:pr-[10px]">
-              {playersData.map((item: Profile) => {
+              {playersData.map((item: Player) => {
                 return (
                     <PlayerCard
                     key={item.id}
