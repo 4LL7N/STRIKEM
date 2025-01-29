@@ -21,7 +21,7 @@ const AllReviews = memo(({allReviewsBox}:{allReviewsBox:RatingBoxState}) => {
     const ratingsScroll = useRef<any>()
 
     const fetchReviews = async () => {
-        const ratingsUrl = `https://strikem.site/api/poolhouses/${allReviewsBox.id}/ratings/${filter?`?rate=${filter}`:""}`              
+        const ratingsUrl = `https://strikem.site/api/poolhouses/${allReviewsBox.id}/filter-ratings/${filter?`?filter=${filter}`:""}`              
         try{
             const response = await axios(ratingsUrl)
             setRatings(response.data.results)

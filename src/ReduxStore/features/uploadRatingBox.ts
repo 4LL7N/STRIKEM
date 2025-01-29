@@ -13,8 +13,8 @@ const uploadRatingBox = createSlice({
         name:""
     },
     reducers: {
-        setUploadRatingBox: (state, action:PayloadAction<RatingBoxState>) => {
-            return state = action.payload;
+        setUploadRatingBox: (_state, action:PayloadAction<RatingBoxState>) => {
+            return action.payload;
         }
     }
 })

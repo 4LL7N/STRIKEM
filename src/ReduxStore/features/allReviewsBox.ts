@@ -9,8 +9,8 @@ const allReviewsBox = createSlice({
         name:""
     },
     reducers: {
-        setAllReviewsBox: (state, action:PayloadAction<RatingBoxState>) => {
-            return state = action.payload;
+        setAllReviewsBox: (_state, action:PayloadAction<RatingBoxState>) => {
+            return action.payload;
         }
     }
 })

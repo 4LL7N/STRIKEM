@@ -4,8 +4,8 @@ const unReadMatchup = createSlice({
     name: 'unReadMatchup',
     initialState: 0,
     reducers: {
-        setUnReadMatchup: (state, action:PayloadAction<number>) => {
-            return state = action.payload;
+        setUnReadMatchup: (_state, action:PayloadAction<number>) => {
+            return action.payload;
         },
         unReadMatchupDecrement: (state) => {
             return state > 0?state - 1:state;

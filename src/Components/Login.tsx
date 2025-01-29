@@ -20,8 +20,6 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
   
   const [axiosError, setAxiosError] = useState<string>("");
 
-  const [googleLogin, setGoogleLogin] = useState(false);
-  const [googleToken, setGoogleToken] = useState<string>("");
   const [googleError, setGoogleError] = useState<string>("");
 
   const clientId = "350212676070-7iflui6iruag475r9hla0hq0amtkqvk4.apps.googleusercontent.com";
@@ -91,19 +89,15 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
   };
 
 
-  const googleToBack = async () => {
+  const googleToBack = async (googleToken:string) => {
     try{
       const response = await axios.post("https://strikem.site/users/google-auth/", {
         id_token: googleToken,
-        username: logUsername.current?.value,
       })
-      console.log(response);
+      // console.log(response);
 
       setSignUpBox(false)
-      setGoogleLogin(false)
-      setGoogleToken("")
       setGoogleError("")
-      logUsername.current.value = ""
 
       Cookies.set('token',response.data.access_token
         ,{
@@ -129,23 +123,9 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
     }
   }
 
-  const HandleGoogle = () =>{
-    if(!googleToken){
-      setGoogleError("something went wrong")
-      return;
-    }
-    if (!logUsername.current?.value) {
-      setEmptyLogEmailErr(true);
-      return;
-    } else {
-      setEmptyLogEmailErr(false);
-    }
-    googleToBack();
-  }
 
   const onSuccess = (e: CredentialResponse) => {
-    setGoogleToken(e.credential ?? "");
-    setGoogleLogin(true);
+    e.credential && googleToBack(e.credential)
   };
 
   return (
@@ -186,7 +166,6 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
             Can’t be empty
           </a>{" "}
         </div>
-        {googleLogin ? null : 
         <div
           className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] ${
             userError ? "mb-[24px]" : "mb-[40px]"
@@ -212,7 +191,6 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
             Can’t be empty
           </a>{" "}
         </div>
-        }
         <p
           className={`${
             userError ? "text-[13px] text-[#FC4747] font-light" : "hidden"
@@ -227,11 +205,10 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
               <div className="w-full mb-[24px]" >
         <button
           className="w-[100%] bg-[#fab907] rounded-[6px] py-[15px] text-[15px] text-[#FFF] font-light mb-[24px] hover:bg-[#FFF] hover:text-[#161D2F] "
-          onClick={() => {googleLogin?HandleGoogle():HandleLogin();}}
+          onClick={() => {HandleLogin();}}
         >
           Login to your account
         </button>
-        {googleLogin ? null :
               <GoogleOAuthProvider clientId={clientId ?? ""}>
                 <GoogleLogin
                   text={"signin_with"}
@@ -241,13 +218,12 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
                   auto_select={false}
                 />
               </GoogleOAuthProvider>
-              }
               </div>
         <span className=" flex">
           <a className="w-[156px] text-[15px] text-[#FFF] font-light mr-[9px]">
             Don’t have an account?
           </a>
-          <p className="text-[15px] text-[#fab907] font-light " onClick={()=>{setSignUpBox(true);setLoginBox(false)}} >
+          <p className="text-[15px] text-[#fab907] font-light cursor-pointer " onClick={()=>{setSignUpBox(true);setLoginBox(false)}} >
             Sign Up
           </p>
         </span>

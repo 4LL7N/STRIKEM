@@ -20,8 +20,8 @@ const currentUser = createSlice({
     },
   },
   reducers: {
-    setCurrentUser: (state, action: PayloadAction<Player>) => {
-      return (state = action.payload);
+    setCurrentUser: (_state, action: PayloadAction<Player>) => {
+      return action.payload;
     },
     removeCurrentUser: () => {
       return {

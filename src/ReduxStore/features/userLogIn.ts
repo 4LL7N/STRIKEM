@@ -4,8 +4,8 @@ const userLogIn = createSlice({
     name: 'userLogIn',
     initialState: false,
     reducers: {
-        setUserLogIn: (state, action) => {
-            return state = action.payload;
+        setUserLogIn: (_state, action) => {
+            return action.payload;
         }
     }
 })

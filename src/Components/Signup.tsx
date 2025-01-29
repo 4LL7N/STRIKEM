@@ -379,7 +379,7 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
                 Do you have an account?
               </a>
               <p
-                className="text-[15px] text-[#fab907] font-light "
+                className="text-[15px] text-[#fab907] font-light cursor-pointer "
                 onClick={() => {
                   setSignUpBox(false);
                   setLoginBox(true);

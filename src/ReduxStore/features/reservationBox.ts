@@ -4,8 +4,8 @@ const reservationBox = createSlice({
     name: 'invitationAccept',
     initialState: false,
     reducers: {
-        setReservationBox: (state, action: PayloadAction<boolean>) => {
-            return state = action.payload;
+        setReservationBox: (_state, action: PayloadAction<boolean>) => {
+            return action.payload;
         }
     }
 })
