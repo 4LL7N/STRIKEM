@@ -141,3 +141,16 @@ interface Sender {
 
 
 // Messenger
+
+export interface LayoutHeaderProps {
+  setNotificationsOpen: (notificationsOpen: boolean | ((prev: boolean) => boolean)) => void; 
+  setNotifications:(notifications:Message[])=>void,
+  headerHeight:number,
+  unReadNotifications:number,
+  setLogOut:(logOut:boolean)=>void,
+  userLogIn:boolean,
+  setLoginBox:(loginBox:boolean)=>void;
+  setSignUpBox:(loginBox:boolean)=>void
+}
+
+//LayoutHeader

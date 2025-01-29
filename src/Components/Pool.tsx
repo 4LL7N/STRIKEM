@@ -739,7 +739,7 @@ function Pool() {
                           height: "19px",
                         }}
                       />
-                      <h2 className="text-[#fff]">{item.rate}</h2>
+                      <h2 className="text-[#fff] text-[16px] m-0 ">{item.rate}</h2>
                       <TbLetterW
                         style={{
                           color: "white",
@@ -748,7 +748,7 @@ function Pool() {
                           marginLeft: "10px",
                         }}
                       />
-                      <h2 className="text-[#fff]">
+                      <h2 className="text-[#fff]  text-[16px] m-0 ">
                         {item.rater?.total_points}
                       </h2>
                     </div>

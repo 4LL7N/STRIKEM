@@ -83,7 +83,7 @@ const UploadRating = memo(({uploadRatingBox}:{uploadRatingBox:RatingBoxState}) =
                 }}
               />
             </Stack>
-            <p className="text-[#fab907] text-[24px]">{selectedStars}</p>
+            <p className="text-[#fab907] text-[24px] m-0">{selectedStars}</p>
           </div>
           <textarea
             className="w-[100%] bg-transparent rounded-[20px] border-[1px] border-[#fab907] mt-[24px] resize-none focus:outline-none p-[10px] text-white "

@@ -524,7 +524,7 @@ const Reservation = memo(
                   src={selectedOpponent?.profile_image}
                   alt=""
                 />
-                <p className="text-white">
+                <p className="text-white m-0">
                   {selectedOpponent
                     ? `${selectedOpponent.user?.username}`
                     : "No Opponent"}
@@ -568,7 +568,7 @@ const Reservation = memo(
                         src={item?.profile_image}
                         alt=""
                       />
-                      <p className=" text-white text-[10px] md:text-[14px] ">
+                      <p className=" text-white text-[10px] md:text-[14px] m-0 ">
                         {item.id == -1 ? "No Opponent" : item?.user?.username}
                       </p>
                     </div>
@@ -707,6 +707,12 @@ const Reservation = memo(
                     backgroundColor:"#fab907"
                   },
                   "& .css-f1s25r ":{
+                    backgroundColor:"#fab907"
+                  },
+                  "& .css-1tci2yf-MuiButtonBase-root-MuiIconButton-root-MuiClock-amButton":{
+                    backgroundColor:"#fab907"
+                  },
+                  "& .css-1dq2mpt-MuiButtonBase-root-MuiIconButton-root-MuiClock-pmButton":{
                     backgroundColor:"#fab907"
                   }
                 }}

@@ -120,7 +120,7 @@ const AllReviews = memo(({allReviewsBox}:{allReviewsBox:RatingBoxState}) => {
                                                               height: "19px",
                                                             }}
                                                           />
-                                                          <h2 className="text-[#fff]">{rating.rate}</h2>
+                                                          <h2 className="text-[#fff] text-[16px] m-0">{rating.rate}</h2>
                                 </div>
                                 </div>
                                 <p className="text-[#fff] text-[14px]">{rating.review}</p>
