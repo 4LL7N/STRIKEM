@@ -6,6 +6,7 @@ import userLogIn from './features/userLogIn'
 import uploadRatingBox  from './features/uploadRatingBox';
 import currentUser from './features/currentUser';
 import allReviewsBox from './features/allReviewsBox';
+import userSettings from './features/userSettings'
 
 export const store = configureStore({
     reducer: {
@@ -14,7 +15,8 @@ export const store = configureStore({
         userLogIn,
         uploadRatingBox,
         currentUser,
-        allReviewsBox 
+        allReviewsBox ,
+        userSettings
     }
 })
 
