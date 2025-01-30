@@ -29,6 +29,7 @@ import { setCurrentUser } from "../ReduxStore/features/currentUser";
 import AllReviews from "./PoolMemo/AllReviews";
 import LayoutHeader from "./LayoutMemo/LayoutHeader";
 import LoadingPage from "./LoadingPage";
+import UserSettings from "./UsersMemo/UserSettings";
 
 const NotificationsBoxItemsMemo = lazy(() => import("./LayoutMemo/NotificationsBoxItemsMemo"));
 
@@ -77,9 +78,8 @@ function Layout(props: {
   const [opponentsPoints, setOpponentsPoints] = useState<number>(0);
 
   const reservationBox = useAppSelector((state) => state.reservationBox);
-  // const unReadMatchUps = useAppSelector((state) => state.unreadMatchUps);
   const userLogIn = useAppSelector((state) => state.userLogIn);
-  
+  const userSettingsBox = useAppSelector((state) => state.userSettingsBox);
   const allReviewsBox = useAppSelector((state) => state.allReviewsBox);
   const uploadRatingBox = useAppSelector((state) => state.uploadRatingBox);
   const dispatch = useAppDispatch();
@@ -357,6 +357,7 @@ function Layout(props: {
         {uploadRatingBox && <UploadRating uploadRatingBox={uploadRatingBox} />}
         {allReviewsBox.open && <AllReviews allReviewsBox={allReviewsBox} />}
         {location.state && <Reservation reservationBox={reservationBox} PoolInfo={location.state} />}
+        {userSettingsBox.open && <UserSettings/>}
       <div
         className={`w-[100vw] ${
           reservationBox ?
