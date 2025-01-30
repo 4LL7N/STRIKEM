@@ -11,6 +11,7 @@ import User from './Components/User';
 // import Messenger from './Components/Messenger';
 // import Matchup from './Components/Matchup';
 import EmailVerifivation from './Components/UsersMemo/EmailVerifivation';
+import LoadingPage from './Components/LoadingPage';
 
 
 const Layout = lazy(() => import("./Components/Layout"));
@@ -21,7 +22,6 @@ const Messenger = lazy(() => import("./Components/Messenger"));
 const Matchup = lazy(() => import("./Components/Matchup"));
 // const EmailVerification = lazy(() => import("./Components/UsersMemo/EmailVerifivation"));
 
-const Loading = () => <div>Loading...</div>;
 
 function App() {  
 
@@ -33,7 +33,7 @@ function App() {
   const router = createBrowserRouter([
     {
       element: (
-        <Suspense fallback={<Loading />}>
+        <Suspense fallback={<LoadingPage />}>
           <Layout
             search={search}
             setSearch={setSearch}
@@ -54,7 +54,7 @@ function App() {
         {
           path: "/home",
           element: (
-            <Suspense fallback={<Loading />}>
+            <Suspense fallback={<LoadingPage />}>
               <Home search={search} />
             </Suspense>
           ),
@@ -62,7 +62,7 @@ function App() {
         {
           path: "/Pools/:Pool",
           element: (
-            <Suspense fallback={<Loading />}>
+            <Suspense fallback={<LoadingPage />}>
               <Pool />
             </Suspense>
           ),
@@ -78,7 +78,7 @@ function App() {
         {
           path: "/messenger",
           element: (
-            <Suspense fallback={<Loading />}>
+            <Suspense fallback={<LoadingPage />}>
               <Messenger />
             </Suspense>
           ),
@@ -86,7 +86,7 @@ function App() {
         {
           path: "/matchmake",
           element: (
-            <Suspense fallback={<Loading />}>
+            <Suspense fallback={<LoadingPage />}>
               <Matchup
                 usersSearch={usersSearch}
                 setUsersSearch={setUsersSearch}

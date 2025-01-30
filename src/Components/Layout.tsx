@@ -28,6 +28,7 @@ import UploadRating from "./PoolMemo/UploadRating";
 import { setCurrentUser } from "../ReduxStore/features/currentUser";
 import AllReviews from "./PoolMemo/AllReviews";
 import LayoutHeader from "./LayoutMemo/LayoutHeader";
+import LoadingPage from "./LoadingPage";
 
 const NotificationsBoxItemsMemo = lazy(() => import("./LayoutMemo/NotificationsBoxItemsMemo"));
 
@@ -386,11 +387,11 @@ function Layout(props: {
       >
         <ResultBoxMemo yourPointsInput={yourPointsInput} yourPoints={yourPoints} opponentsPointsInput={opponentsPointsInput} opponentsPoints={opponentsPoints} setYourPoints={setYourPoints} setOpponentsPoints={setOpponentsPoints} windowWidth={window.innerWidth} openResultBox={openResultBox} setOpenResultBox={setOpenResultBox} />
         <InvitationAcceptMemo acceptInvitation={props.acceptInvitation} setAcceptInvitation={props.setAcceptInvitation} lastJsonMessage={lastJsonMessage} />
-        <Suspense fallback={<div className="text-[16px] m-0 text-[#fab907]" >Loading...</div>} >
+        <Suspense fallback={<LoadingPage />} >
           <LayoutHeader setNotificationsOpen={setNotificationsOpen} setNotifications={setNotifications} headerHeight={headerHeight} unReadNotifications={unReadNotifications} setLogOut={props.setLogOut} userLogIn={userLogIn} setLoginBox={setLoginBox} setSignUpBox={setSignUpBox} />
         </Suspense>
-        <Suspense fallback={<div className="text-[16px] m-0 text-[#fab907]" >Loading...</div>}>
-        {notificationsList}
+        <Suspense fallback={<LoadingPage />}>
+          {notificationsList}
         </Suspense>
         <div
           style={
