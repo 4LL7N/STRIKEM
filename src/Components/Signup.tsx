@@ -369,6 +369,7 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
                   onSuccess={onSuccess}
                   onError={() => {setGoogleError("Google Sign Up Error")}}
                   auto_select={false}
+                  useOneTap
                 />
               </GoogleOAuthProvider>
               }
