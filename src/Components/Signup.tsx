@@ -361,6 +361,7 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
               >
                 Create an account
               </button>
+              <div className="w-full flex justify-center" >
               {googleRegistration ? null :
               <GoogleOAuthProvider clientId={clientId ?? ""}>
                 <GoogleLogin
@@ -373,6 +374,7 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
                 />
               </GoogleOAuthProvider>
               }
+              </div>
             </div>
             {googleRegistration ? null :
             <span className=" mt-[24px] flex justify-center items-center">

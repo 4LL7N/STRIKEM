@@ -209,6 +209,7 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
         >
           Login to your account
         </button>
+        <div className="w-full flex justify-center" >
               <GoogleOAuthProvider clientId={clientId ?? ""}>
                 <GoogleLogin
                   text={"signin_with"}
@@ -219,6 +220,7 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
                   useOneTap
                 />
               </GoogleOAuthProvider>
+              </div>
               </div>
         <span className=" flex">
           <a className="w-[156px] text-[15px] text-[#FFF] font-light mr-[9px]">
