@@ -371,6 +371,7 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
                   onError={() => {setGoogleError("Google Sign Up Error")}}
                   auto_select={false}
                   width={"174px"}
+                  size="medium"
                 />
               </GoogleOAuthProvider>
               }
