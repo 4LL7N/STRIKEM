@@ -23,9 +23,9 @@ function UserSettingsPage() {
 
   return (
     <section className="w-full mt-[24px]" >
-      {possibleChanges.map((item:{name:string,image:string})=>{
+      {possibleChanges.map((item:{name:string,image:string},i:number)=>{
         return(
-          <div className="flex items-center justify-between border-b-[1px] border-b-white w-full py-[10px] cursor-pointer " onClick={()=>{dispatch(setSettingsPage(`${item.name.split(" ")[1]}`))}} >
+          <div key={i} className="flex items-center justify-between border-b-[1px] border-b-white w-full py-[10px] cursor-pointer " onClick={()=>{dispatch(setSettingsPage(`${item.name}`))}} >
             <div className="flex items-center" >
             <img src={item.image} alt={item.name} className="w-16 h-16 " />
             <h2 className="text-[20px] text-white" >{item.name}</h2>

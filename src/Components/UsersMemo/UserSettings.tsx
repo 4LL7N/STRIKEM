@@ -1,7 +1,8 @@
-import { IoMdClose } from "react-icons/io";
+import { IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../ReduxStore/ReduxHooks";
-import { setUserSettingsBoxClose } from "../../ReduxStore/features/userSettingsBox";
+import { setSettingsPage, setUserSettingsBoxClose } from "../../ReduxStore/features/userSettingsBox";
 import UserSettingsPage from "./userSettingsPage/UserSettingsPage";
+import ChangeUsernamePage from "./userSettingsPage/changeUsernamePage";
 
 const UserSettings = () => {
   const userSettingsBox = useAppSelector((state) => state.userSettingsBox);
@@ -13,7 +14,16 @@ const UserSettings = () => {
     >
       <div className="w-[100%] md:w-[536px] p-[24px] pb-[32px] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px] ">
         <div className="w-full flex justify-between items-center " >
-          <h1 className="text-[32px] text-[#FFF]">User settings</h1>
+          <div className="flex gap-[2px] items-center" >
+            {userSettingsBox.settingsPage != "settings"?
+                <>
+                  <IoIosArrowForward style={{color:"white",width:"24px",height:"24px"}} className=" rotate-180 cursor-pointer " onClick={()=>{dispatch(setSettingsPage("settings"))}} />
+                  <h1 className="text-[20px] text-[#FFF] leading-6 ">{userSettingsBox.settingsPage}</h1> 
+                </> 
+              :
+                <h1 className="text-[32px] text-[#FFF]">User settings</h1>  
+            }
+          </div>
           <IoMdClose
             style={{
               color: "white",
@@ -26,7 +36,13 @@ const UserSettings = () => {
             }}
           />
         </div>
+        {userSettingsBox.settingsPage == "settings"?
           <UserSettingsPage/>
+          :
+          // userSettingsBox.settingsPage == "change username"?
+          <ChangeUsernamePage/>
+          // :
+        }
       </div>
     </div>
   );
