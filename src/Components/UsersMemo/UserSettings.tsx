@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "../../ReduxStore/ReduxHooks";
 import { setSettingsPage, setUserSettingsBoxClose } from "../../ReduxStore/features/userSettingsBox";
 import UserSettingsPage from "./userSettingsPage/UserSettingsPage";
 import ChangeUsernamePage from "./userSettingsPage/changeUsernamePage";
+import ChangePasswordPage from "./userSettingsPage/ChangePasswordPage";
 
 const UserSettings = () => {
   const userSettingsBox = useAppSelector((state) => state.userSettingsBox);
@@ -39,9 +40,10 @@ const UserSettings = () => {
         {userSettingsBox.settingsPage == "settings"?
           <UserSettingsPage/>
           :
-          // userSettingsBox.settingsPage == "change username"?
+          userSettingsBox.settingsPage == "change username"?
           <ChangeUsernamePage/>
-          // :
+          :
+          <ChangePasswordPage/>
         }
       </div>
     </div>
