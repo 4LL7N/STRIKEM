@@ -4,6 +4,7 @@ import { setSettingsPage, setUserSettingsBoxClose } from "../../ReduxStore/featu
 import UserSettingsPage from "./userSettingsPage/UserSettingsPage";
 import ChangeUsernamePage from "./userSettingsPage/changeUsernamePage";
 import ChangePasswordPage from "./userSettingsPage/ChangePasswordPage";
+import DeleteAccountPage from "./userSettingsPage/DeleteAccountPage";
 
 const UserSettings = () => {
   const userSettingsBox = useAppSelector((state) => state.userSettingsBox);
@@ -43,7 +44,10 @@ const UserSettings = () => {
           userSettingsBox.settingsPage == "change username"?
           <ChangeUsernamePage/>
           :
+          userSettingsBox.settingsPage == "change password"?
           <ChangePasswordPage/>
+          :
+          <DeleteAccountPage/>
         }
       </div>
     </div>
