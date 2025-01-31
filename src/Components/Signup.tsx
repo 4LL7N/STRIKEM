@@ -226,7 +226,7 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
           signUpBox ? "" : "hidden"
         } `}
       >
-      <div className="w-[100%] md:w-[536px] p-[24px] pb-[32] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px]">
+      <div className="w-[100%] md:w-[536px] p-[24px] pb-[32px] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px]">
         <div className="w-[100%] flex justify-between items-center mb-[40px] ">
           <h1 className="text-[32px] text-[#FFF] font-light tracking-[-0.5px] self-start	">
             Sign Up

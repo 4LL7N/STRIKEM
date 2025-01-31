@@ -46,7 +46,7 @@ const UploadRating = memo(({uploadRatingBox}:{uploadRatingBox:RatingBoxState}) =
           uploadRatingBox.open ? "" : "hidden"
         } `}
       >
-        <section className="flex flex-col bg-[#161D2F] p-[24px] pb-[32] rounded-[10px] md:rounded-[20px] w-[100%] md:w-[536px] ">
+        <section className="flex flex-col bg-[#161D2F] p-[24px] pb-[32px] rounded-[10px] md:rounded-[20px] w-[100%] md:w-[536px] ">
           <div className="flex justify-end  ">
             <IoMdClose
               style={{

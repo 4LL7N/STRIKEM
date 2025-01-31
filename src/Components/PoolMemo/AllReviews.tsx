@@ -82,7 +82,7 @@ const AllReviews = memo(({allReviewsBox}:{allReviewsBox:RatingBoxState}) => {
     <div
       className={` flex flex-col items-center justify-center fixed top-0 w-[100vw] h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90  z-[1000] transform transition-all duration-300 ${allReviewsBox.open ? "" : "hidden"}`}
     >
-    <main className="flex flex-col bg-[#161D2F] p-[24px] pb-[32] rounded-[10px] md:rounded-[20px] w-[100%] md:w-[536px] h-[500px] ">
+    <main className="flex flex-col bg-[#161D2F] p-[24px] pb-[32px] rounded-[10px] md:rounded-[20px] w-[100%] md:w-[536px] h-[500px] ">
         <div className="flex justify-end  ">
                     <IoMdClose
                       style={{

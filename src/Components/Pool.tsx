@@ -12,7 +12,8 @@ import { CiStar } from "react-icons/ci";
 import axios from "axios";
 import { TbLetterW } from "react-icons/tb";
 import { MdTableRestaurant } from "react-icons/md";
-import { FaBuilding } from "react-icons/fa";
+import { FaBuilding } from "react-icons/fa6";
+
 import Cookies from "js-cookie";
 import { MapContainer, Marker, TileLayer, Tooltip } from "react-leaflet";
 import { useGeolocated } from "react-geolocated";

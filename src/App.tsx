@@ -44,7 +44,7 @@ function App() {
             acceptInvitation={acceptInvitation}
             setAcceptInvitation={setAcceptInvitation}
           />
-        // </Suspense>
+        </Suspense>
       ),
       children: [
         {
