@@ -75,12 +75,14 @@ function User() {
   }, []);
 
   return (
-    <section className="flex flex-col items-center bg-[#10141E] min-w-[100%] min-h-screen mt-[24px] md:pb-[120px]">
-      <main className="w-[100%] flex flex-col justify-center">
+    <main className="flex flex-col items-center bg-[#10141E] min-w-[100%] min-h-screen mt-[24px] md:pb-[120px]">
+      <section className="w-[100%] flex flex-col justify-center">
+        <button className="text-white" onClick={()=>{console.log('user');
+        }} >12312</button>
         <ProfileInfo userInfo={userInfo} />
         <TabsNavigation gameHistory={gameHistory} winHistory={winHistory} loseHistory={loseHistory} userInfo={userInfo}/>
-      </main>
-    </section>
+      </section>
+    </main>
   );
 }
 

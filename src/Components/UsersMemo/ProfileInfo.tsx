@@ -28,7 +28,10 @@ const ProfileInfo = React.memo(({ userInfo }: { userInfo: Profile | null }) => (
         alt="profile"
         className="w-[130px] md:w-[256px] lg:w-[256px] aspect-square rounded-[50%] mx-[10px]"
       />
-       <h1 className="text-[#fff] text-[20px] md:text-[32px] lg:text-[48px] md:hidden">
+       <h1 className="text-[#fff] text-[20px] md:text-[32px] lg:text-[48px] md:hidden" onClick={()=>{
+        console.log(userInfo);
+        
+       }}>
             {userInfo?.user.username}
           </h1>
           <p className="text-[#7e7e7e] text-[14px] md:text-[20px] lg:text-[32px] md:hidden ">
