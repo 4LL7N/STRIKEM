@@ -5,7 +5,7 @@ function ChangeUsernamePage() {
   const logPassword = useRef<HTMLInputElement | null>(null);
   const [emptyLogUsernameErr, setEmptyLogUsernameErr] = useState(false);
   const [emptyLogPassErr, setEmptyLogPassErr] = useState(false);
-  const [axiosError,setAxiosError] = useState("")
+  // const [axiosError,setAxiosError] = useState("")
 
 //   const updateUsername = async ()=>{
 //     await axios.
@@ -35,7 +35,7 @@ function ChangeUsernamePage() {
     <section className="w-full mt-[24px]">
       <div
         className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[16px] pb-[18px] hover:border-b-[#FFF] ${
-                emptyLogUsernameErr || axiosError ? "border-b-[#FC4747]" : null
+                emptyLogUsernameErr  ? "border-b-[#FC4747]" : null
             } `}
       >
         <input
@@ -60,7 +60,7 @@ function ChangeUsernamePage() {
       <div
         className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] 
              pl-[16px] pb-[18px] hover:border-b-[#FFF] ${
-          emptyLogPassErr || axiosError ? "border-b-[#FC4747]" : null
+          emptyLogPassErr  ? "border-b-[#FC4747]" : null
         } `}
       >
         <input
@@ -81,9 +81,9 @@ function ChangeUsernamePage() {
       </div>
       
       <div className="w-full flex justify-center pt-[32px] " >
-      <p className="text-red-500 text-[12px] absolute top-0 translate-y-[30%] ">
+      {/* <p className="text-red-500 text-[12px] absolute top-0 translate-y-[30%] ">
                 {axiosError}
-              </p>
+              </p> */}
       <button
           className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-[#FFF] font-light hover:bg-[#FFF] hover:text-[#161D2F] "
           onClick={handleUsername}

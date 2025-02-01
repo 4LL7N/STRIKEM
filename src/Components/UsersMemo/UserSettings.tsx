@@ -2,7 +2,7 @@ import { IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../ReduxStore/ReduxHooks";
 import { setSettingsPage, setUserSettingsBoxClose } from "../../ReduxStore/features/userSettingsBox";
 import UserSettingsPage from "./userSettingsPage/UserSettingsPage";
-import ChangeUsernamePage from "./userSettingsPage/changeUsernamePage";
+import ChangeUsernamePage from "./userSettingsPage/ChangePasswordPage";
 import ChangePasswordPage from "./userSettingsPage/ChangePasswordPage";
 import DeleteAccountPage from "./userSettingsPage/DeleteAccountPage";
 
