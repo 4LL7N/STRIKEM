@@ -7,15 +7,15 @@ function UserSettingsPage() {
   const possibleChanges = [
     {
       name:'change username',
-      image:'../../../../public/images/download.png'
+      image:'/images/download.png'
     },
     {
       name:'change password',
-      image:'../../../../public/images/download(1).png'
+      image:'/images/download(1).png'
     },
     {
       name:'delete account',
-      image:'../../../../public/images/download(2).png'
+      image:'/images/download(2).png'
     }
   ]
 
