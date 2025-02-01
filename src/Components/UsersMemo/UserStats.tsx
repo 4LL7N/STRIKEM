@@ -21,7 +21,7 @@ interface Profile {
     user:User
   }
 
-const UserStats = React.memo(({ userInfo }: { userInfo: Profile | null }) => {
+const UserStats = ({ userInfo }: { userInfo: Profile | null }) => {
 
   const dispatch = useAppDispatch()
 
@@ -53,6 +53,6 @@ const UserStats = React.memo(({ userInfo }: { userInfo: Profile | null }) => {
         </button>
       </div>
     </div>
-  )});
+  )};
 
   export default UserStats

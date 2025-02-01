@@ -20,7 +20,7 @@ interface Profile {
     user:User
   }
 
-const ProfileInfo = React.memo(({ userInfo }: { userInfo: Profile | null }) => (
+const ProfileInfo = ({ userInfo }: { userInfo: Profile | null }) => (
     <div className="flex w-[100%] gap-[30px] items-center justify-start px-[10px] ">
         <div className='flex flex-col items-center gap-[5px]' >
       <img
@@ -47,6 +47,6 @@ const ProfileInfo = React.memo(({ userInfo }: { userInfo: Profile | null }) => (
         <UserStats userInfo={userInfo} />
       </div>
     </div>
-  ));
+  );
 
 export default ProfileInfo
