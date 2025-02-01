@@ -25,8 +25,7 @@ const UserStats = ({ userInfo }: { userInfo: Profile | null }) => {
   const dispatch = useAppDispatch()
 
   return(
-    <div className="flex flex-col md:flex-row gap-[5px]  md:gap-0 mt-[15px]" onClick={()=>{console.log("userStats");
-    }} >
+    <div className="flex flex-col md:flex-row gap-[5px]  md:gap-0 mt-[15px]" >
       <div className="flex-1 flex-col">
         <p className="text-[#fff] text-[14px] md:text-[18px] lg:text-[24px]">
           Games: {userInfo?.games_played}

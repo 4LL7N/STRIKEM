@@ -347,10 +347,6 @@ function Layout(props: {
     navigate,
   ])
 
-  useEffect(()=>{
-    console.log(userSettingsBox,"userSettingsBox");
-    
-  },[userSettingsBox])
 
   return (
     <>
