@@ -21,7 +21,7 @@ interface Profile {
     user:User
   }
 
-const UserStats = ({ userInfo }: { userInfo: Profile | null }) => {
+const UserStats = React.memo(({ userInfo }: { userInfo: Profile | null }) => {
 
   const dispatch = useAppDispatch()
 
@@ -48,11 +48,11 @@ const UserStats = ({ userInfo }: { userInfo: Profile | null }) => {
         <p className="text-[#fff] text-[14px] md:text-[18px] lg:text-[24px]">
           Email: {userInfo?.user.email}
         </p>
-        <button className="rounded-[10px] px-[8px] py-[6px] text-[#fff] bg-[#fab907] mt-[5px]" onClick={()=>{dispatch(setUserSettingsBoxOpen())}}>
+        <button className="rounded-[10px] px-[8px] py-[6px] text-[#fff] bg-[#fab907] mt-[5px]" onClick={()=>{dispatch(setUserSettingsBoxOpen()),console.log("setting open")}}>
           Edit profile
         </button>
       </div>
     </div>
-  )};
+  )});
 
   export default UserStats
