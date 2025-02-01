@@ -1,4 +1,3 @@
-import React from 'react'
 import { useAppDispatch } from '../../ReduxStore/ReduxHooks';
 import { setUserSettingsBoxOpen } from '../../ReduxStore/features/userSettingsBox';
 
@@ -21,12 +20,13 @@ interface Profile {
     user:User
   }
 
-const UserStats = React.memo(({ userInfo }: { userInfo: Profile | null }) => {
+const UserStats = ({ userInfo }: { userInfo: Profile | null }) => {
 
   const dispatch = useAppDispatch()
 
   return(
-    <div className="flex flex-col md:flex-row gap-[5px]  md:gap-0 mt-[15px]">
+    <div className="flex flex-col md:flex-row gap-[5px]  md:gap-0 mt-[15px]" onClick={()=>{console.log("userStats");
+    }} >
       <div className="flex-1 flex-col">
         <p className="text-[#fff] text-[14px] md:text-[18px] lg:text-[24px]">
           Games: {userInfo?.games_played}
@@ -48,11 +48,11 @@ const UserStats = React.memo(({ userInfo }: { userInfo: Profile | null }) => {
         <p className="text-[#fff] text-[14px] md:text-[18px] lg:text-[24px]">
           Email: {userInfo?.user.email}
         </p>
-        <button className="rounded-[10px] px-[8px] py-[6px] text-[#fff] bg-[#fab907] mt-[5px]" onClick={()=>{dispatch(setUserSettingsBoxOpen()),console.log("setting open")}}>
+        <button className="rounded-[10px] px-[8px] py-[6px] text-[#fff] bg-[#fab907] mt-[5px] z-[1000] " onClick={(e)=>{e.stopPropagation(),dispatch(setUserSettingsBoxOpen()),console.log("setting open")}}>
           Edit profile
         </button>
       </div>
     </div>
-  )});
+  )};
 
   export default UserStats
