@@ -31,8 +31,6 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
   const [axiosError, setAxiosError] = useState<string>("");
   const [googleError, setGoogleError] = useState<string>("");
 
-  const [googleRegistration, setGoogleRegistration] = useState<boolean>(false);
-  const [googleToken, setGoogleToken] = useState<string>("");
 
   const [changeToVerify, setChangeToVerify] = useState<boolean>(false);
 
@@ -147,19 +145,16 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
     }
   };
 
-  const googleToBack = async () => {
+  const googleToBack = async (id_token:string) => {
     try{
       const response = await axios.post("https://strikem.site/users/google-auth/", {
-        id_token: googleToken,
-        username: userName.current?.value,
+        id_token,
         from: "register"
       })
       
       console.log(response.data);
       
       setSignUpBox(false)
-      setGoogleRegistration(false)
-      setGoogleToken("")
       setGoogleError("")
       userName.current.value = ""
       
@@ -174,42 +169,40 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
       window.location.reload()
 
     }catch(err:any){      
-      const errorArr = Object.values(err?.response.data);
-      let error: string = "";
-      errorArr.forEach((item) => {
-        error += item;
-      });
+      console.log(err);
+      
+      if(err.status != 500){
+        const errorArr = Object.values(err?.response.data);
+        let error: string = "";
+        errorArr.forEach((item) => {
+          error += item;
+        });
       setAxiosError(error);
       console.log(errorArr);
+      }else{
+        setAxiosError("something went wrong,please try again soon");
+        console.log(err);
+      }
 
     }
   }
 
-  const HandleGoogle = () =>{
-    if(!googleToken){
-      setGoogleError("something went wrong")
-      return;
-    }
-    if (!userName.current?.value) {
-      setEmptyUsername(true);
-      return;
-    } else {
-      setEmptyUsername(false);
-      emptyUsernameChk = false;
-    }
-    googleToBack();
-  }
+  ;
+  
 
   const onSuccess = (e: CredentialResponse) => {
-    setGoogleToken(e.credential ?? "");
-    setGoogleRegistration(true);
+    if(!e.credential ) {
+      setGoogleError("something went wrong")
+      return
+    }
+    console.log(e.credential);
+    
+    googleToBack(e.credential)
   };
   
   const signupClose = () => {
     setSignUpBox(false)
     setChangeToVerify(false)
-    setGoogleRegistration(false)
-    setGoogleToken("")
     setGoogleError("")
     setAxiosError("")
     if (userName && userName.current )userName.current.value = ""
@@ -251,7 +244,6 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
           </div>
         ) : (
           <div className="w-[100%]">
-            {googleRegistration?<h2 className="text-white text-[16px] md:text-[24px] font-light mb-[24px] " >Please enter a username to register</h2>:null}
             <div
               className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
                 emptyUsername ? "border-b-[#FC4747]" : null
@@ -270,7 +262,6 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
                 {emptyUsername ? "Can’t be empty" : null}
               </a>
             </div>
-              {googleRegistration?null:
               <div>
             <div
               className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
@@ -350,19 +341,19 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
               </a>
             </div>
             </div>
-          }
+          
             <div className=" w-[100%] pt-[24px] relative ">
               <p className="text-red-500 text-[12px] absolute top-0 ">
                 {axiosError}{googleError}
               </p>
               <button
                 className="w-[100%] bg-[#fab907] rounded-[6px] py-[15px] text-[15px] text-[#FFF] font-light mb-[24px] hover:bg-[#8b7127] hover:text-[#161D2F]"
-                onClick={googleRegistration?HandleGoogle:HandleSignup}
+                onClick={HandleSignup}
               >
                 Create an account
               </button>
               <div className="w-full flex justify-center" >
-              {googleRegistration ? null :
+              
               <GoogleOAuthProvider clientId={clientId ?? ""}>
                 <GoogleLogin
                   text={"signup_with"}
@@ -370,14 +361,12 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
                   onSuccess={onSuccess}
                   onError={() => {setGoogleError("Google Sign Up Error")}}
                   auto_select={false}
-                  width={"174px"}
-                  size="medium"
                 />
               </GoogleOAuthProvider>
-              }
+              
               </div>
             </div>
-            {googleRegistration ? null :
+            
             <span className=" mt-[24px] flex justify-center items-center">
               <a className="w-[166px] text-[15px] text-[#FFF] font-light mr-[9px]">
                 Do you have an account?
@@ -392,7 +381,7 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
                 Log In
               </p>
             </span>
-}
+
           </div>
         )}
       </div>

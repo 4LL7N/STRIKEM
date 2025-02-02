@@ -30,6 +30,7 @@ import AllReviews from "./PoolMemo/AllReviews";
 import LayoutHeader from "./LayoutMemo/LayoutHeader";
 import LoadingPage from "./LoadingPage";
 import UserSettings from "./UsersMemo/UserSettings";
+import SetPasswordBox from "./UsersMemo/userSettingsPage/SetPasswordBox";
 
 const NotificationsBoxItemsMemo = lazy(() => import("./LayoutMemo/NotificationsBoxItemsMemo"));
 
@@ -104,6 +105,8 @@ function Layout(props: {
 
   const FetchCurrentUser = async () => {
     const token = Cookies.get("token");    
+    console.log(token);
+    
     try {
       if (token && token != "logout") {
         const currentUserResponse = await axios.get(
@@ -112,7 +115,9 @@ function Layout(props: {
             headers: { Authorization: `JWT ${token}` },
           }
         );        
-        dispatch(setCurrentUser(currentUserResponse.data));
+        dispatch(setCurrentUser(currentUserResponse.data));  
+        console.log(currentUserResponse.data);
+                      
       }
     } catch (err) {
       console.error(err);
@@ -348,6 +353,7 @@ function Layout(props: {
   ])
 
 
+
   return (
     <>
     {/* <button className="bg-white " onClick={ResultBox} >asdwe</button> */}
@@ -357,7 +363,8 @@ function Layout(props: {
         {uploadRatingBox && <UploadRating uploadRatingBox={uploadRatingBox} />}
         {allReviewsBox.open && <AllReviews allReviewsBox={allReviewsBox} />}
         {location.state && <Reservation reservationBox={reservationBox} PoolInfo={location.state} />}
-        {userSettingsBox.open && <UserSettings/>}
+        {userSettingsBox.open ?userSettingsBox.settingsPage == "emailCode" || userSettingsBox.settingsPage == "setPassword" ? <SetPasswordBox/>:<UserSettings/>:null}
+        
       <div
         className={`w-[100vw] ${
           reservationBox ?

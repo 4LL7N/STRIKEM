@@ -218,9 +218,6 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
                   onSuccess={onSuccess}
                   onError={() => {setGoogleError("Google Sign In Error")}}
                   auto_select={false}
-                  useOneTap
-                  width={"174px"}
-                  size="medium"
                 />
               </GoogleOAuthProvider>
               </div>

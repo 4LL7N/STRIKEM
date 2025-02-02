@@ -17,10 +17,14 @@ const userSettingsBox = createSlice({
             state.open = false
             state.settingsPage = "settings"
         },
+        setSetPasswordPage:(state,action:PayloadAction<{open:boolean,settingsPage:string}>)=>{
+            state.open = action.payload.open
+            state.settingsPage = action.payload.settingsPage
+        }
 
     },
 })
 
-export const {setUserSettingsBoxOpen,setSettingsPage,setUserSettingsBoxClose} = userSettingsBox.actions
+export const {setUserSettingsBoxOpen,setSettingsPage,setUserSettingsBoxClose,setSetPasswordPage} = userSettingsBox.actions
 
 export default userSettingsBox.reducer

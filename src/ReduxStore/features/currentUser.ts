@@ -11,6 +11,7 @@ const currentUser = createSlice({
     opponents_met: 0,
     profile_image: "",
     total_points: 0,
+    password_is_null:false,
     user: {
       id: 0,
       email: "",
@@ -32,6 +33,7 @@ const currentUser = createSlice({
         opponents_met: 0,
         profile_image: "",
         total_points: 0,
+        password_is_null:false,
         user: {
           id: 0,
           email: "",

@@ -1,5 +1,5 @@
-import { useAppDispatch } from '../../ReduxStore/ReduxHooks';
-import { setUserSettingsBoxOpen } from '../../ReduxStore/features/userSettingsBox';
+import { useAppDispatch, useAppSelector } from '../../ReduxStore/ReduxHooks';
+import { setSetPasswordPage, setUserSettingsBoxOpen } from '../../ReduxStore/features/userSettingsBox';
 
 interface User {
     id: number;
@@ -22,7 +22,10 @@ interface Profile {
 
 const UserStats = ({ userInfo }: { userInfo: Profile | null }) => {
 
-  const dispatch = useAppDispatch()
+      const currentUser = useAppSelector((state) => state.currentUser);
+  console.log(currentUser,"us");
+  
+  const dispatch = useAppDispatch();
 
   return(
     <div className="flex flex-col md:flex-row gap-[5px]  md:gap-0 mt-[15px]" >
@@ -47,7 +50,12 @@ const UserStats = ({ userInfo }: { userInfo: Profile | null }) => {
         <p className="text-[#fff] text-[14px] md:text-[18px] lg:text-[24px]">
           Email: {userInfo?.user.email}
         </p>
-        <button className="rounded-[10px] px-[8px] py-[6px] text-[#fff] bg-[#fab907] mt-[5px] z-[1000] " onClick={(e)=>{e.stopPropagation(),dispatch(setUserSettingsBoxOpen()),console.log("setting open")}}>
+        <button className="rounded-[10px] px-[8px] py-[6px] text-[#fff] bg-[#fab907] mt-[5px] z-[1000] " onClick={()=>{
+            currentUser.password_is_null?
+              dispatch(setSetPasswordPage({open:true,settingsPage:"emailCode"}))
+            :
+              dispatch(setUserSettingsBoxOpen())
+          }}>
           Edit profile
         </button>
       </div>

@@ -6,6 +6,7 @@ export interface Player {
     opponents_met: number;
     profile_image: string;
     total_points: number;
+    password_is_null:boolean,
     user: User;
 }
 
