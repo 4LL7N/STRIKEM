@@ -166,3 +166,12 @@ export interface EmailCodeCheck{
 }
 
 //EmailCodeCheck
+
+export interface SetNewPasswordPage{
+  emptyNewPasswordErr:boolean,
+  newPassword:LegacyRef<HTMLInputElement>|null,
+  emptyRepeatPasswordErr:boolean,
+  repeatPassword:LegacyRef<HTMLInputElement>|null
+}
+
+///SetNewPasswordPage

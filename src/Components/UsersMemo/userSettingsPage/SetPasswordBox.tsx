@@ -6,11 +6,16 @@ import EmailCodeCheck from "./EmailCodeCheck";
 import { useRef, useState } from "react";
 import axios from 'axios';
 import Cookies from "js-cookie";
+import SetNewPasswordPage from "./SetNewPasswordPage";
 
 function SetPasswordBox() {
     
-      const userSettingsBox = useAppSelector((state) => state.userSettingsBox);
+    const userSettingsBox = useAppSelector((state) => state.userSettingsBox);
+    const [key,setKey] = useState<string>("")
     const dispatch = useAppDispatch();
+
+      // handling sending code to email,sending back to back-end this code
+
 
     const emailCode = useRef<HTMLInputElement|null>(null)
 
@@ -42,7 +47,7 @@ function SetPasswordBox() {
                 headers: { Authorization: `JWT ${token}` },
             }
         )        
-        localStorage.setItem("passUuid",response.data.key)
+        setKey(response.data.key)
         setEmptyEmailCodeErr(false)
     }catch(err:any){
         const errorArr = Object.values(err?.response.data);
@@ -56,11 +61,51 @@ function SetPasswordBox() {
     }
   }
 
-  // handling sending code to email,sending back to back-end this code
+  //handling setting new password
  
-  const handleNewPassword = () => {
 
+  const [emptyNewPasswordErr, setEmptyNewPasswordErr] = useState(false);
+  const [emptyRepeatPasswordErr, setEmptyRepeatPasswordErr] = useState(false);
+
+  const newPassword = useRef<HTMLInputElement|null>(null)
+  const repeatPassword = useRef<HTMLInputElement|null>(null)
+
+  const sendNewPassword = async () => {
+    const token = Cookies.get("token");
+    try{
+        axios.post('https://strikem.site/users/set-g-password/',{
+            key,
+            password:newPassword.current?.value
+        },
+        {
+            headers: { Authorization: `JWT ${token}` },
+        }
+    )
+    }catch(err:any){
+        const errorArr = Object.values(err?.response.data);
+        let error: string = "";
+        errorArr.forEach((item) => {
+            error += item;
+        });
+        console.log(error);
+        setAxiosError(error)
+    }
   }
+
+  const handleNewPassword = () => {
+    if(!newPassword.current || !newPassword.current.value) setEmptyNewPasswordErr(true)
+    if(!repeatPassword.current || !repeatPassword.current.value) setEmptyRepeatPasswordErr(true)
+    
+    if(newPassword.current && newPassword.current.value && repeatPassword.current && repeatPassword.current.value){
+        if(newPassword.current.value != repeatPassword.current.value){
+            setAxiosError("Passwords is not equal")
+        }else{
+            sendNewPassword()
+        }
+    }
+  }
+
+
 
   return (
     <div
@@ -87,7 +132,11 @@ function SetPasswordBox() {
         </div>
         <section className="w-full mt-[24px]">
 
-        <EmailCodeCheck emailCode={emailCode} emptyEmailCodeErr={emptyEmailCodeErr} uiExpire={uiExpire} setUiExpire={setUiExpire} />
+        {userSettingsBox.settingsPage == "emailCode"?
+            <EmailCodeCheck emailCode={emailCode} emptyEmailCodeErr={emptyEmailCodeErr} uiExpire={uiExpire} setUiExpire={setUiExpire} />
+        :
+            <SetNewPasswordPage emptyNewPasswordErr={emptyNewPasswordErr} newPassword={newPassword} emptyRepeatPasswordErr={emptyRepeatPasswordErr} repeatPassword={repeatPassword} />
+        }
         <div className="flex justify-center w-full pt-[32px] relative ">
             <p className="text-red-500 text-[12px] absolute top-0 translate-y-[30%] ">
                 {axiosError}
