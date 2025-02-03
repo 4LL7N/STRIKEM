@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IoMdClose } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../../ReduxStore/ReduxHooks";
-import { setUserSettingsBoxClose } from "../../../ReduxStore/features/userSettingsBox";
+import { setSetPasswordPage, setUserSettingsBoxClose } from "../../../ReduxStore/features/userSettingsBox";
 import EmailCodeCheck from "./EmailCodeCheck";
 import { useRef, useState } from "react";
 import axios from 'axios';
 import Cookies from "js-cookie";
 import SetNewPasswordPage from "./SetNewPasswordPage";
+import { setPasswordOnUser } from "../../../ReduxStore/features/currentUser";
 
 function SetPasswordBox() {
     
@@ -49,6 +50,7 @@ function SetPasswordBox() {
         )        
         setKey(response.data.key)
         setEmptyEmailCodeErr(false)
+        dispatch(setSetPasswordPage({open:true,settingsPage:'setPassword'}))
     }catch(err:any){
         const errorArr = Object.values(err?.response.data);
         let error: string = "";
@@ -74,13 +76,16 @@ function SetPasswordBox() {
     const token = Cookies.get("token");
     try{
         axios.post('https://strikem.site/users/set-g-password/',{
-            key,
-            password:newPassword.current?.value
-        },
-        {
-            headers: { Authorization: `JWT ${token}` },
-        }
-    )
+                key,
+                password:newPassword.current?.value
+            },
+            {
+                headers: { Authorization: `JWT ${token}` },
+            }
+        )   
+        setKey("")
+        dispatch(setPasswordOnUser())
+        dispatch(setUserSettingsBoxClose());
     }catch(err:any){
         const errorArr = Object.values(err?.response.data);
         let error: string = "";
