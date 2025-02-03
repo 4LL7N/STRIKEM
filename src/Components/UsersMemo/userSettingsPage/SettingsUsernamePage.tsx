@@ -112,7 +112,7 @@ function ChangeUsernamePage() {
         </a>{" "}
       </div>
       
-      <div className="w-full flex justify-center pt-[32px] " >
+      <div className="w-full flex justify-center pt-[32px] relative " >
       <p className="text-red-500 text-[12px] absolute top-0 translate-y-[30%] ">
                 {axiosError}
               </p>
