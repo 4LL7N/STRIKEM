@@ -105,6 +105,8 @@ function SetPasswordBox() {
         if(newPassword.current.value != repeatPassword.current.value){
             setAxiosError("Passwords is not equal")
         }else{
+            setEmptyNewPasswordErr(false)
+            setEmptyRepeatPasswordErr(false)
             sendNewPassword()
         }
     }
