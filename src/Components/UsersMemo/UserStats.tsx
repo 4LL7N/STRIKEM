@@ -23,7 +23,6 @@ interface Profile {
 const UserStats = ({ userInfo }: { userInfo: Profile | null }) => {
 
       const currentUser = useAppSelector((state) => state.currentUser);
-  console.log(currentUser,"us");
   
   const dispatch = useAppDispatch();
 

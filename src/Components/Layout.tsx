@@ -104,9 +104,7 @@ function Layout(props: {
   }, []);
 
   const FetchCurrentUser = async () => {
-    const token = Cookies.get("token");    
-    console.log(token);
-    
+    const token = Cookies.get("token");        
     try {
       if (token && token != "logout") {
         const currentUserResponse = await axios.get(
@@ -116,8 +114,6 @@ function Layout(props: {
           }
         );        
         dispatch(setCurrentUser(currentUserResponse.data));  
-        console.log(currentUserResponse.data);
-                      
       }
     } catch (err) {
       console.error(err);

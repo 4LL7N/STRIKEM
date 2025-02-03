@@ -2,13 +2,15 @@ import { IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../ReduxStore/ReduxHooks";
 import { setSettingsPage, setUserSettingsBoxClose } from "../../ReduxStore/features/userSettingsBox";
 import UserSettingsPage from "./userSettingsPage/UserSettingsPage";
-import ChangeUsernamePage from "./userSettingsPage/ChangePasswordPage";
+import ChangeUsernamePage from "./userSettingsPage/SettingsUsernamePage";
 import ChangePasswordPage from "./userSettingsPage/ChangePasswordPage";
 import DeleteAccountPage from "./userSettingsPage/DeleteAccountPage";
 
 const UserSettings = () => {
   const userSettingsBox = useAppSelector((state) => state.userSettingsBox);
   const dispatch = useAppDispatch();
+  console.log(userSettingsBox);
+  
 
   return (
     <div
@@ -43,6 +45,7 @@ const UserSettings = () => {
           :
           userSettingsBox.settingsPage == "change username"?
           <ChangeUsernamePage/>
+          
           :
           userSettingsBox.settingsPage == "change password"?
           <ChangePasswordPage/>

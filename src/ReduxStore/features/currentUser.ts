@@ -45,9 +45,12 @@ const currentUser = createSlice({
     },
     setPasswordOnUser:(state)=>{
       state.password_is_null = false
+    },
+    setNewUsername:(state,action:PayloadAction<string>)=>{
+      state.user.username = action.payload
     }
   },
 });
-export const  {setCurrentUser, removeCurrentUser,setPasswordOnUser} = currentUser.actions
+export const  {setCurrentUser, removeCurrentUser,setPasswordOnUser,setNewUsername} = currentUser.actions
 
 export default currentUser.reducer
