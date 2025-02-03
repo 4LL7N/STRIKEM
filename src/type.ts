@@ -1,3 +1,5 @@
+import { LegacyRef } from "react";
+
 export interface Player {
     id: number;
     games_played: number;
@@ -155,3 +157,12 @@ export interface LayoutHeaderProps {
 }
 
 //LayoutHeader
+
+export interface EmailCodeCheck{
+  emptyEmailCodeErr:boolean,
+  emailCode:LegacyRef<HTMLInputElement> |null,
+  uiExpire:number,
+  setUiExpire:(uiExpire:number)=>void
+}
+
+//EmailCodeCheck

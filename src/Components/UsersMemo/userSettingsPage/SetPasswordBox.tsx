@@ -1,44 +1,47 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IoMdClose } from "react-icons/io";
-import { useAppDispatch } from "../../../ReduxStore/ReduxHooks";
-import axios from "axios";
-import Cookies from "js-cookie";
-import { useRef, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../ReduxStore/ReduxHooks";
 import { setUserSettingsBoxClose } from "../../../ReduxStore/features/userSettingsBox";
+import EmailCodeCheck from "./EmailCodeCheck";
+import { useRef, useState } from "react";
+import axios from 'axios';
+import Cookies from "js-cookie";
 
 function SetPasswordBox() {
-  const dispatch = useAppDispatch();
-  const [uiExpire, setUiExpire] = useState<number>(0);
-  const emailCode = useRef<HTMLInputElement|null>(null)
-  const [emptyEmailCodeErr, setEmptyEmailCodeErr] = useState(false);
-        const [axiosError,setAxiosError] = useState("")
-
-
-  const sendCodeToEmail = async () => {
-    const token = Cookies.get("token");
     
-    try {
-      await axios.post("https://strikem.site/api/users/get-code/",{},
-          {
-              headers: { Authorization: `JWT ${token}` },
-          }
-      )
-      timer()
-    } catch (err) {
-      console.log(err);
+      const userSettingsBox = useAppSelector((state) => state.userSettingsBox);
+    const dispatch = useAppDispatch();
+
+    const emailCode = useRef<HTMLInputElement|null>(null)
+
+
+    const [emptyEmailCodeErr, setEmptyEmailCodeErr] = useState(false);
+    const [uiExpire, setUiExpire] = useState<number>(0);
+    const [axiosError,setAxiosError] = useState("")
+
+
+  
+
+  const handleEmailCode = async ()=>{
+    if(emailCode.current && emailCode.current.value){
+        
+        sendEmailCode(emailCode.current.value)
+        return
     }
-  };
+    setEmptyEmailCodeErr(true)
+  }
+
 
   const sendEmailCode = async (code:string) =>{
     const token = Cookies.get("token");
     try{
-        const response = await axios.post("https://strikem.site/api/users/verify-code/",{
+        const response = await axios.post("https://strikem.site/users/verify-code/",{
                 code
             },
             {
                 headers: { Authorization: `JWT ${token}` },
             }
-        )
+        )        
         localStorage.setItem("passUuid",response.data.key)
         setEmptyEmailCodeErr(false)
     }catch(err:any){
@@ -53,23 +56,11 @@ function SetPasswordBox() {
     }
   }
 
-  const handleEmailCode = async ()=>{
-    if(emailCode.current && emailCode.current.value){
-        sendEmailCode(emailCode.current.value)
-    }
-    setEmptyEmailCodeErr(true)
-  }
+  // handling sending code to email,sending back to back-end this code
+ 
+  const handleNewPassword = () => {
 
-  const timer = () => {
-    console.log("timer",uiExpire);
-    
-        let timerTime = 59
-      const interval = setInterval(() => {        
-        setUiExpire(timerTime);
-        timerTime -= 1
-        if (timerTime == 0) clearInterval(interval), setUiExpire(0);
-      }, 1000);
-  };
+  }
 
   return (
     <div
@@ -95,51 +86,20 @@ function SetPasswordBox() {
           />
         </div>
         <section className="w-full mt-[24px]">
-          <div
-            className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[16px] pb-[18px] hover:border-b-[#FFF] ${
-                emptyEmailCodeErr  ? "border-b-[#FC4747]" : null
-                }  `}
-          >
-            <input
-              className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none  md:w-[200px] lg:w-[230px]"
-              type="text"
-              name="emailCode"
-              id="emailCode"
-              placeholder="Code"
-              autoComplete="off"
-                ref={emailCode}
-            />{" "}
-            <a
-          className={`${
-            emptyEmailCodeErr
-              ? "text-[13px] text-[#FC4747] font-light"
-              : "hidden"
-          }`}
-        >
-          Can’t be empty
-        </a>{" "}
-          </div>
-          <div className="flex gap-[10px]">
-            <p
-              className="text-white underline underline-offset-1 "
-              onClick={sendCodeToEmail}
-            >
-              send code on email{" "}
-            </p>
-            <p className="text-[#757171]">{uiExpire > 0 ? uiExpire : ""}</p>
-          </div>
-          <div className="flex justify-center w-full pt-[32px] relative ">
+
+        <EmailCodeCheck emailCode={emailCode} emptyEmailCodeErr={emptyEmailCodeErr} uiExpire={uiExpire} setUiExpire={setUiExpire} />
+        <div className="flex justify-center w-full pt-[32px] relative ">
             <p className="text-red-500 text-[12px] absolute top-0 translate-y-[30%] ">
                 {axiosError}
               </p>
             <button
               className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-[#FFF] font-light hover:bg-[#FFF] hover:text-[#161D2F] "
-                onClick={handleEmailCode}
+                onClick={userSettingsBox.settingsPage == "emailCode"? handleEmailCode:handleNewPassword}
             >
-              update
+              {userSettingsBox.settingsPage == "emailCode"?'Code Check':'submit'}
             </button>
           </div>
-        </section>
+          </section>
       </div>
     </div>
   );
