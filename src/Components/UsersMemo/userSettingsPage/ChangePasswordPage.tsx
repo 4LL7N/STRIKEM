@@ -22,7 +22,7 @@ function ChangePasswordPage() {
     const sendNewPassword = async () =>{
       const token = Cookies.get("token");
       try{
-        await axios.post('https://strikem.site/auth/users/set_password',
+        await axios.post('https://strikem.site/auth/users/set_password/',
           {
             current_password:oldPassword.current?.value ,
             new_password: newPassword.current?.value
