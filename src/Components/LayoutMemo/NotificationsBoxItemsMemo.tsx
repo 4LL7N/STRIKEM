@@ -54,6 +54,8 @@ const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo
             return "accepted your invitation.";
           case "GSE":
               return "enter the result of the game.";
+          case "SPW":
+            return item.body
           default:
             return "contacted you";
         }
@@ -67,8 +69,8 @@ const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo
         },{})
       }
 
+      console.log(item);
       const handleNotificationClick = () => {
-        console.log(item);
         
         if (item.type == "INV") {
           navigate(`/matchmake`);
@@ -86,6 +88,9 @@ const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo
       return (
         <div
           className={` cursor-pointer flex items-center gap-[10px] w-[100%] h-[25%] ${
+            notifications.length == 1?
+            " rounded-[10px]"
+            :
             i == notifications.length - 1
               ? ""
               : "border-b-[1px] border-b-[#243257d5] "
@@ -94,7 +99,7 @@ const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo
         >
           <img
             src={item?.sent_by?.profile_image}
-            className={`h-[95%] aspect-square rounded-[50%] ${item.type == "GSE" && "hidden"} `}
+            className={`h-[95%] aspect-square rounded-[50%] ${item.type == "GSE" || item.type == "SPW" && "hidden"} `}
             alt=""
             onClick={(e) => {
               goProfile(e, item.sent_by.id);
@@ -102,7 +107,7 @@ const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo
           />
           <div className="flex flex-col md:gap-[4px] ">
             <h1 className="text-[14px] md:text-[18px] text-[#fff] ">
-              {item.type != "GSE" && item.sent_by.user.username} {message()}
+              {item.type != "GSE" && item.type != "SPW" && item.sent_by.user.username} {message()}
             </h1>
             <div className="flex gap-[3px]  ">
               <p
