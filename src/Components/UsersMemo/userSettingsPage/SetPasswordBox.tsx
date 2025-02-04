@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { IoMdClose } from "react-icons/io";
+import { IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../../ReduxStore/ReduxHooks";
-import { setSetPasswordPage, setUserSettingsBoxClose } from "../../../ReduxStore/features/userSettingsBox";
+import { setSetPasswordPage, setSettingsPage, setUserSettingsBoxClose } from "../../../ReduxStore/features/userSettingsBox";
 import EmailCodeCheck from "./EmailCodeCheck";
 import { useRef, useState } from "react";
 import axios from 'axios';
@@ -121,9 +121,17 @@ function SetPasswordBox() {
       <div className="w-[100%] md:w-[536px] p-[24px] pb-[32px] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px] ">
         <div className="w-full flex justify-between items-center ">
           <div className="flex gap-[2px] items-center">
-            <h1 className="text-[14px] text-[#FFF] leading-6 ">
-              Set a password to access the changes
-            </h1>
+            
+            {userSettingsBox.settingsPage == "forget password"?
+                            <>
+                              <IoIosArrowForward style={{color:"white",width:"24px",height:"24px"}} className=" rotate-180 cursor-pointer " onClick={()=>{dispatch(setSettingsPage("settings"))}} />
+                              <h1 className="text-[20px] text-[#FFF] leading-6 ">{userSettingsBox.settingsPage}</h1> 
+                            </> 
+                          :
+                          <h1 className="text-[14px] text-[#FFF] leading-6 ">
+                          Set a password to access the changes
+                        </h1>  
+                        }
           </div>
           <IoMdClose
             style={{
@@ -139,8 +147,8 @@ function SetPasswordBox() {
         </div>
         <section className="w-full mt-[24px]">
 
-        {userSettingsBox.settingsPage == "emailCode"?
-            <EmailCodeCheck emailCode={emailCode} emptyEmailCodeErr={emptyEmailCodeErr} uiExpire={uiExpire} setUiExpire={setUiExpire} />
+        {userSettingsBox.settingsPage == "emailCode" || userSettingsBox.settingsPage == "forget password"?
+            <EmailCodeCheck emailCode={emailCode} emptyEmailCodeErr={emptyEmailCodeErr} uiExpire={uiExpire} setUiExpire={setUiExpire} setAxiosError={setAxiosError} />
         :
             <SetNewPasswordPage emptyNewPasswordErr={emptyNewPasswordErr} newPassword={newPassword} emptyRepeatPasswordErr={emptyRepeatPasswordErr} repeatPassword={repeatPassword} />
         }
@@ -150,9 +158,9 @@ function SetPasswordBox() {
               </p>
             <button
               className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-[#FFF] font-light hover:bg-[#FFF] hover:text-[#161D2F] "
-                onClick={userSettingsBox.settingsPage == "emailCode"? handleEmailCode:handleNewPassword}
+                onClick={userSettingsBox.settingsPage == "emailCode" || userSettingsBox.settingsPage == "forget password"? handleEmailCode:handleNewPassword}
             >
-              {userSettingsBox.settingsPage == "emailCode"?'Code Check':'submit'}
+              {userSettingsBox.settingsPage == "emailCode" || userSettingsBox.settingsPage == "forget password"?'Code Check':'submit'}
             </button>
           </div>
           </section>

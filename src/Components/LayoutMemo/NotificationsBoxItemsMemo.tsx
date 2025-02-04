@@ -69,7 +69,6 @@ const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo
         },{})
       }
 
-      console.log(item);
       const handleNotificationClick = () => {
         
         if (item.type == "INV") {

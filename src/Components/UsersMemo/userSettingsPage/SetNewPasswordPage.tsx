@@ -10,7 +10,7 @@ function SetNewPasswordPage({emptyNewPasswordErr,newPassword,emptyRepeatPassword
           >
             <input
               className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none  md:w-[200px] lg:w-[230px]"
-              type="text"
+              type="password"
               name="newPassword"
               id="newPassword"
               placeholder="newPassword"
@@ -35,7 +35,7 @@ function SetNewPasswordPage({emptyNewPasswordErr,newPassword,emptyRepeatPassword
           >
             <input
               className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none  md:w-[200px] lg:w-[230px]"
-              type="text"
+              type="password"
               name="repeatPassword"
               id="repeatPassword"
               placeholder="repeatPassword"

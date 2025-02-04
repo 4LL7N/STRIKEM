@@ -73,8 +73,8 @@ function ChangeUsernamePage() {
         <input
           className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none  md:w-[200px] lg:w-[230px]"
           type="text"
-          name="LoginUsername"
-          id="LoginUsername"
+          name="Username"
+          id="Username"
           placeholder="Username"
           autoComplete="off"
           ref={logUsername}

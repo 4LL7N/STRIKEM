@@ -162,7 +162,8 @@ export interface EmailCodeCheck{
   emptyEmailCodeErr:boolean,
   emailCode:LegacyRef<HTMLInputElement> |null,
   uiExpire:number,
-  setUiExpire:(uiExpire:number)=>void
+  setUiExpire:(uiExpire:number)=>void,
+  setAxiosError:(axiosError:string)=>void
 }
 
 //EmailCodeCheck

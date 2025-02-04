@@ -5,11 +5,11 @@ import UserSettingsPage from "./userSettingsPage/UserSettingsPage";
 import ChangeUsernamePage from "./userSettingsPage/SettingsUsernamePage";
 import ChangePasswordPage from "./userSettingsPage/ChangePasswordPage";
 import DeleteAccountPage from "./userSettingsPage/DeleteAccountPage";
+import SetPasswordBox from "./userSettingsPage/SetPasswordBox";
 
 const UserSettings = () => {
   const userSettingsBox = useAppSelector((state) => state.userSettingsBox);
   const dispatch = useAppDispatch();
-  console.log(userSettingsBox);
   
 
   return (
@@ -49,6 +49,9 @@ const UserSettings = () => {
           :
           userSettingsBox.settingsPage == "change password"?
           <ChangePasswordPage/>
+          :
+          userSettingsBox.settingsPage == "forget password"?
+          <SetPasswordBox/>
           :
           <DeleteAccountPage/>
         }

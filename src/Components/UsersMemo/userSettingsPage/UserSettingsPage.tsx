@@ -14,6 +14,10 @@ function UserSettingsPage() {
       image:'/images/download(1).png'
     },
     {
+      name:'forget password',
+      image:'/images/download(1).png'
+    },
+    {
       name:'delete account',
       image:'/images/download(2).png'
     }
