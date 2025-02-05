@@ -1,20 +1,63 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IoIosArrowForward, IoMdClose } from "react-icons/io";
 import CheckEmail from "./CheckEmail"
 import { useAppDispatch, useAppSelector } from "../../ReduxStore/ReduxHooks";
-import { setUserSettingsBoxClose } from "../../ReduxStore/features/userSettingsBox";
+import { setSettingsPage, setUserSettingsBoxClose } from "../../ReduxStore/features/userSettingsBox";
 import { useRef, useState } from "react";
+import axios from "axios";
 
 function LoginForgetPassword() {
 
   const userSettingsBox = useAppSelector((state) => state.userSettingsBox);
   const dispatch = useAppDispatch();
+  
 
   //Check Email
   const [emptyCheckEmailErr,setEmptyCheckEmailErr] = useState<boolean>(false)
+  const [notEmailCheckEmailErr,setNotEmailCheckEmailErr] = useState<string>("")
   const [axiosError,setAxiosError] = useState("")
 
 
   const CheckEmailRef = useRef<HTMLInputElement|null>(null)
+
+  const emailCheck = async () =>{
+    try{
+      const response = await axios.post("https://strikem.site/users/get-code-forget/",
+        {
+          email:CheckEmailRef.current?.value
+        }
+      )
+      if(response.status == 200){
+        dispatch(setSettingsPage("loginForgetPassword"))
+      }
+      
+    }catch(err:any){
+      const errorArr = Object.values(err?.response.data);
+        let error: string = "";
+        errorArr.forEach((item) => {
+            error += item;
+        });
+        console.log(error);
+        setAxiosError(error)
+    }
+  }
+
+  const emailCheckHandle = () => {
+    const reg = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/ 
+    if(!CheckEmailRef.current || !CheckEmailRef.current?.value){
+      setEmptyCheckEmailErr(true)
+    }
+    if(!CheckEmailRef.current || reg.test(CheckEmailRef.current?.value)){
+      setNotEmailCheckEmailErr("invalid Email form")
+    }
+
+    if(CheckEmailRef.current && CheckEmailRef.current?.value && reg.test(CheckEmailRef.current?.value)){
+      setEmptyCheckEmailErr(false)
+      setNotEmailCheckEmailErr("")
+      emailCheck()
+    }
+
+  }
 
   return (
     <div
@@ -49,14 +92,14 @@ function LoginForgetPassword() {
                   />
                 </div>
         
-          <CheckEmail emptyCheckEmailErr={emptyCheckEmailErr} CheckEmailRef={CheckEmailRef} />
+          <CheckEmail emptyCheckEmailErr={emptyCheckEmailErr} CheckEmailRef={CheckEmailRef} notEmailCheckEmailErr={notEmailCheckEmailErr} />
           <div className="flex justify-center w-full pt-[32px] relative ">
             <p className="text-red-500 text-[12px] absolute top-0 translate-y-[30%] left-0 ">
-                {axiosError}
+                {axiosError}{notEmailCheckEmailErr}
               </p>
             <button
               className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-[#FFF] font-light hover:bg-[#FFF] hover:text-[#161D2F] "
-                // onClick={userSettingsBox.settingsPage == "emailCode" || userSettingsBox.settingsPage == "forget password"? handleEmailCode:handleNewPassword}
+                onClick={userSettingsBox.settingsPage == "emailCheck" ? emailCheckHandle:()=>{}}
                 // onClick={()=>{setAxiosError("123")}}
             >
               {/* {userSettingsBox.settingsPage == "emailCode" || userSettingsBox.settingsPage == "forget password"?'Code Check':'submit'} */}
