@@ -1,5 +1,6 @@
+import type { LoginForgetEmailCodeCheck } from "../../type"
 
-function LoginForgetEmailCodeCheck({ LoginEmailCode,emptyLoginEmailCodeErr,uiExpire}:any) {
+function LoginForgetEmailCodeCheck({ LoginEmailCode,emptyLoginEmailCodeErr,uiExpire}:LoginForgetEmailCodeCheck) {
   return (
     <div className='w-full mt-[24px] ' >
     <div

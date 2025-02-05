@@ -1,5 +1,6 @@
+import type { CheckEmail } from "../../type"
 
-function CheckEmail({emptyCheckEmailErr,CheckEmailRef,notEmailCheckEmailErr}:any) {
+function CheckEmail({emptyCheckEmailErr,CheckEmailRef,notEmailCheckEmailErr}:CheckEmail) {
 
 
 

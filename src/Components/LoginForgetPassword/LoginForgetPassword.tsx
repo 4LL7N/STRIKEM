@@ -9,6 +9,7 @@ import LoginForgetEmailCodeCheck from "./LoginForgetEmailCodeCheck";
 
 function LoginForgetPassword() {
 
+  const [usersEmail,setUserEmail] = useState<string>("")
   const userSettingsBox = useAppSelector((state) => state.userSettingsBox);
   const dispatch = useAppDispatch();
   
@@ -22,11 +23,11 @@ function LoginForgetPassword() {
   const CheckEmailRef = useRef<HTMLInputElement|null>(null)
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const emailCheck = async () =>{
+  const emailCheck = async (email:string) =>{
     try{
       const response = await axios.post("https://strikem.site/users/get-code-forget/",
         {
-          email:CheckEmailRef.current?.value
+          email
         }
       )
       if(response.status == 200){
@@ -56,7 +57,8 @@ function LoginForgetPassword() {
     if(CheckEmailRef.current && CheckEmailRef.current?.value && reg.test(CheckEmailRef.current?.value)){
       setEmptyCheckEmailErr(false)
       setNotEmailCheckEmailErr("")
-      emailCheck()
+      setUserEmail(CheckEmailRef.current?.value)
+      emailCheck(CheckEmailRef.current?.value)
     }
 
   }
@@ -90,7 +92,8 @@ function LoginForgetPassword() {
     try{
       const response = await axios.post("https://strikem.site/users/verify-code-forget/",
         {
-          code
+          code,
+          email:usersEmail
         }
       )
       console.log(response);
@@ -154,8 +157,8 @@ function LoginForgetPassword() {
                   />
                 </div>
         
-          <CheckEmail emptyCheckEmailErr={emptyCheckEmailErr} CheckEmailRef={CheckEmailRef} notEmailCheckEmailErr={notEmailCheckEmailErr} />
-          <LoginForgetEmailCodeCheck LoginEmailCode={LoginEmailCode} emptyLoginEmailCodeErr={emptyLoginEmailCodeErr} uiExpire={uiExpire} />
+          {userSettingsBox.settingsPage == "emailCheck" && <CheckEmail emptyCheckEmailErr={emptyCheckEmailErr} CheckEmailRef={CheckEmailRef} notEmailCheckEmailErr={notEmailCheckEmailErr} />}
+          {userSettingsBox.settingsPage == "loginForgetPassword" && <LoginForgetEmailCodeCheck LoginEmailCode={LoginEmailCode} emptyLoginEmailCodeErr={emptyLoginEmailCodeErr} uiExpire={uiExpire} />}
           <div className="flex justify-center w-full pt-[32px] relative ">
             <p className="text-red-500 text-[12px] absolute top-0 translate-y-[30%] left-0 ">
                 {axiosError}{notEmailCheckEmailErr}

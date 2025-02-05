@@ -176,3 +176,20 @@ export interface SetNewPasswordPage{
 }
 
 ///SetNewPasswordPage
+
+export interface LoginForgetEmailCodeCheck{
+  LoginEmailCode:LegacyRef<HTMLInputElement>|null,
+  emptyLoginEmailCodeErr:boolean,
+  uiExpire:number
+}
+
+
+// LoginForgetEmailCodeCheck
+
+export interface CheckEmail {
+  emptyCheckEmailErr:boolean,
+  CheckEmailRef:LegacyRef<HTMLInputElement>|null,
+  notEmailCheckEmailErr:string
+}
+
+// CheckEmail
