@@ -53,7 +53,10 @@ const UserSettings = () => {
           userSettingsBox.settingsPage == "forget password"?
           <SetPasswordBox/>
           :
+          userSettingsBox.settingsPage == "delete account"?
           <DeleteAccountPage/>
+          :
+          null
         }
       </div>
     </div>

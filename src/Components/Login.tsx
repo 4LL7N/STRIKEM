@@ -7,6 +7,8 @@ import {
 import Cookies from 'js-cookie';
 import { IoMdClose } from "react-icons/io";
 import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
+import { useAppDispatch } from "../ReduxStore/ReduxHooks";
+import { setSetPasswordPage } from "../ReduxStore/features/userSettingsBox";
 
 
 function Login({loginBox,setLoginBox,setSignUpBox}:any) {
@@ -23,6 +25,8 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
   const [googleError, setGoogleError] = useState<string>("");
 
   const clientId = "350212676070-7iflui6iruag475r9hla0hq0amtkqvk4.apps.googleusercontent.com";
+
+  const dispatch = useAppDispatch()
 
   let emptyLogEmailErrChk = false;
   let emptyLogPassErrChk = false;
@@ -210,7 +214,7 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
           Login to your account
         </button>
         <div className="w-full flex flex-col gap-[12px] items-center" >
-        <p className="text-[15px] text-[#fab907] font-light cursor-pointer self-center " >forget password</p>
+        <p className="text-[15px] text-[#fab907] font-light cursor-pointer self-center " onClick={()=>{dispatch(setSetPasswordPage({open:true,settingsPage:"emailCheck"}))}} >forget password</p>
               <GoogleOAuthProvider clientId={clientId ?? ""}
               >
                 <GoogleLogin

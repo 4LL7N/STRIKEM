@@ -72,9 +72,6 @@ function DeleteAccountPage() {
 
     }
 
-    console.log(axiosError);
-    
-
   return (
     <section className="w-full mt-[24px]">
         <div

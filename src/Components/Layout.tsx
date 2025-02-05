@@ -356,12 +356,13 @@ function Layout(props: {
     {/* <button className="bg-white " onClick={ResultBox} >asdwe</button> */}
       
         {loginBox && <Login loginBox={loginBox} setLoginBox={setLoginBox} setSignUpBox={setSignUpBox} />}    
-        <LoginForgetPassword/>  
+        {userSettingsBox.open ?userSettingsBox.settingsPage == "emailCheck" || userSettingsBox.settingsPage == "loginForgetPassword" ?<LoginForgetPassword/>:null:null}  
         {signUpBox && <Signup signUpBox={signUpBox} setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />}
         {uploadRatingBox && <UploadRating uploadRatingBox={uploadRatingBox} />}
         {allReviewsBox.open && <AllReviews allReviewsBox={allReviewsBox} />}
         {location.state && <Reservation reservationBox={reservationBox} PoolInfo={location.state} />}
-        {userSettingsBox.open ?userSettingsBox.settingsPage == "emailCode" || userSettingsBox.settingsPage == "setPassword" ? <SetPasswordBox/>:<UserSettings/>:null}
+        {userSettingsBox.open ?userSettingsBox.settingsPage == "emailCode" || userSettingsBox.settingsPage == "setPassword" ?<SetPasswordBox/>:null:null}
+        {userSettingsBox.open ?userSettingsBox.settingsPage == "settings" || userSettingsBox.settingsPage == "change username" || userSettingsBox.settingsPage == "change password" || userSettingsBox.settingsPage == "forget password" ? <UserSettings/>:null:null}
         
       <div
         className={`w-[100vw] ${
