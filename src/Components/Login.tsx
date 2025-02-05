@@ -204,12 +204,13 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
               </p>
               <div className="w-full mb-[24px]" >
         <button
-          className="w-[100%] bg-[#fab907] rounded-[6px] py-[15px] text-[15px] text-[#FFF] font-light mb-[24px] hover:bg-[#FFF] hover:text-[#161D2F] "
+          className="w-[100%] bg-[#fab907] rounded-[6px] py-[15px] text-[15px] text-[#FFF] font-light mb-[12px] hover:bg-[#FFF] hover:text-[#161D2F] "
           onClick={() => {HandleLogin();}}
         >
           Login to your account
         </button>
-        <div className="w-full flex justify-center" >
+        <div className="w-full flex flex-col gap-[12px] items-center" >
+        <p className="text-[15px] text-[#fab907] font-light cursor-pointer self-center " >forget password</p>
               <GoogleOAuthProvider clientId={clientId ?? ""}
               >
                 <GoogleLogin

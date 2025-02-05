@@ -31,6 +31,7 @@ import LayoutHeader from "./LayoutMemo/LayoutHeader";
 import LoadingPage from "./LoadingPage";
 import UserSettings from "./UsersMemo/UserSettings";
 import SetPasswordBox from "./UsersMemo/userSettingsPage/SetPasswordBox";
+import LoginForgetPassword from "./LoginForgetPassword/LoginForgetPassword";
 
 const NotificationsBoxItemsMemo = lazy(() => import("./LayoutMemo/NotificationsBoxItemsMemo"));
 
@@ -354,7 +355,8 @@ function Layout(props: {
     <>
     {/* <button className="bg-white " onClick={ResultBox} >asdwe</button> */}
       
-        {loginBox && <Login loginBox={loginBox} setLoginBox={setLoginBox} setSignUpBox={setSignUpBox} />}      
+        {loginBox && <Login loginBox={loginBox} setLoginBox={setLoginBox} setSignUpBox={setSignUpBox} />}    
+        <LoginForgetPassword/>  
         {signUpBox && <Signup signUpBox={signUpBox} setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />}
         {uploadRatingBox && <UploadRating uploadRatingBox={uploadRatingBox} />}
         {allReviewsBox.open && <AllReviews allReviewsBox={allReviewsBox} />}
