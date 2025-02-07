@@ -81,9 +81,7 @@ function ChangeUserInfo() {
         console.log(Object.fromEntries(data.entries()));
         
         try{
-            await axios.patch(`https://strikem.site/api/players/${currentUser.id}/`,{
-                    data
-                },
+            await axios.patch(`https://strikem.site/api/players/${currentUser.id}/`,data,
                 {
                     headers: { Authorization: `JWT ${token}` },
                 }
