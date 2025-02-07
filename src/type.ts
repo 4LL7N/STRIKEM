@@ -1,3 +1,4 @@
+import { RefObject } from "@fullcalendar/core/preact.js";
 import { LegacyRef } from "react";
 
 export interface Player {
@@ -211,3 +212,12 @@ export interface ChangeUsername {
 }
 
 //ChangeUsername
+
+export interface ChangeProfilePicture {
+  fileRef:RefObject<HTMLInputElement>|null,
+  emptyFileError:boolean,
+  setSelectedFile:(selectedFile:File|null)=>void,
+  selectedFile:File|null
+}
+
+//ChangeProfilePicture
