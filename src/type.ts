@@ -202,3 +202,12 @@ export interface LoginForgetSetNewPassword{
 }
 
 // LoginForgetSetNewPassword
+
+export interface ChangeUsername {
+  emptyLogUsernameErr:boolean,
+  logUsername:LegacyRef<HTMLInputElement>|null,
+  emptyLogPassErr:boolean,
+  logPassword:LegacyRef<HTMLInputElement>|null
+}
+
+//ChangeUsername

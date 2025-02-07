@@ -30,7 +30,7 @@ import AllReviews from "./PoolMemo/AllReviews";
 import LayoutHeader from "./LayoutMemo/LayoutHeader";
 import LoadingPage from "./LoadingPage";
 import UserSettings from "./UsersMemo/UserSettings";
-import SetPasswordBox from "./UsersMemo/userSettingsPage/SetPasswordBox";
+import SetPasswordBox from "./UsersMemo/userSettingsPage/insideUserSettings/UserSettingsPage";
 import LoginForgetPassword from "./LoginForgetPassword/LoginForgetPassword";
 
 const NotificationsBoxItemsMemo = lazy(() => import("./LayoutMemo/NotificationsBoxItemsMemo"));
@@ -350,6 +350,7 @@ function Layout(props: {
   ])
 
 
+  
 
   return (
     <>
@@ -362,7 +363,7 @@ function Layout(props: {
         {allReviewsBox.open && <AllReviews allReviewsBox={allReviewsBox} />}
         {location.state && <Reservation reservationBox={reservationBox} PoolInfo={location.state} />}
         {userSettingsBox.open ?userSettingsBox.settingsPage == "emailCode" || userSettingsBox.settingsPage == "setPassword" ?<SetPasswordBox/>:null:null}
-        {userSettingsBox.open ?userSettingsBox.settingsPage == "settings" || userSettingsBox.settingsPage == "change username" || userSettingsBox.settingsPage == "change password" || userSettingsBox.settingsPage == "forget password" ? <UserSettings/>:null:null}
+        {userSettingsBox.open ?userSettingsBox.settingsPage == "settings" || userSettingsBox.settingsPage == "change username" || userSettingsBox.settingsPage == "change profile" || userSettingsBox.settingsPage == "change user" || userSettingsBox.settingsPage == "change password" || userSettingsBox.settingsPage == "forget password" || userSettingsBox.settingsPage == "delete account" ? <UserSettings/>:null:null}
         
       <div
         className={`w-[100vw] ${

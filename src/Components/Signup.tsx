@@ -152,7 +152,6 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
         from: "register"
       })
       
-      console.log(response.data);
       
       setSignUpBox(false)
       setGoogleError("")
@@ -195,7 +194,6 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
       setGoogleError("something went wrong")
       return
     }
-    console.log(e.credential);
     
     googleToBack(e.credential)
   };

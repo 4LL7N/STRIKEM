@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { IoIosArrowForward, IoMdClose } from "react-icons/io";
-import { useAppDispatch, useAppSelector } from "../../../ReduxStore/ReduxHooks";
-import { setSetPasswordPage, setSettingsPage, setUserSettingsBoxClose } from "../../../ReduxStore/features/userSettingsBox";
-import EmailCodeCheck from "./EmailCodeCheck";
+import { useAppDispatch, useAppSelector } from "../../../../ReduxStore/ReduxHooks";
+import { setSetPasswordPage, setSettingsPage, setUserSettingsBoxClose } from "../../../../ReduxStore/features/userSettingsBox";
+import EmailCodeCheck from "../EmailCodeCheck";
 import { useRef, useState } from "react";
 import axios from 'axios';
 import Cookies from "js-cookie";
-import SetNewPasswordPage from "./SetNewPasswordPage";
-import { setPasswordOnUser } from "../../../ReduxStore/features/currentUser";
+import SetNewPasswordPage from "../SetNewPasswordPage";
+import { setPasswordOnUser } from "../../../../ReduxStore/features/currentUser";
 
 function SetPasswordBox() {
     

@@ -2,8 +2,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRef, useState } from "react"
-import { useAppDispatch } from "../../../ReduxStore/ReduxHooks";
-import { setUserSettingsBoxClose } from "../../../ReduxStore/features/userSettingsBox";
+import { useAppDispatch } from "../../../../ReduxStore/ReduxHooks";
+import { setUserSettingsBoxClose } from "../../../../ReduxStore/features/userSettingsBox";
 
 function ChangePasswordPage() {
 

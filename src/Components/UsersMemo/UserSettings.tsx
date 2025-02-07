@@ -1,16 +1,24 @@
 import { IoIosArrowForward, IoMdClose } from "react-icons/io";
 import { useAppDispatch, useAppSelector } from "../../ReduxStore/ReduxHooks";
 import { setSettingsPage, setUserSettingsBoxClose } from "../../ReduxStore/features/userSettingsBox";
-import UserSettingsPage from "./userSettingsPage/UserSettingsPage";
-import ChangeUsernamePage from "./userSettingsPage/SettingsUsernamePage";
-import ChangePasswordPage from "./userSettingsPage/ChangePasswordPage";
-import DeleteAccountPage from "./userSettingsPage/DeleteAccountPage";
-import SetPasswordBox from "./userSettingsPage/SetPasswordBox";
+import UserSettingsPage from "./userSettingsPage/insideUserSettings/UserSettingsPage";
+import ChangeUserPage from "./userSettingsPage/insideUserSettings/changeUserInfo/SettingsUserPage";
+import ChangePasswordPage from "./userSettingsPage/insideUserSettings/ChangePasswordPage";
+import DeleteAccountPage from "./userSettingsPage/insideUserSettings/DeleteAccountPage";
+import SetPasswordBox from "./userSettingsPage/insideUserSettings/SetPasswordBox";
+import ChangeUserInfo from "./userSettingsPage/insideUserSettings/changeUserInfo/ChangeUserInfo";
 
 const UserSettings = () => {
   const userSettingsBox = useAppSelector((state) => state.userSettingsBox);
   const dispatch = useAppDispatch();
   
+  const goBack = () => {
+    if(userSettingsBox.settingsPage != "change username" && userSettingsBox.settingsPage != "change profile"){
+      dispatch(setSettingsPage("settings"))
+      return
+    }
+    dispatch(setSettingsPage("change user"))
+  }
 
   return (
     <div
@@ -21,7 +29,7 @@ const UserSettings = () => {
           <div className="flex gap-[2px] items-center" >
             {userSettingsBox.settingsPage != "settings"?
                 <>
-                  <IoIosArrowForward style={{color:"white",width:"24px",height:"24px"}} className=" rotate-180 cursor-pointer " onClick={()=>{dispatch(setSettingsPage("settings"))}} />
+                  <IoIosArrowForward style={{color:"white",width:"24px",height:"24px"}} className=" rotate-180 cursor-pointer " onClick={goBack} />
                   <h1 className="text-[20px] text-[#FFF] leading-6 ">{userSettingsBox.settingsPage}</h1> 
                 </> 
               :
@@ -43,9 +51,8 @@ const UserSettings = () => {
         {userSettingsBox.settingsPage == "settings"?
           <UserSettingsPage/>
           :
-          userSettingsBox.settingsPage == "change username"?
-          <ChangeUsernamePage/>
-          
+          userSettingsBox.settingsPage == "change user" ?
+          <ChangeUserPage/>
           :
           userSettingsBox.settingsPage == "change password"?
           <ChangePasswordPage/>
@@ -55,6 +62,9 @@ const UserSettings = () => {
           :
           userSettingsBox.settingsPage == "delete account"?
           <DeleteAccountPage/>
+          :
+          userSettingsBox.settingsPage == "change username" || userSettingsBox.settingsPage == "change profile"?
+          <ChangeUserInfo/>
           :
           null
         }

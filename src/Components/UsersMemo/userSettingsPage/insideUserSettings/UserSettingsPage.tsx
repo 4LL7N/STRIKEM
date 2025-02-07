@@ -1,12 +1,12 @@
 import { IoIosArrowForward } from "react-icons/io"
-import { useAppDispatch } from "../../../ReduxStore/ReduxHooks"
-import { setSettingsPage } from "../../../ReduxStore/features/userSettingsBox"
+import { useAppDispatch } from "../../../../ReduxStore/ReduxHooks"
+import { setSettingsPage } from "../../../../ReduxStore/features/userSettingsBox"
 
 function UserSettingsPage() {
 
   const possibleChanges = [
     {
-      name:'change username',
+      name:'change user',
       image:'/images/download.png'
     },
     {

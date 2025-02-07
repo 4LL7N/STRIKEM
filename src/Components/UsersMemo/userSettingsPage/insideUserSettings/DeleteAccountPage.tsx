@@ -2,10 +2,10 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRef, useState } from "react";
-import { useAppDispatch } from "../../../ReduxStore/ReduxHooks";
-import { setUserSettingsBoxClose } from "../../../ReduxStore/features/userSettingsBox";
-import { removeCurrentUser } from "../../../ReduxStore/features/currentUser";
-import { setUserLogIn } from "../../../ReduxStore/features/userLogIn";
+import { useAppDispatch } from "../../../../ReduxStore/ReduxHooks";
+import { setUserSettingsBoxClose } from "../../../../ReduxStore/features/userSettingsBox";
+import { removeCurrentUser } from "../../../../ReduxStore/features/currentUser";
+import { setUserLogIn } from "../../../../ReduxStore/features/userLogIn";
 import { useNavigate } from "react-router-dom";
 
 function DeleteAccountPage() {
