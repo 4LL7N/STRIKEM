@@ -193,3 +193,12 @@ export interface CheckEmail {
 }
 
 // CheckEmail
+
+export interface LoginForgetSetNewPassword{
+  emptyLogNewPasswordErr:boolean,
+  logNewPassword:LegacyRef<HTMLInputElement>|null,
+  emptyLogRepeatPasswordErr:boolean,
+  logRepeatPassword:LegacyRef<HTMLInputElement>|null
+}
+
+// LoginForgetSetNewPassword

@@ -356,7 +356,7 @@ function Layout(props: {
     {/* <button className="bg-white " onClick={ResultBox} >asdwe</button> */}
       
         {loginBox && <Login loginBox={loginBox} setLoginBox={setLoginBox} setSignUpBox={setSignUpBox} />}    
-        {userSettingsBox.open ?userSettingsBox.settingsPage == "emailCheck" || userSettingsBox.settingsPage == "loginForgetPassword" ?<LoginForgetPassword/>:null:null}  
+        {userSettingsBox.open ?userSettingsBox.settingsPage == "emailCheck" || userSettingsBox.settingsPage == "loginCodeCheck" || userSettingsBox.settingsPage == "loginSetPassword" ?<LoginForgetPassword/>:null:null}  
         {signUpBox && <Signup signUpBox={signUpBox} setSignUpBox={setSignUpBox} setLoginBox={setLoginBox} />}
         {uploadRatingBox && <UploadRating uploadRatingBox={uploadRatingBox} />}
         {allReviewsBox.open && <AllReviews allReviewsBox={allReviewsBox} />}
