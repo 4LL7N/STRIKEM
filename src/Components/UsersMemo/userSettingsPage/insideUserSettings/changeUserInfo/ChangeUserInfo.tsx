@@ -118,7 +118,7 @@ function ChangeUserInfo() {
     return (
       <section className="w-full mt-[24px]">
         {userSettingsBox.settingsPage == "change username" && <ChangeUsername emptyLogUsernameErr={emptyLogUsernameErr} logUsername={logUsername} emptyLogPassErr={emptyLogPassErr} logPassword={logPassword} />}
-        {userSettingsBox.settingsPage == "change profile" && <ChangeProfilePicture fileRef={fileRef} emptyFileError={emptyFileError} setSelectedFile={setSelectedFile} selectedFile={selectedFile} />}
+        {userSettingsBox.settingsPage == "change profile" || userSettingsBox.settingsPage == "Profile from Profile"? <ChangeProfilePicture fileRef={fileRef} emptyFileError={emptyFileError} setSelectedFile={setSelectedFile} selectedFile={selectedFile} />:null}
         <div className="w-full flex justify-center pt-[32px] relative " >
         <p className="text-red-500 text-[12px] absolute top-0 translate-y-[30%] ">
                   {axiosError}

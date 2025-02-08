@@ -29,8 +29,8 @@ const UserSettings = () => {
           <div className="flex gap-[2px] items-center" >
             {userSettingsBox.settingsPage != "settings"?
                 <>
-                  <IoIosArrowForward style={{color:"white",width:"24px",height:"24px"}} className=" rotate-180 cursor-pointer " onClick={goBack} />
-                  <h1 className="text-[20px] text-[#FFF] leading-6 ">{userSettingsBox.settingsPage}</h1> 
+                  <IoIosArrowForward style={{color:"white",width:"24px",height:"24px"}} className={` rotate-180 cursor-pointer ${userSettingsBox.settingsPage == "Profile from Profile" && "hidden"} `} onClick={goBack} />
+                  <h1 className="text-[20px] text-[#FFF] leading-6 ">{userSettingsBox.settingsPage == "Profile from Profile"?"change profile":userSettingsBox.settingsPage}</h1> 
                 </> 
               :
                 <h1 className="text-[32px] text-[#FFF]">User settings</h1>  
@@ -63,7 +63,7 @@ const UserSettings = () => {
           userSettingsBox.settingsPage == "delete account"?
           <DeleteAccountPage/>
           :
-          userSettingsBox.settingsPage == "change username" || userSettingsBox.settingsPage == "change profile"?
+          userSettingsBox.settingsPage == "change username" || userSettingsBox.settingsPage == "change profile" || userSettingsBox.settingsPage == "Profile from Profile"?
           <ChangeUserInfo/>
           :
           null
