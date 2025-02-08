@@ -28,7 +28,7 @@ function SetPasswordBox() {
 
   
 
-  const handleEmailCode = async ()=>{
+  const handleEmailCode = ()=>{
     if(emailCode.current && emailCode.current.value){
         
         sendEmailCode(emailCode.current.value)

@@ -3,6 +3,7 @@ import type { EmailCodeCheck } from "../../../type";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRef } from "react";
+import { useAppSelector } from "../../../ReduxStore/ReduxHooks";
 
 function EmailCodeCheck({
   emailCode,
@@ -12,14 +13,17 @@ function EmailCodeCheck({
   setAxiosError
 }: EmailCodeCheck) {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const currentUser = useAppSelector((state) => state.currentUser);  
 
   const sendCodeToEmail = async () => {
     const token = Cookies.get("token");
     timer();
     try {
       await axios.post(
-        "https://strikem.site/users/get-code/",
-        {},
+        "https://strikem.site/users/get-code-forget/",
+        {
+          email:currentUser.user.email
+        },
         {
           headers: { Authorization: `JWT ${token}` },
         }
