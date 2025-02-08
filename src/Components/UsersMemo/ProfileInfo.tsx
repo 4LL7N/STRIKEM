@@ -1,6 +1,6 @@
 import React from 'react'
 import UserStats from './UserStats';
-import { useAppDispatch, useAppSelector } from '../../ReduxStore/ReduxHooks';
+import { useAppDispatch} from '../../ReduxStore/ReduxHooks';
 import { setSetPasswordPage} from '../../ReduxStore/features/userSettingsBox';
 
 interface User {
@@ -24,9 +24,6 @@ interface Profile {
 
 const ProfileInfo = React.memo(({ userInfo }: { userInfo: Profile | null }) => {
  
-  const currentUser = useAppSelector((state) => state.currentUser);
-  console.log(userInfo);
-  console.log(currentUser);
   
   
   const dispatch = useAppDispatch();

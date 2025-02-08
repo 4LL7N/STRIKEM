@@ -72,7 +72,8 @@ function User() {
 
   useEffect(() => {
     Fetch();
-  }, []);
+  }, [location.pathname]);
+
 
   return (
     <main className="flex flex-col items-center bg-[#10141E] min-w-[100%] min-h-screen mt-[24px] md:pb-[120px]">
