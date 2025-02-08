@@ -12,6 +12,7 @@ function LoginForgetPassword() {
 
   const [usersEmail,setUserEmail] = useState<string>("")
   const userSettingsBox = useAppSelector((state) => state.userSettingsBox);
+  const [pending,setPending] = useState<boolean>(false)
   const dispatch = useAppDispatch();
 
   const goBack = () => {
@@ -63,6 +64,7 @@ function LoginForgetPassword() {
           email
         }
       )
+      setPending(false)
       if(response.status == 200){
         timer()
         dispatch(setSettingsPage("loginCodeCheck"))
@@ -92,6 +94,7 @@ function LoginForgetPassword() {
       setEmptyCheckEmailErr(false)
       setNotEmailCheckEmailErr("")
       setUserEmail(CheckEmailRef.current?.value)
+      setPending(true)
       emailCheck(CheckEmailRef.current?.value)
     }
 
@@ -114,6 +117,7 @@ function LoginForgetPassword() {
           email:usersEmail
         }
       )      
+      setPending(false)
       setLoginUuid(response.data.key)
       dispatch(setSettingsPage("loginSetPassword"))
     }catch(err:any){
@@ -134,6 +138,7 @@ function LoginForgetPassword() {
 
     if(LoginEmailCode.current && LoginEmailCode.current.value){
       setEmptyLoginEmailCodeErr(false)
+      setPending(true)
       codeCheck(LoginEmailCode.current.value)
     }
 
@@ -156,6 +161,7 @@ function LoginForgetPassword() {
           password
         }
       )
+      setPending(false)
       dispatch(setUserSettingsBoxClose())
     }catch(err:any){
       const errorArr = Object.values(err?.response.data);
@@ -186,6 +192,7 @@ function LoginForgetPassword() {
       setEmptyLogNewPasswordErr(false)
       setEmptyLogRepeatPasswordErr(false)
       setAxiosError("")
+      setPending(true)
       logNewPassword.current?.value && newPassword(logNewPassword.current?.value)
     }
 
@@ -234,11 +241,20 @@ function LoginForgetPassword() {
                 {axiosError}{notEmailCheckEmailErr}
               </p>
             <button
-              className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-[#FFF] font-light hover:bg-[#FFF] hover:text-[#161D2F] "
+              className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-[#FFF] font-light hover:bg-[#FFF] hover:text-[#161D2F] flex justify-center "
                 onClick={userSettingsBox.settingsPage == "emailCheck" ? emailCheckHandle:userSettingsBox.settingsPage == "loginCodeCheck"?codeCheckHandle:newPasswordHandle}
             >
-              {userSettingsBox.settingsPage == "emailCheck"?'Check Email':"submit"}
-              Check
+              
+              {pending?(
+                <div className="flex items-center">
+                <span>Loading</span>
+                <span className="ml-1 animate-dot1">.</span>
+                <span className="ml-1 animate-dot2">.</span>
+                <span className="ml-1 animate-dot3">.</span>
+              </div>
+              )
+              :
+              userSettingsBox.settingsPage == "emailCheck"?'Check Email':"submit"}
             </button>
           </div>
         </div>
