@@ -37,7 +37,7 @@ const ProfileInfo = React.memo(({ userInfo }: { userInfo: Profile | null }) => {
         alt="profile"
         className="w-[130px] md:w-[256px] lg:w-[256px] aspect-square rounded-[50%] "
       />
-      <div className=" absolute top-0 left-0 w-full h-full flex justify-center items-end cursor-pointer z-[10] rounded-[50%] hover:bg-[#0000006c] " onClick={(e)=>{e.stopPropagation();dispatch(setSetPasswordPage({open:true,settingsPage:"Profile from Profile"}))}} style={{opacity:0,transition: 'opacity 0.3s'}}  onMouseEnter={(e) => e.currentTarget.style.opacity = '1'} onMouseLeave={(e) => e.currentTarget.style.opacity = '0'} >
+      <div className={` absolute top-0 left-0 w-full h-full flex justify-center items-end cursor-pointer z-[10] rounded-[50%] hover:bg-[#0000006c] ${currentUser.id != userInfo?.id && "hidden"} `} onClick={(e)=>{e.stopPropagation();dispatch(setSetPasswordPage({open:true,settingsPage:"Profile from Profile"}))}} style={{opacity:0,transition: 'opacity 0.3s'}}  onMouseEnter={(e) => e.currentTarget.style.opacity = '1'} onMouseLeave={(e) => e.currentTarget.style.opacity = '0'} >
     <span className="text-white bg-[#5a5a5a] text-[10px] md:text-[16px] px-[8px] py-[4px] rounded-[20px] translate-y-[120%] "  >Change profile picture</span>  
   </div>
       </div>
