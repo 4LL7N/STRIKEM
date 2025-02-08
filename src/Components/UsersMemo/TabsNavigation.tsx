@@ -1,6 +1,6 @@
 import React from 'react'
 import History from './History';
-
+import "../CSS/tabNavigation.css"
 
 interface User {
     id: number;
@@ -63,7 +63,7 @@ const TabsNavigation = React.memo(({ gameHistory, winHistory, loseHistory, userI
       <nav>
         <div className="nav nav-tabs" id="nav-tab" role="tablist">
         <button
-                className="nav-link active  "
+                className="nav-link active text-[#fab907] hover:text-[#fab907] hover:border-[#fab907] "
                 id="nav-home-tab"
                 data-bs-toggle="tab"
                 data-bs-target="#nav-home"
@@ -75,7 +75,7 @@ const TabsNavigation = React.memo(({ gameHistory, winHistory, loseHistory, userI
                 Games
               </button>
               <button
-                className="nav-link"
+                className="nav-link text-[#fab907] hover:text-[#fab907] hover:border-[#fab907]"
                 id="nav-profile-tab"
                 data-bs-toggle="tab"
                 data-bs-target="#nav-profile"
@@ -87,7 +87,7 @@ const TabsNavigation = React.memo(({ gameHistory, winHistory, loseHistory, userI
                 Wins
               </button>
               <button
-                className="nav-link"
+                className="nav-link text-[#fab907] hover:text-[#fab907] hover:border-[#fab907] "
                 id="nav-contact-tab"
                 data-bs-toggle="tab"
                 data-bs-target="#nav-contact"
