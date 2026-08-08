@@ -62,7 +62,8 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
   const Login = async () => {
     try {
       const response = await axios.post(
-        "https://strikem.site/auth/jwt/create",
+        // "https://strikem.site/auth/jwt/create",
+        "http://localhost:5100/auth/jwt/create",
         {
           username: logUsername.current?.value,
           password: logPassword.current.value,
@@ -95,7 +96,8 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
 
   const googleToBack = async (googleToken:string) => {
     try{
-      const response = await axios.post("https://strikem.site/users/google-auth/", {
+      // const response = await axios.post("https://strikem.site/users/google-auth/", {
+      const response = await axios.post("http://localhost:5100/users/google-auth/", {
         id_token: googleToken,
       })
       // console.log(response);

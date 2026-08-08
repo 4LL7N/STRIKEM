@@ -25,7 +25,8 @@ function ChangeUserInfo() {
     const updateUsername = async ()=>{
       const token = Cookies.get("token");
       try{
-        await axios.post("https://strikem.site/auth/users/set_username/",
+        // await axios.post("https://strikem.site/auth/users/set_username/",
+        await axios.post("http://localhost:5100/auth/users/set_username/",
           {
   
               current_password:logPassword.current?.value ,
@@ -81,7 +82,8 @@ function ChangeUserInfo() {
         console.log(Object.fromEntries(data.entries()));
         
         try{
-            await axios.patch(`https://strikem.site/api/players/${currentUser.id}/`,data,
+            // await axios.patch(`https://strikem.site/api/players/${currentUser.id}/`,data,
+            await axios.patch(`http://localhost:5100/api/players/${currentUser.id}/`,data,
                 {
                     headers: { Authorization: `JWT ${token}` },
                 }

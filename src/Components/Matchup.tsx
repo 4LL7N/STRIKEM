@@ -103,7 +103,8 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
     const fetchPlayers = async(newFilter:number[],IsOn:boolean|null)=>{
       const token = Cookies.get("token");
       
-      const url = `https://strikem.site/api/filter-ratings/${newFilter.length !=0?'?':''}${newFilter.includes(2)?'filter=rating':''}${newFilter.length==2?"&":""}${newFilter.includes(1)?"filter_location=true":""}`
+      // const url = `https://strikem.site/api/filter-ratings/${newFilter.length !=0?'?':''}${newFilter.includes(2)?'filter=rating':''}${newFilter.length==2?"&":""}${newFilter.includes(1)?"filter_location=true":""}`
+      const url = `http://localhost:5100/api/filter-ratings/${newFilter.length !=0?'?':''}${newFilter.includes(2)?'filter=rating':''}${newFilter.length==2?"&":""}${newFilter.includes(1)?"filter_location=true":""}`
       const playersResponse = await axios(url,{
         headers: { Authorization: `JWT ${token}` },
       })
@@ -116,13 +117,16 @@ const Fetch = useCallback(async () => {
     const token = Cookies.get("token");
     try {
         const [playersResponse, matchMakesResponse, invitationsResponse] = await Promise.all([
-            axios.get("https://strikem.site/api/filter-ratings/", {
+            // axios.get("https://strikem.site/api/filter-ratings/", {
+            axios.get("http://localhost:5100/api/filter-ratings/", {
               headers: { Authorization: `JWT ${token}` },
             }),
-            axios.get("https://strikem.site/api/matchups/", {
+            // axios.get("https://strikem.site/api/matchups/", {
+            axios.get("http://localhost:5100/api/matchups/", {
               headers: { Authorization: `JWT ${token}` },
             }),
-            axios.get(`https://strikem.site/api/player-details/`, {
+            // axios.get(`https://strikem.site/api/player-details/`, {
+            axios.get(`http://localhost:5100/api/player-details/`, {
               headers: { Authorization: `JWT ${token}` },
             }),
           ]);
@@ -303,7 +307,8 @@ const Fetch = useCallback(async () => {
     setIsSpinning(true); 
     const token = Cookies.get("token");
     try {
-      const response = await axios(`https://strikem.site/api/filter-ratings/?${filter.includes(2)?'filter=rating':''}${filter.length==2?"&":""}${filter.includes(1)?"filter_location=true":""}`,{
+      // const response = await axios(`https://strikem.site/api/filter-ratings/?${filter.includes(2)?'filter=rating':''}${filter.length==2?"&":""}${filter.includes(1)?"filter_location=true":""}`,{
+      const response = await axios(`http://localhost:5100/api/filter-ratings/?${filter.includes(2)?'filter=rating':''}${filter.length==2?"&":""}${filter.includes(1)?"filter_location=true":""}`,{
         headers: { Authorization: `JWT ${token}` },
       })
       let PlayersData:Player[] = [...response.data]

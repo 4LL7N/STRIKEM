@@ -122,9 +122,13 @@ function Pool() {
   const Fetch = async () => {
     try {
       const [ratingResponse,poolResponse,tableResponse] = await Promise.all([
-        axios.get(`https://strikem.site/api/poolhouses/${id}/ratings/`),
-        axios.get(`https://strikem.site/api/poolhouses/${id}/`),
-        axios.get(`https://strikem.site/api/poolhouses/${id}/tables/`)
+        // axios.get(`https://strikem.site/api/poolhouses/${id}/ratings/`),
+        axios.get(`http://localhost:5100/api/poolhouses/${id}/ratings/`),
+        // axios.get(`https://strikem.site/api/poolhouses/${id}/`),
+        axios.get(`http://localhost:5100/api/poolhouses/${id}/`),
+        // axios.get(`https://strikem.site/api/poolhouses/${id}/tables/`)
+        axios.get(`http://localhost:5100/api/poolhouses/${id}/tables/`)
+
       ])
          
       setPoolInfo(poolResponse.data)
@@ -473,7 +477,8 @@ function Pool() {
   const fetchNewRatings = async () => {
     try {
       const response = await axios.get(
-        `https://strikem.site/api/poolhouses/${id}/ratings/`
+        // `https://strikem.site/api/poolhouses/${id}/ratings/`
+        `http://localhost:5100/api/poolhouses/${id}/ratings/`
       );
       setRatings(response.data.results);
       dispatch(setUploadRatingBox({open:false,id:0,name:""}))

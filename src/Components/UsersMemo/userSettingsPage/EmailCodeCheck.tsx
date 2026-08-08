@@ -20,7 +20,8 @@ function EmailCodeCheck({
     timer();
     try {
       await axios.post(
-        "https://strikem.site/users/get-code-forget/",
+        // "https://strikem.site/users/get-code-forget/",
+        "http://localhost:5100/users/get-code-forget/",
         {
           email:currentUser.user.email
         },

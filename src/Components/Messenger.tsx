@@ -112,7 +112,8 @@ function Messenger() {
     
    
     try {
-      const response = await axios("https://strikem.site/api/matchups/", {
+      // const response = await axios("https://strikem.site/api/matchups/", {
+      const response = await axios("http://localhost:5100/api/matchups/", {
         headers: {
           Authorization: `JWT ${token}`,
         },
@@ -138,7 +139,8 @@ function Messenger() {
     async (id: string) => {
       try {
         const Chatresponse = await axios(
-          `https://strikem.site/api/matchups/${id}/chat/`,
+          // `https://strikem.site/api/matchups/${id}/chat/`,
+          `http://localhost:5100/api/matchups/${id}/chat/`,
           { headers: { Authorization: `JWT ${token}` } }
         );
         const chatData = Chatresponse.data.results;
@@ -237,7 +239,8 @@ function Messenger() {
 
   const readChat = async (id: string) => {
     await axios.put(
-      `https://strikem.site/api/read-matchup/${id}/`,
+      // `https://strikem.site/api/read-matchup/${id}/`,
+      `http://localhost:5100/api/read-matchup/${id}/`,
       {},
       {
         headers: { Authorization: `JWT ${token}` },

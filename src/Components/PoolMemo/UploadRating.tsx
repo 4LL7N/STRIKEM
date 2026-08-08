@@ -16,7 +16,8 @@ const UploadRating = memo(({uploadRatingBox}:{uploadRatingBox:RatingBoxState}) =
     const postRating = async () => {
       const token = Cookies.get("token");
       try{
-        await axios.post(`https://strikem.site/api/poolhouses/${uploadRatingBox.id}/ratings/`,{
+        // await axios.post(`https://strikem.site/api/poolhouses/${uploadRatingBox.id}/ratings/`,{
+        await axios.post(`http://localhost:5100/api/poolhouses/${uploadRatingBox.id}/ratings/`,{
           rate:selectedStars,
           review:ratingDescription
         }, {

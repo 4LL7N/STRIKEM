@@ -51,11 +51,13 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const triggerConnection = () => {
     const fetchWsToken = async () => {
       try {
-        const response = await axios("https://strikem.site/users/auth_for_ws_connection/", {
+        // const response = await axios("https://strikem.site/users/auth_for_ws_connection/", {
+        const response = await axios("http://localhost:5100/users/auth_for_ws_connection/", {
           headers: { Authorization: `JWT ${token}` },
         });
         if (response.data.uuid) {
-          setWsUrl(`wss://strikem.site/ws/base/?uuid=${response.data.uuid}`);
+          // setWsUrl(`wss://strikem.site/ws/base/?uuid=${response.data.uuid}`);
+          setWsUrl(`ws://localhost:5100/ws/base/?uuid=${response.data.uuid}`);
         } else {
           console.error("Cannot connect: Token is missing.");
         }

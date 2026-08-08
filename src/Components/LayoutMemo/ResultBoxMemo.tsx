@@ -59,7 +59,8 @@ const ResultBoxMemo = memo(
       const token = Cookies.get("token");
       try {
         const CurrentSessionResponse = await axios(
-          `https://strikem.site/api/game-session/${sessionId}/`,
+          // `https://strikem.site/api/game-session/${sessionId}/`,
+          `http://localhost:5100/api/game-session/${sessionId}/`,
           {
             headers: { Authorization: `JWT ${token}` },
           }
@@ -76,7 +77,8 @@ const ResultBoxMemo = memo(
       
       try {
         const response = await axios.post(
-          `https://strikem.site/api/players/${currentUser?.id}/history/`,
+          // `https://strikem.site/api/players/${currentUser?.id}/history/`,
+          `http://localhost:5100/api/players/${currentUser?.id}/history/`,
           {
             game_session: sessionId,
             winner_player: yourPoints > opponentsPoints ? currentUser?.id : currentUser?.id==currentSession?.players[0]?.id? currentSession?.players[1]?.id:currentSession?.players[0]?.id,
@@ -114,7 +116,7 @@ const ResultBoxMemo = memo(
     return (
       <div
         className={` z-[1000] flex flex-col gap-[3px] py-[8px] px-[16px] rounded-[52px] absolute top-[40px] left-[50%] translate-x-[-50%] w-[80%] md:w-[60%] transition-transform duration-1000 border-1 border-[#2a3759] ${
-          openResultBox ? " translate-y-[0] " : " translate-y-[-200%] "
+          openResultBox ? " translate-y-[100%] " : " translate-y-[-200%] "
         } bg-[#161d2f] `}
       >
         <div className="flex justify-between items-center">

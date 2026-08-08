@@ -59,7 +59,8 @@ function LoginForgetPassword() {
 
   const emailCheck = async (email:string) =>{
     try{
-      const response = await axios.post("https://strikem.site/users/get-code-forget/",
+      // const response = await axios.post("https://strikem.site/users/get-code-forget/",
+      const response = await axios.post("http://localhost:5100/users/get-code-forget/",
         {
           email
         }
@@ -111,7 +112,8 @@ function LoginForgetPassword() {
 
   const codeCheck =  async (code:string) =>{
     try{
-      const response = await axios.post("https://strikem.site/users/verify-code-forget/",
+      // const response = await axios.post("https://strikem.site/users/verify-code-forget/",
+      const response = await axios.post("http://localhost:5100/users/verify-code-forget/",
         {
           code,
           email:usersEmail
@@ -154,7 +156,8 @@ function LoginForgetPassword() {
 
   const newPassword = async (password:string) => {
     try{
-      await axios.post("https://strikem.site/users/set-forget-password/",
+      // await axios.post("https://strikem.site/users/set-forget-password/",
+      await axios.post("http://localhost:5100/users/set-forget-password/",
         {
           email:usersEmail,
           key:loginUuid,

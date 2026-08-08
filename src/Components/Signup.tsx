@@ -113,7 +113,8 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
 
   const signUp = async () => {
     try {
-      await axios.post("https://strikem.site/auth/users/", {
+      // await axios.post("https://strikem.site/auth/users/", {
+      await axios.post("http://localhost:5100/auth/users/", {
         username: userName.current?.value,
         password: password.current?.value,
         email: email.current?.value,
@@ -147,7 +148,8 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
 
   const googleToBack = async (id_token:string) => {
     try{
-      const response = await axios.post("https://strikem.site/users/google-auth/", {
+      // const response = await axios.post("https://strikem.site/users/google-auth/", {
+      const response = await axios.post("http://localhost:5100/users/google-auth/", {
         id_token,
         from: "register"
       })

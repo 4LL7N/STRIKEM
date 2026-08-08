@@ -25,7 +25,8 @@ const LayoutHeader = memo(({setNotificationsOpen,setNotifications,headerHeight,u
         const token = Cookies.get("token");
         try {
           const response = await axios.get(
-            "https://strikem.site/api/notifications/",
+            // "https://strikem.site/api/notifications/",
+            "http://localhost:5100/api/notifications/",
             {
               headers: { Authorization: `JWT ${token}` },
             }

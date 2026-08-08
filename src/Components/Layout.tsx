@@ -109,7 +109,8 @@ function Layout(props: {
     try {
       if (token && token != "logout") {
         const currentUserResponse = await axios.get(
-          "https://strikem.site/users/current-user",
+          // "https://strikem.site/users/current-user",
+          "http://localhost:5100/users/current-user",
           {
             headers: { Authorization: `JWT ${token}` },
           }
@@ -157,12 +158,14 @@ function Layout(props: {
     const token = Cookies.get("token");
     try {
       const [unreadMatchUps,unreadNotifications] = await Promise.all([
-        axios.get("https://strikem.site/api/unread-matchups/",
+        // axios.get("https://strikem.site/api/unread-matchups/",
+        axios.get("http://localhost:5100/api/unread-matchups/",
           {
             headers: { Authorization: `JWT ${token}` },
           }
         ),
-        axios.get("https://strikem.site/api/unread-notifications/",
+        // axios.get("https://strikem.site/api/unread-notifications/",
+        axios.get("http://localhost:5100/api/unread-notifications/",
           {
             headers: { Authorization: `JWT ${token}` },
           }
@@ -296,7 +299,8 @@ function Layout(props: {
     const token = Cookies.get("token");
     try {
       await axios.put(
-        "https://strikem.site/api/mark-all-read/",
+        // "https://strikem.site/api/mark-all-read/",
+        "http://localhost:5100/api/mark-all-read/",
         {},
         {
           headers: { Authorization: `JWT ${token}` },

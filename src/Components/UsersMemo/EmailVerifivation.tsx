@@ -9,7 +9,8 @@ function EmailVerifivation() {
   const verifyEmail = async () => {
     try {
       const response = await axios(
-        `https://strikem.site/users/activate/${uid}/${token}/`
+        // `https://strikem.site/users/activate/${uid}/${token}/`
+        `http://localhost:5100/users/activate/${uid}/${token}/`
       );
       if (response.status === 200) {
         setVerified(1);

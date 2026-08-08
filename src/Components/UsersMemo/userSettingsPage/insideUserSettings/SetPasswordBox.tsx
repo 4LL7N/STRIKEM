@@ -41,7 +41,8 @@ function SetPasswordBox() {
   const sendEmailCode = async (code:string) =>{
     const token = Cookies.get("token");
     try{
-        const response = await axios.post("https://strikem.site/users/verify-code/",{
+        // const response = await axios.post("https://strikem.site/users/verify-code/",{
+        const response = await axios.post("http://localhost:5100/users/verify-code/",{
                 code
             },
             {
@@ -75,7 +76,8 @@ function SetPasswordBox() {
   const sendNewPassword = async () => {
     const token = Cookies.get("token");
     try{
-        axios.post('https://strikem.site/users/set-g-password/',{
+        // axios.post('https://strikem.site/users/set-g-password/',{
+        axios.post('http://localhost:5100/users/set-g-password/',{
                 key,
                 password:newPassword.current?.value
             },

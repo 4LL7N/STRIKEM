@@ -39,7 +39,8 @@ function Home(props: { search: string }) {
   const fetchData = useCallback(async () => {
     try {
       const response = await axios.get(
-        "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316"
+        // "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316"
+        "http://localhost:5100/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316"
         // {
         //   headers: { Authorization: `JWT ${token}` },
         // }
@@ -48,7 +49,8 @@ function Home(props: { search: string }) {
       setNearby(response.data);
 
       const PoolHousesResponse = await axios.get(
-        "https://strikem.site/api/poolhouses/",
+        // "https://strikem.site/api/poolhouses/",
+        "http://localhost:5100/api/poolhouses/",
         {
           // headers: { Authorization: `JWT ${token}` },
         }

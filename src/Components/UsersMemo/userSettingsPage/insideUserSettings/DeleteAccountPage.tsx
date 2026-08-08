@@ -34,7 +34,8 @@ function DeleteAccountPage() {
       const token = Cookies.get("token");
 
       try{
-        await axios.post("https://strikem.site/users/delete-user/",
+        // await axios.post("https://strikem.site/users/delete-user/",
+        await axios.post("http://localhost:5100/users/delete-user/",
           {
             password:password.current?.value,
           },
