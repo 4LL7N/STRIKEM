@@ -1,6 +1,26 @@
 import { RefObject } from "@fullcalendar/core/preact.js";
 import { LegacyRef } from "react";
 
+//#region Home
+export interface GeoLocation {
+  coords: GeoLocationCoords | undefined;
+  isGeolocationAvailable: boolean;
+  isGeolocationEnabled: boolean;
+}
+
+export interface GeoLocationCoords {
+  latitude: number;
+  longitude: number;
+  altitude: number | null;
+  accuracy: number;
+  altitudeAccuracy: number | null;
+  heading: number | null;
+  speed: number | null;
+}
+
+//#endregion
+
+//#region Layout
 export interface Player {
     id: number;
     games_played: number;
@@ -39,9 +59,9 @@ interface SentBy {
     total_points: number;
     user: User;
 }
+//#endregion
 
-// Layout
-
+//#region Pool
 export interface rating {
   id: number;
   poolhouse: {
@@ -102,17 +122,17 @@ export interface Picture {
   id: number;
   image: string;
 }
+//#endregion
 
-// Pool
-
+//#region uploadRatingsBox
 export interface RatingBoxState {
     open: boolean,
     id:number,
     name:string
 }
-
-//uploadRatingsBox
+//#endregion
   
+//#region user
  export interface GameResult {
     winner_player: SentBy;
     loser_player: SentBy;
@@ -124,9 +144,9 @@ export interface RatingBoxState {
     timestamp: string; 
     poolhouse: PoolHall;
   }
+//#endregion 
 
-// user
-
+//#region Messenger
 export interface chatMessage {
   after_outdated?: boolean;
   body: string;
@@ -141,11 +161,9 @@ interface Sender {
   total_points?: number;
   user?: User;
 }
+//#endregion 
 
-
-
-// Messenger
-
+//#region LayoutHeader
 export interface LayoutHeaderProps {
   setNotificationsOpen: (notificationsOpen: boolean | ((prev: boolean) => boolean)) => void; 
   setNotifications:(notifications:Message[])=>void,
@@ -156,9 +174,9 @@ export interface LayoutHeaderProps {
   setLoginBox:(loginBox:boolean)=>void;
   setSignUpBox:(loginBox:boolean)=>void
 }
+//#endregion
 
-//LayoutHeader
-
+//#region EmailCodeCheck
 export interface EmailCodeCheck{
   emptyEmailCodeErr:boolean,
   emailCode:LegacyRef<HTMLInputElement> |null,
@@ -166,58 +184,56 @@ export interface EmailCodeCheck{
   setUiExpire:(uiExpire:number)=>void,
   setAxiosError:(axiosError:string)=>void
 }
+//#endregion
 
-//EmailCodeCheck
-
+//#region SetNewPasswordPage
 export interface SetNewPasswordPage{
   emptyNewPasswordErr:boolean,
   newPassword:LegacyRef<HTMLInputElement>|null,
   emptyRepeatPasswordErr:boolean,
   repeatPassword:LegacyRef<HTMLInputElement>|null
 }
+//#endregion
 
-///SetNewPasswordPage
-
+//#region LoginForgetEmailCodeCheck
 export interface LoginForgetEmailCodeCheck{
   LoginEmailCode:LegacyRef<HTMLInputElement>|null,
   emptyLoginEmailCodeErr:boolean,
   uiExpire:number
 }
+//#endregion
 
-
-// LoginForgetEmailCodeCheck
-
+//#region CheckEmail
 export interface CheckEmail {
   emptyCheckEmailErr:boolean,
   CheckEmailRef:LegacyRef<HTMLInputElement>|null,
   notEmailCheckEmailErr:string
 }
+//#endregion
 
-// CheckEmail
-
+//#region LoginForgetSetNewPassword
 export interface LoginForgetSetNewPassword{
   emptyLogNewPasswordErr:boolean,
   logNewPassword:LegacyRef<HTMLInputElement>|null,
   emptyLogRepeatPasswordErr:boolean,
   logRepeatPassword:LegacyRef<HTMLInputElement>|null
 }
+//#endregion
 
-// LoginForgetSetNewPassword
-
+//#region ChangeUsername
 export interface ChangeUsername {
   emptyLogUsernameErr:boolean,
   logUsername:LegacyRef<HTMLInputElement>|null,
   emptyLogPassErr:boolean,
   logPassword:LegacyRef<HTMLInputElement>|null
 }
+//#endregion
 
-//ChangeUsername
-
+//#region ChangeProfilePicture
 export interface ChangeProfilePicture {
   fileRef:RefObject<HTMLInputElement>|null,
   emptyFileError:boolean,
   setSelectedFile:(selectedFile:File|null)=>void,
   selectedFile:File|null
 }
-
-//ChangeProfilePicture
+//#endregion

@@ -21,7 +21,8 @@ const Pool = lazy(() => import("./Components/Pool"));
 const Messenger = lazy(() => import("./Components/Messenger"));
 const Matchup = lazy(() => import("./Components/Matchup"));
 // const EmailVerification = lazy(() => import("./Components/UsersMemo/EmailVerifivation"));
-
+import { useGeolocated } from "react-geolocated";
+import { GeoLocation } from './type';
 
 function App() {  
 
@@ -29,6 +30,14 @@ function App() {
   const [usersSearch,setUsersSearch] = useState<string>('')
   const [logOut, setLogOut] = useState<boolean>(false)
   const [acceptInvitation,setAcceptInvitation] = useState<number>(0)
+
+  const { coords, isGeolocationAvailable, isGeolocationEnabled }:GeoLocation =
+      useGeolocated({
+        positionOptions: {
+          enableHighAccuracy: true,
+        },
+        userDecisionTimeout: 5000,
+      });
 
   const router = createBrowserRouter([
     {
@@ -55,7 +64,7 @@ function App() {
           path: "/home",
           element: (
             <Suspense fallback={<LoadingPage />}>
-              <Home search={search} />
+              <Home search={search} coords={coords} isGeolocationAvailable={isGeolocationAvailable} isGeolocationEnabled={isGeolocationEnabled} />
             </Suspense>
           ),
         },
@@ -63,7 +72,7 @@ function App() {
           path: "/Pools/:Pool",
           element: (
             <Suspense fallback={<LoadingPage />}>
-              <Pool />
+              <Pool coords={coords} isGeolocationAvailable={isGeolocationAvailable} isGeolocationEnabled={isGeolocationEnabled} />
             </Suspense>
           ),
         },

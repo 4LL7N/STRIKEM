@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import "./CSS/home.css";
 import { MdTableRestaurant } from "react-icons/md";
 import { CiStar } from "react-icons/ci";
+import { GeoLocation, GeoLocationCoords } from "../type";
 
 interface PoolHall {
   id: number;
@@ -27,20 +28,22 @@ interface Picture {
   image: string;
 }
 
-function Home(props: { search: string }) {
+function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeolocationAvailable:boolean, isGeolocationEnabled:boolean }) {
   const navigate = useNavigate();
   const [nearby, setNearby] = useState<PoolHall[]>([]);
   const [recommended, setRecommended] = useState<PoolHall[]>([]);
 
-  useEffect(() => {
+  const { coords, isGeolocationAvailable, isGeolocationEnabled }:GeoLocation = props;
+
+  // useEffect(() => {
     // window.location.reload()
-  }, []);
+  // }, []);
 
   const fetchData = useCallback(async () => {
     try {
       const response = await axios.get(
         // "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316"
-        "http://localhost:5100/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316"
+        `http://localhost:5100/api/poolhouses-filter/?lat=${coords?.latitude}&lng=${coords?.longitude}`
         // {
         //   headers: { Authorization: `JWT ${token}` },
         // }
@@ -63,7 +66,12 @@ function Home(props: { search: string }) {
   }, []);
 
   useEffect(() => {
-    fetchData();
+    console.log("Geolocation Available:", isGeolocationAvailable);
+    console.log("Geolocation Enabled:", isGeolocationEnabled);
+    console.log("Coordinates:", coords);
+    if (isGeolocationAvailable && isGeolocationEnabled) {
+      fetchData();
+    }
   }, [fetchData]);
 
   const filteredSearchResults = useMemo(() => {
@@ -83,6 +91,7 @@ function Home(props: { search: string }) {
     <>
       {!props.search ? (
         <section className="flex flex-col w-[100%] bg-[#10141E] px-[16px] pb-[16px] md:pb-[0] md:px-[0]">
+          {(isGeolocationAvailable && isGeolocationEnabled)??
           <div className="max-w-[100%] ">
             <h1 className="text-[#FFF] text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] ">
               Nearby
@@ -125,6 +134,7 @@ function Home(props: { search: string }) {
               })}
             </div>
           </div>
+           }
           <div>
             <h1 className="text-[#FFF] text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] lg:mb-[32px]">
               Recommended for you

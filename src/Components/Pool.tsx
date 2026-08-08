@@ -16,7 +16,6 @@ import { FaBuilding } from "react-icons/fa6";
 
 import Cookies from "js-cookie";
 import { MapContainer, Marker, TileLayer, Tooltip } from "react-leaflet";
-import { useGeolocated } from "react-geolocated";
 import { useWebSocketContext } from "./Websocket";
 import ReservationOnTable from "./PoolMemo/ReservationOnTable";
 import { useAppDispatch, useAppSelector } from "../ReduxStore/ReduxHooks";
@@ -79,15 +78,10 @@ const markerIcon = new L.Icon({
   iconAnchor: [12, 41],
 });
 
-function Pool() {
-  const { coords, isGeolocationAvailable, isGeolocationEnabled } =
-    useGeolocated({
-      positionOptions: {
-        enableHighAccuracy: false,
-      },
-      userDecisionTimeout: 5000,
-    });
-
+function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnabled:any}) {
+  
+  const { coords, isGeolocationAvailable, isGeolocationEnabled } = props;
+  
   const { lastJsonMessage } = useWebSocketContext();
 
   const location = useLocation();
