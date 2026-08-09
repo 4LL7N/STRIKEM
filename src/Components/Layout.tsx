@@ -52,7 +52,7 @@ function Layout(props: {
   acceptInvitation: number;
   setAcceptInvitation: (acceptInvatation: number) => void;
 }) {
-  const { sendJsonMessage, lastJsonMessage } =
+  const { sendJsonMessage, lastJsonMessage, subscribe } =
     useWebSocketContext();
   const navigate = useNavigate();
   const location = useLocation();
@@ -276,17 +276,18 @@ function Layout(props: {
   // };
   
   useEffect(() => {
-    if (lastJsonMessage) {
-      if(lastJsonMessage?.protocol == "now_free") {
-        localStorage.setItem("sessionId", lastJsonMessage.game_session_id);
+    const unsubscribe = subscribe((data: any) => {
+      if(data?.protocol == "now_free") {
+        localStorage.setItem("sessionId", data.game_session_id);
         setOpenResultBox(true);
       }
-      if(lastJsonMessage?.update_message_count) {
+      if(data?.update_message_count) {
         dispatch(unReadMatchupIncrement());
         // setUnReadMatchUps((prev:number):number => prev + 1);
       }
-    }
-  }, [lastJsonMessage]);
+    });
+    return unsubscribe;
+  }, [subscribe]);
 
   const AllRead = async () => {
     const token = Cookies.get("token");
