@@ -353,7 +353,11 @@ function Messenger() {
 
   useEffect(() => {
     const unsubscribe = subscribe((data: any) => {
-      console.log(data);
+      // sendMessage() already adds the message to chat/messages optimistically the instant you
+      // hit send, before the server round-trip. The backend then broadcasts it back to the
+      // sender too, so without this guard it gets added a second time here - this is what was
+      // causing the duplicate bubble.
+      if (data.sender_player_id == currentUser.id) return;
 
       if (data.matchup_id == MatchUpId) {
         const lastMessage = {
