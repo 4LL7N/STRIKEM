@@ -226,11 +226,18 @@ function Layout(props: {
 
   useEffect(() => {
     if (location.pathname.includes("Pool")) {
-      sendJsonMessage({
-        protocol: "initial",
-        action: "poolhouse",
-        poolhouseName: location.state.slug,
-      });
+      // location.state is only set when navigating in-app via <Link>/navigate(url, {state}) - a
+      // direct URL load or a refresh on a Pool page has no state at all, and reading .slug off
+      // null crashed the whole app (this is what was happening - not anything to do with the pool
+      // table map itself). Pool.tsx's own mount effect re-fetches the poolhouse fresh from the API
+      // in that case; skip this WS init message rather than crash when state isn't there yet.
+      if (location.state?.slug) {
+        sendJsonMessage({
+          protocol: "initial",
+          action: "poolhouse",
+          poolhouseName: location.state.slug,
+        });
+      }
     } else if (location.pathname === "/messenger") {
       sendJsonMessage({
         protocol: "initial",

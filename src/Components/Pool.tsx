@@ -103,12 +103,18 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
     return 1;
   })
 
-  const avgRating = location.state.avg_rating;
+  // location.state is only set when navigating in-app via navigate(url, {state}) (see Home.tsx) -
+  // a direct URL load or a page refresh on /Pools/:id has no state at all, and reading .avg_rating/
+  // .tables off null crashed the whole app before this component could even render once. The mount
+  // effect below already re-fetches poolInfo/poolTablesData fresh from the API unconditionally, so
+  // these fallbacks only need to survive that first render - they're overwritten a moment later
+  // either way, even in the normal (state-present) case.
+  const avgRating = location.state?.avg_rating;
 
   const id =
     location.pathname.split("/")[location.pathname.split("/").length - 1];
-  const [poolInfo,setPoolInfo] = useState<PoolHall>(location.state);
-  const [poolTablesData, setPoolTablesData] = useState<any[]>(location.state.tables);
+  const [poolInfo,setPoolInfo] = useState<PoolHall>(location.state ?? ({} as PoolHall));
+  const [poolTablesData, setPoolTablesData] = useState<any[]>(location.state?.tables ?? []);
   const [imageI, setImageI] = useState<number>(0);
 
   const userLogIn = useAppSelector((state) => state.userLogIn);
@@ -660,13 +666,13 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
         <div className="w-[100%] mt-[24px] lg:mt-[48px] flex flex-col gap-[14px]  ">
           <div className="relative w-full pb-[54%] rounded-[18px] overflow-hidden ">
             <img
-              src={poolInfo.pics[imageI].image}
+              src={poolInfo.pics?.[imageI]?.image}
               className="absolute top-0 left-0 w-full h-full object-cover image-smooth"
               alt="billiard image"
             />
             <div
               className={` absolute top-1/2 transform -translate-y-1/2 right-[10px] w-[48px] h-[48px] flex items-center justify-center rounded-[50%] bg-[#0000002a] ${
-                imageI == poolInfo.pics.length - 1 && " hidden"
+                imageI == (poolInfo.pics?.length ?? 0) - 1 && " hidden"
               } `}
               onClick={() => {
                 handlePicture("right");
@@ -782,7 +788,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
             <h1 className="text-[20px] text-white ">
               Geolocation is not enabled
             </h1>
-          ) : coords ? (
+          ) : coords && poolInfo?.latitude != null && poolInfo?.longitude != null ? (
             <div className="w-[100%]">
               <MapContainer
                 center={[poolInfo?.latitude, poolInfo?.longitude]}
