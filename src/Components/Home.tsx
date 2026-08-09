@@ -34,6 +34,17 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
 
   const { coords, isGeolocationAvailable, isGeolocationEnabled }:GeoLocation = props;
 
+  // coords.accuracy is the browser's own confidence radius in meters - a real GPS/Wi-Fi fix is
+  // normally tens to a few hundred meters; a bare IP-block fallback (no usable GPS/Wi-Fi signal)
+  // reports single-digit-km to 10km+. 5km is chosen because "nearby" elsewhere in this app is
+  // itself a ~4km radius (see the "find player 4km radius" filter on the Matchmake page) - if the
+  // position's own uncertainty is bigger than the radius we're searching within, treating it as
+  // trustworthy would be actively misleading rather than just imprecise.
+  const MAX_TRUSTED_ACCURACY_METERS = 5000;
+  const hasAccurateLocation =
+    isGeolocationAvailable && isGeolocationEnabled && !!coords &&
+    coords.accuracy <= MAX_TRUSTED_ACCURACY_METERS;
+
   // useEffect(() => {
     // window.location.reload()
   // }, []);
@@ -66,8 +77,11 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
   useEffect(() => {
     console.log("Geolocation Available:", isGeolocationAvailable);
     console.log("Geolocation Enabled:", isGeolocationEnabled);
-    console.log("Coordinates:", coords);
-    if (!isGeolocationAvailable || !isGeolocationEnabled || !coords) return;
+    console.log("Coordinates:", coords, coords ? `(accuracy: ${coords.accuracy}m)` : "");
+    // Deliberately checking hasAccurateLocation here, not just "do we have coords" - firing this
+    // with a 10km-uncertain position would return results filtered against a location that isn't
+    // really where the user is, which is worse than just not showing results at all.
+    if (!hasAccurateLocation || !coords) return;
 
     const fetchNearby = async () => {
       try {
@@ -81,7 +95,11 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
       }
     };
     fetchNearby();
-  }, [isGeolocationAvailable, isGeolocationEnabled, coords?.latitude, coords?.longitude]);
+    // Using the individual primitive fields (not the coords object itself) as deps - react-
+    // geolocated hands back a new coords object on every watchPosition tick even when the
+    // position hasn't materially changed, and object-identity deps would re-fire this on every
+    // one of those instead of only when something we actually care about changes.
+  }, [hasAccurateLocation, coords?.latitude, coords?.longitude]);
 
   const filteredSearchResults = useMemo(() => {
     if (props.search) {
@@ -100,7 +118,7 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
     <>
       {!props.search ? (
         <section className="flex flex-col w-[100%] bg-[#10141E] px-[16px] pb-[16px] md:pb-[0] md:px-[0]">
-          {(isGeolocationAvailable && isGeolocationEnabled) &&
+          {hasAccurateLocation ? (
           <div className="max-w-[100%] ">
             <h1 className="text-white text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] ">
               Nearby
@@ -143,7 +161,20 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
               })}
             </div>
           </div>
-           }
+          ) : isGeolocationAvailable && isGeolocationEnabled && coords ? (
+          // Same idea as Google Maps' "we can't find your location" - geolocation resolved, we
+          // have a coords object, it's just not accurate enough to trust for a "nearby" search
+          // (see MAX_TRUSTED_ACCURACY_METERS above). Telling the user this beats either silently
+          // filtering against a wrong location or silently showing nothing with no explanation.
+          <div className="max-w-[100%] mb-[16px] md:mb-[25px] ">
+            <h1 className="text-white text-[20px] font-light tracking-[-0.312px] mb-[8px] md:text-[32px] md:tracking-[-0.5px] ">
+              Nearby
+            </h1>
+            <p className="text-white/60 text-[13px] md:text-[15px] ">
+              We can't find your exact location right now, so nearby pool houses can't be shown.
+            </p>
+          </div>
+          ) : null}
           <div>
             <h1 className="text-white text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] lg:mb-[32px]">
               Recommended for you
