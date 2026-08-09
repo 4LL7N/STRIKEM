@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import { useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../../../ReduxStore/ReduxHooks";
 import { setUserSettingsBoxClose } from "../../../../../ReduxStore/features/userSettingsBox";
-import { setNewUsername } from "../../../../../ReduxStore/features/currentUser";
+import { setNewUsername, setProfileImage } from "../../../../../ReduxStore/features/currentUser";
 import ChangeUsername from "./ChangeUsername";
 import ChangeProfilePicture from "./ChangeProfilePicture";
 
@@ -84,14 +84,18 @@ function ChangeUserInfo() {
         
         try{
             // await axios.patch(`https://strikem.site/api/players/${currentUser.id}/`,data,
-            await axios.patch(`http://localhost:5100/api/players/${currentUser.id}/`,data,
+            const response = await axios.patch(`http://localhost:5100/api/players/${currentUser.id}/`,data,
                 {
                     headers: { Authorization: `JWT ${token}` },
                 }
             )
+            // The popup used to close and then window.location.reload() the whole page, which
+            // picked up the new picture everywhere as a side effect of re-fetching everything.
+            // Now that the reload is gone, the response already contains the new profile_image
+            // URL - dispatch it directly so the header/profile avatar update without a reload.
+            dispatch(setProfileImage(response.data.profile_image))
             setAxiosError("")
             dispatch(setUserSettingsBoxClose());
-            // window.location.reload()
         }catch(err:any){
             // The backend returns errors shaped {"field": ["msg1", "msg2", ...]} - each value is
             // an ARRAY of messages, not a single string. .flat() before .join("\n") is required,

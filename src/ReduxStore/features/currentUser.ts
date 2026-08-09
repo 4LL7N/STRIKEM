@@ -48,9 +48,12 @@ const currentUser = createSlice({
     },
     setNewUsername:(state,action:PayloadAction<string>)=>{
       state.user.username = action.payload
+    },
+    setProfileImage:(state,action:PayloadAction<string>)=>{
+      state.profile_image = action.payload
     }
   },
 });
-export const  {setCurrentUser, removeCurrentUser,setPasswordOnUser,setNewUsername} = currentUser.actions
+export const  {setCurrentUser, removeCurrentUser,setPasswordOnUser,setNewUsername,setProfileImage} = currentUser.actions
 
 export default currentUser.reducer
