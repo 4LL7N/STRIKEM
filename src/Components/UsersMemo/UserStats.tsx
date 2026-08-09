@@ -51,8 +51,8 @@ const UserStats = ({ userInfo }: { userInfo: Profile | null }) => {
         </p>
         <button className={`rounded-[10px] px-[8px] py-[6px] text-white bg-[#fab907] mt-[5px] z-[1000] ${currentUser.id != userInfo?.id && "hidden"} `} onClick={()=>{
             currentUser.password_is_null?
-              // dispatch(setSetPasswordPage({open:true,settingsPage:"emailCode"}))
-              dispatch(setSetPasswordPage({open:true,settingsPage:"settings"}))
+              dispatch(setSetPasswordPage({open:true,settingsPage:"emailCode"}))
+              // dispatch(setSetPasswordPage({open:true,settingsPage:"settings"}))
             :
               dispatch(setUserSettingsBoxOpen())
           }}>

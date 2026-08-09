@@ -19,7 +19,7 @@ function SetPasswordBox() {
 
 
     const emailCode = useRef<HTMLInputElement|null>(null)
-
+    const userSettings = useAppSelector((state) => state.userSettingsBox);
 
     const [emptyEmailCodeErr, setEmptyEmailCodeErr] = useState(false);
     const [uiExpire, setUiExpire] = useState<number>(0);
@@ -42,7 +42,7 @@ function SetPasswordBox() {
     const token = Cookies.get("token");
     try{
         // const response = await axios.post("https://strikem.site/users/verify-code/",{
-        const response = await axios.post("http://localhost:5100/users/verify-code/",{
+        const response = await axios.post(`http://localhost:5100/users/${userSettings.settingsPage == "emailCode"?"verify-code":"verify-code-forget"}/`,{
                 code
             },
             {

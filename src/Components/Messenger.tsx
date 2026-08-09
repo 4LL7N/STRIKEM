@@ -432,7 +432,19 @@ function Messenger() {
               action: "change_matchup",
               matchup_id: item.id,
             });
-            item.last_message?.sender?.id === currentUser?.id || item.read?null: readChat(item.id),dispatch(unReadMatchupDecrement());
+            // Was: a comma-operator expression that dispatched unReadMatchupDecrement()
+            // unconditionally on every click, regardless of whether readChat() (the actual
+            // backend "mark as read" call) even ran - so the badge count would drop locally
+            // without the server's own count ever actually changing, then reappear on refresh.
+            // Also dropped the "skip readChat if I sent the last message" shortcut - confirmed
+            // live that a conversation can still be server-side unread even when its last message
+            // is mine, so that shortcut could leave a genuinely-unread conversation stuck unread
+            // forever. Now: only mark as read (both the API call and the local counter) when the
+            // conversation wasn't already read.
+            if (!item.read) {
+              readChat(item.id);
+              dispatch(unReadMatchupDecrement());
+            }
           }}
           goToProfile={(e) => {
             e.stopPropagation();

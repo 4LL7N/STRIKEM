@@ -39,7 +39,7 @@ function UserSettingsPage() {
         )
         })
         :
-        <div key={1} className="flex items-center justify-between border-b-[1px] border-b-white w-full py-[10px] cursor-pointer " onClick={()=>{dispatch(setSettingsPage(`forget password`))}} >
+        <div key={1} className="flex items-center justify-between border-b-[1px] border-b-white w-full py-[10px] cursor-pointer " onClick={()=>{dispatch(setSettingsPage(`emailCode`))}} >
             <div className="flex items-center" >
             <img src={"/images/download(1).png"} alt={"forget password"} className="w-16 h-16 " />
             <h2 className="text-[20px] text-white" >set password</h2>

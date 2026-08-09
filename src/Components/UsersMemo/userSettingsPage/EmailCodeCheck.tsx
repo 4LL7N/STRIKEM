@@ -14,7 +14,7 @@ function EmailCodeCheck({
 }: EmailCodeCheckProps) {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const currentUser = useAppSelector((state) => state.currentUser);  
-  // const userSettings = useAppSelector((state) => state.userSettingsBox);
+  const userSettings = useAppSelector((state) => state.userSettingsBox);
 
   const sendCodeToEmail = async () => {
     const token = Cookies.get("token");
@@ -22,7 +22,7 @@ function EmailCodeCheck({
     try {
       await axios.post(
         // "https://strikem.site/users/get-code-forget/",
-        `http://localhost:5100/users/${"get-code-forget"}/`,
+        `http://localhost:5100/users/${userSettings.settingsPage == "emailCode"?"get-code":"get-code-forget"}/`,
         {
           email:currentUser.user.email
         },
