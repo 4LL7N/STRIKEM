@@ -29,8 +29,11 @@ const Star = ({ fillPercentage }: { fillPercentage: number }) => {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      width="2.7rem"
-      height="2.7rem"
+      // Was a fixed 2.7rem (43.2px) regardless of breakpoint, while the avgRating number next to
+      // it is text-4xl md:text-5xl (36px/48px) - the two visibly didn't match, and even crossed
+      // over (icon bigger on mobile, smaller on desktop). Matching the same 36px/48px sizes here
+      // keeps the star icons and the number the same size at every breakpoint.
+      className="w-9 h-9 md:w-12 md:h-12"
       style={{ position: "relative" }}
     >
       <path
@@ -109,13 +112,17 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
   // effect below already re-fetches poolInfo/poolTablesData fresh from the API unconditionally, so
   // these fallbacks only need to survive that first render - they're overwritten a moment later
   // either way, even in the normal (state-present) case.
-  const avgRating = location.state?.avg_rating;
-
   const id =
     location.pathname.split("/")[location.pathname.split("/").length - 1];
   const [poolInfo,setPoolInfo] = useState<PoolHall>(location.state ?? ({} as PoolHall));
   const [poolTablesData, setPoolTablesData] = useState<any[]>(location.state?.tables ?? []);
   const [imageI, setImageI] = useState<number>(0);
+
+  // Reads off poolInfo (not location.state directly) so this stays correct after the mount
+  // effect's Fetch() re-populates poolInfo from the API - on a direct navigation/refresh,
+  // location.state is null forever, so deriving straight from it left this permanently undefined
+  // even once the real rating had loaded.
+  const avgRating = poolInfo?.avg_rating;
 
   const userLogIn = useAppSelector((state) => state.userLogIn);
   const uploadRatingBox = useAppSelector((state) => state.uploadRatingBox);
@@ -732,7 +739,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
           <StarRating rating={avgRating} />
           <h1 className="text-white text-4xl md:text-5xl   ">{avgRating}</h1>
           </div>
-          {userLogIn ?<button className="px-[10px] py-[4px] rounded-[20px] text-white text-[24px] md:text-[28px] bg-[#fab907] " onClick={()=>{dispatch(setUploadRatingBox({open:true,id:poolInfo.id,name:poolInfo.title}))}} >
+          {userLogIn ?<button className="px-[10px] py-[4px] rounded-[10px] text-white text-[24px] md:text-[28px] bg-[#fab907] " onClick={()=>{dispatch(setUploadRatingBox({open:true,id:poolInfo.id,name:poolInfo.title}))}} >
             Rate
           </button>
           :null}
@@ -741,7 +748,9 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
         <h1 className=" text-white text-[32px] md:text-[48px]  ">
           Reviews
         </h1>
-        <button className="px-[8px] py-[2px] rounded-[20px] text-white text-[20px] bg-[#fab907] h-fit " onClick={()=>{dispatch(setAllReviewsBox({open:true,id:poolInfo.id,name:poolInfo.title}))}} >See all</button>
+        {/* rounded-[10px] to match the "Edit profile" button's rounding (UserStats.tsx), instead
+        of the pill-shaped rounded-[20px] this and "Rate" above used before. */}
+        <button className="px-[8px] py-[2px] rounded-[10px] text-white text-[20px] bg-[#fab907] h-fit " onClick={()=>{dispatch(setAllReviewsBox({open:true,id:poolInfo.id,name:poolInfo.title}))}} >See all</button>
         </div>
         <div className=" flex flex-col md:flex-row gap-[20px] md:gap-0 justify-evenly mt-[24px] lg:mt-[48px] ">
           {ratings?.map((item: rating, i: number) => {            
