@@ -534,9 +534,18 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
   return (
     <section className="flex flex-col items-center bg-[#10141E] w-[100%] min-h-screen  pb-[120px]">
       <main className="w-[100%] px-[16px] mt-[24px] lg:p-0 lg:mt-0 ">
-        <div className="container-fluid max-w-[90%] p-0  ">
+        {/* Bootstrap's .container-fluid normally centers itself via its own margin:auto - now that
+        Bootstrap is correctly layered below Tailwind (see the fix removing Pool.tsx's redundant
+        unlayered Bootstrap import), Tailwind's preflight reset (margin:0 on every element, in a
+        higher-priority layer) correctly wins that specific conflict too, same as everything else
+        Bootstrap used to unintentionally override. Nothing was providing an explicit Tailwind
+        equivalent, so this needs its own mx-auto to stay centered. */}
+        <div className="container-fluid max-w-[90%] p-0 mx-auto ">
           <div className="row justify-content-center  ">
-            <div className="col-lg-10 col-12 p-0 rounded-[10px] relative ">
+            {/* overflow-hidden so rounded-[10px] actually clips ImageMap (absolute, right-0 top-0,
+            no rounded corner of its own) to match - previously the corner just sat past the
+            rounded boundary uncut, square, since nothing here constrained overflow. */}
+            <div className="col-lg-10 col-12 p-0 rounded-[10px] overflow-hidden relative ">
               <ImageMap />
               <div
                 style={{
