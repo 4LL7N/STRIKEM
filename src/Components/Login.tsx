@@ -121,9 +121,11 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
     window.location.reload()
       
     }catch(err:any){
-      // .join("\n") so multiple error messages land on separate lines instead of running
-      // together - paired with whitespace-pre-line on the <p> that renders this below.
-      const error = Object.values<string>(err?.response.data).join("\n");
+      // The backend returns errors shaped {"field": ["msg1", "msg2", ...]} - each value is an
+      // ARRAY of messages, not a single string. .flat() before .join("\n") is required, or
+      // multiple messages in the same field get glued together by JS's array-to-string coercion
+      // (comma-joined) instead of one per line.
+      const error = Object.values<string[]>(err?.response.data).flat().join("\n");
       setAxiosError(error);
       console.log(error);
 
@@ -207,7 +209,7 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
           Email or password is not correct
         </p>
         {(axiosError || googleError) && (
-          <p className="text-red-500 text-[12px] whitespace-pre-line text-center mb-[16px]">
+          <p className="self-start text-red-500 text-[12px] whitespace-pre-line text-left mb-[16px]">
             {[axiosError, googleError].filter(Boolean).join("\n")}
           </p>
         )}
