@@ -26,8 +26,13 @@ const UploadRating = memo(({uploadRatingBox}:{uploadRatingBox:RatingBoxState}) =
         setRatingDescription("")
         setSelectedStars(1)
         dispatch(setUploadRatingBox({ open: false, id: -1, name: "" }));
-      }catch(err){
+        setError("")
+      }catch(err:any){
+        // .join("\n") so multiple error messages land on separate lines instead of running
+        // together - paired with whitespace-pre-line on the <p> that renders this below.
+        const errorMsg = Object.values<string>(err?.response?.data ?? {}).join("\n");
         console.error(err)
+        setError(errorMsg || "Something went wrong submitting the review - please try again.")
       }
     }
     
@@ -96,8 +101,8 @@ const UploadRating = memo(({uploadRatingBox}:{uploadRatingBox:RatingBoxState}) =
             }}
             maxLength={100}
           ></textarea>
-          <div className="flex justify-end mt-[24px] relative" >
-            {error && <p className="text-red-600 absolute top-0 left-0 " >{error}</p>}
+          <div className="flex flex-col items-end gap-[8px] mt-[24px]" >
+            {error && <p className="text-red-600 text-[12px] whitespace-pre-line text-right" >{error}</p>}
             <button className="bg-[#fab907] text-white px-[6px] py-[2px] rounded-[12px] " onClick={HandleSubmit} >Submit</button>
           </div>
         </section>

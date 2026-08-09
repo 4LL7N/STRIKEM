@@ -34,14 +34,12 @@ function ChangePasswordPage() {
          )   
          dispatch(setUserSettingsBoxClose());
       }catch(err:any){
-        const errorArr = Object.values(err?.response.data);
-        let error: string = "";
-        errorArr.forEach((item) => {
-            error += item;
-        });
+        // .join("\n") so multiple error messages land on separate lines instead of running
+        // together - paired with whitespace-pre-line on the <p> that renders this below.
+        const error = Object.values<string>(err?.response.data).join("\n");
         console.log(error);
         console.log(err);
-        
+
         setAxiosError(error)
       }
     }
@@ -146,10 +144,12 @@ function ChangePasswordPage() {
           Can’t be empty
         </a>{" "}
       </div>
-      <div className=" flex justify-center w-full pt-[32px] relative  " >
-      <p className="text-red-500 text-[12px] absolute top-0 translate-y-[30%] ">
-                {axiosError}
-              </p>
+      <div className="flex flex-col items-center gap-[8px] w-full pt-[32px]" >
+      {axiosError && (
+        <p className="text-red-500 text-[12px] whitespace-pre-line text-center">
+          {axiosError}
+        </p>
+      )}
       <button
           className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-white font-light hover:bg-[#FFFFFF] hover:!text-brand-navy "
           onClick={handlePassword}

@@ -105,11 +105,9 @@ const ResultBoxMemo = memo(
         setAxiosError("");
         setOpenResultBox(false);
       } catch (err: any) {
-        const errorArr = Object.values(err?.response?.data ?? {});
-        let error: string = "";
-        errorArr.forEach((item) => {
-          error += item;
-        });
+        // .join("\n") so multiple error messages land on separate lines instead of running
+        // together - paired with whitespace-pre-line on the <p> that renders this below.
+        const error = Object.values<string>(err?.response?.data ?? {}).join("\n");
         setAxiosError(error || "Something went wrong submitting the result - please try again.");
         console.error(err);
       }
@@ -243,7 +241,7 @@ const ResultBoxMemo = memo(
             </div>
           </div>
           {axiosError && (
-            <p className="text-red-500 text-[12px] md:text-[13px]">{axiosError}</p>
+            <p className="text-red-500 text-[12px] md:text-[13px] whitespace-pre-line">{axiosError}</p>
           )}
           <div className="flex gap-2" >
           <button

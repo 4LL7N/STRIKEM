@@ -238,11 +238,9 @@ const Reservation = memo(
         // didn't incorrectly close the popup (that part was already fine, since the close-dispatch
         // only sat in the success path), but silently did nothing instead of surfacing why. Reusing
         // reserverError, the same error slot the validation checks above already use.
-        const errorArr = Object.values(err?.response?.data ?? {});
-        let error: string = "";
-        errorArr.forEach((item) => {
-          error += item;
-        });
+        // .join("\n") so multiple error messages land on separate lines instead of running
+        // together - paired with whitespace-pre-line on the <p> that renders this below.
+        const error = Object.values<string>(err?.response?.data ?? {}).join("\n");
         setReserverError(error || "Something went wrong reserving this table - please try again.");
         console.error(err);
       }
@@ -798,9 +796,9 @@ const Reservation = memo(
           </div>
         </div>
         <div
-          className={` justify-end w-[100%] flex gap-2 px-0 md:px-4 mt-[10px] md:mt-0 `}
+          className={`flex flex-col items-end gap-2 w-[100%] px-0 md:px-4 mt-[10px] md:mt-0 `}
         >
-          <p className={reserverError?"text-[16px] text-red-600 ":"hidden"}>{reserverError}</p>
+          {reserverError && <p className="text-[16px] text-red-600 whitespace-pre-line text-right">{reserverError}</p>}
           <button
             className="px-2 py-1 bg-[#fab907] rounded-[8px] md:rounded-[12px] text-white text-[12px] md:text-[16px] "
             onClick={handleReserveSubmit}

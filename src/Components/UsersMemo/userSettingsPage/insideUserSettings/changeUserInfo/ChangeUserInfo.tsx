@@ -39,16 +39,14 @@ function ChangeUserInfo() {
         logUsername.current?.value && dispatch(setNewUsername(logUsername.current.value))
         dispatch(setUserSettingsBoxClose());
       }catch(err:any){
-        const errorArr = Object.values(err?.response.data);
-          let error: string = "";
-          errorArr.forEach((item) => {
-              error += item;
-          });
-          console.log(error);
-          setAxiosError(error)
+        // .join("\n") so multiple error messages land on separate lines instead of running
+        // together - paired with whitespace-pre-line on the <p> that renders this below.
+        const error = Object.values<string>(err?.response.data).join("\n");
+        console.log(error);
+        setAxiosError(error)
       }
     }
-  
+
     const handleUsername = () => {
           let username = true
           let password = true
@@ -91,11 +89,9 @@ function ChangeUserInfo() {
             dispatch(setUserSettingsBoxClose());
             window.location.reload()
         }catch(err:any){
-            const errorArr = Object.values(err?.response.data);
-            let error: string = "";
-            errorArr.forEach((item) => {
-                error += item;
-            });
+            // .join("\n") so multiple error messages land on separate lines instead of running
+            // together - paired with whitespace-pre-line on the <p> that renders this below.
+            const error = Object.values<string>(err?.response.data).join("\n");
             console.log(error);
             setAxiosError(error)
         }
@@ -121,10 +117,12 @@ function ChangeUserInfo() {
       <section className="w-full mt-[24px]">
         {userSettingsBox.settingsPage == "change username" && <ChangeUsername emptyLogUsernameErr={emptyLogUsernameErr} logUsername={logUsername} emptyLogPassErr={emptyLogPassErr} logPassword={logPassword} />}
         {userSettingsBox.settingsPage == "change profile" || userSettingsBox.settingsPage == "Profile from Profile"? <ChangeProfilePicture fileRef={fileRef} emptyFileError={emptyFileError} setSelectedFile={setSelectedFile} selectedFile={selectedFile} />:null}
-        <div className="w-full flex justify-center pt-[32px] relative " >
-        <p className="text-red-500 text-[12px] absolute top-0 translate-y-[30%] ">
-                  {axiosError}
-                </p>
+        <div className="flex flex-col items-center gap-[8px] w-full pt-[32px]" >
+        {axiosError && (
+          <p className="text-red-500 text-[12px] whitespace-pre-line text-center">
+            {axiosError}
+          </p>
+        )}
         <button
             className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-white font-light hover:bg-[#FFFFFF] hover:!text-brand-navy "
             onClick={userSettingsBox.settingsPage == "change username"?handleUsername:handlePicture}

@@ -142,13 +142,11 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
 
       setChangeToVerify(true);
     } catch (err: any) {
-      const errorArr = Object.values(err?.response.data);
-      let error: string = "";
-      errorArr.forEach((item) => {
-        error += item;
-      });
+      // .join("\n") so multiple error messages land on separate lines instead of running
+      // together - paired with whitespace-pre-line on the <p> that renders this below.
+      const error = Object.values<string>(err?.response.data).join("\n");
       setAxiosError(error);
-      console.log(errorArr);
+      console.log(error);
     }
   };
 
@@ -179,13 +177,11 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
       console.log(err);
       
       if(err.status != 500){
-        const errorArr = Object.values(err?.response.data);
-        let error: string = "";
-        errorArr.forEach((item) => {
-          error += item;
-        });
+        // .join("\n") so multiple error messages land on separate lines instead of running
+        // together - paired with whitespace-pre-line on the <p> that renders this below.
+        const error = Object.values<string>(err?.response.data).join("\n");
       setAxiosError(error);
-      console.log(errorArr);
+      console.log(error);
       }else{
         setAxiosError("something went wrong,please try again soon");
         console.log(err);
@@ -348,10 +344,12 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
             </div>
             </div>
           
-            <div className=" w-[100%] pt-[24px] relative ">
-              <p className="text-red-500 text-[12px] absolute top-0 ">
-                {axiosError}{googleError}
-              </p>
+            <div className=" w-[100%] pt-[24px] ">
+              {(axiosError || googleError) && (
+                <p className="text-red-500 text-[12px] whitespace-pre-line text-center mb-[16px]">
+                  {[axiosError, googleError].filter(Boolean).join("\n")}
+                </p>
+              )}
               <button
                 className="w-[100%] bg-[#fab907] rounded-[6px] py-[15px] text-[15px] text-white font-light mb-[24px] hover:bg-[#8b7127] hover:!text-brand-navy"
                 onClick={HandleSignup}

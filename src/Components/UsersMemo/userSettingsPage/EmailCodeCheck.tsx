@@ -31,11 +31,9 @@ function EmailCodeCheck({
         }
       );
     } catch (err:any) {
-      const errorArr = Object.values(err?.response.data);
-      let error: string = "";
-      errorArr.forEach((item) => {
-        error += item;
-      });
+      // .join("\n") so multiple error messages land on separate lines instead of running
+      // together - paired with whitespace-pre-line on the <p> that renders this in the parent.
+      const error = Object.values<string>(err?.response.data).join("\n");
       console.log(error);
       setAxiosError(error);
       if (intervalRef.current) {

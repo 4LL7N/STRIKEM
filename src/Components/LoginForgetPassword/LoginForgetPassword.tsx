@@ -72,13 +72,11 @@ function LoginForgetPassword() {
       }
       
     }catch(err:any){
-      const errorArr = Object.values(err?.response.data);
-        let error: string = "";
-        errorArr.forEach((item) => {
-            error += item;
-        });
-        console.log(error);
-        setAxiosError(error)
+      // .join("\n") so multiple error messages land on separate lines instead of running
+      // together - paired with whitespace-pre-line on the <p> that renders this below.
+      const error = Object.values<string>(err?.response.data).join("\n");
+      console.log(error);
+      setAxiosError(error)
     }
   }
 
@@ -123,13 +121,11 @@ function LoginForgetPassword() {
       setLoginUuid(response.data.key)
       dispatch(setSettingsPage("loginSetPassword"))
     }catch(err:any){
-      const errorArr = Object.values(err?.response.data);
-        let error: string = "";
-        errorArr.forEach((item) => {
-            error += item;
-        });
-        console.log(error);
-        setAxiosError(error)
+      // .join("\n") so multiple error messages land on separate lines instead of running
+      // together - paired with whitespace-pre-line on the <p> that renders this below.
+      const error = Object.values<string>(err?.response.data).join("\n");
+      console.log(error);
+      setAxiosError(error)
     }
   }
 
@@ -167,13 +163,11 @@ function LoginForgetPassword() {
       setPending(false)
       dispatch(setUserSettingsBoxClose())
     }catch(err:any){
-      const errorArr = Object.values(err?.response.data);
-        let error: string = "";
-        errorArr.forEach((item) => {
-            error += item;
-        });
-        console.log(error);
-        setAxiosError(error)
+      // .join("\n") so multiple error messages land on separate lines instead of running
+      // together - paired with whitespace-pre-line on the <p> that renders this below.
+      const error = Object.values<string>(err?.response.data).join("\n");
+      console.log(error);
+      setAxiosError(error)
     }
   }
 
@@ -239,10 +233,12 @@ function LoginForgetPassword() {
           {userSettingsBox.settingsPage == "emailCheck" && <CheckEmail emptyCheckEmailErr={emptyCheckEmailErr} CheckEmailRef={CheckEmailRef} notEmailCheckEmailErr={notEmailCheckEmailErr} />}
           {userSettingsBox.settingsPage == "loginCodeCheck" && <LoginForgetEmailCodeCheck LoginEmailCode={LoginEmailCode} emptyLoginEmailCodeErr={emptyLoginEmailCodeErr} uiExpire={uiExpire} />}
           {userSettingsBox.settingsPage == "loginSetPassword" && <LoginForgetSetNewPassword emptyLogNewPasswordErr={emptyLogNewPasswordErr} logNewPassword={logNewPassword} emptyLogRepeatPasswordErr={emptyLogRepeatPasswordErr} logRepeatPassword={logRepeatPassword}  />}
-          <div className="flex justify-center w-full pt-[32px] relative ">
-            <p className="text-red-500 text-[12px] absolute top-0 translate-y-[30%] left-0 ">
-                {axiosError}{notEmailCheckEmailErr}
+          <div className="flex flex-col items-center gap-[8px] w-full pt-[32px] ">
+            {(axiosError || notEmailCheckEmailErr) && (
+              <p className="text-red-500 text-[12px] whitespace-pre-line text-center">
+                {[axiosError, notEmailCheckEmailErr].filter(Boolean).join("\n")}
               </p>
+            )}
             <button
               className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-white font-light hover:bg-[#FFFFFF] hover:!text-brand-navy flex justify-center "
                 onClick={userSettingsBox.settingsPage == "emailCheck" ? emailCheckHandle:userSettingsBox.settingsPage == "loginCodeCheck"?codeCheckHandle:newPasswordHandle}

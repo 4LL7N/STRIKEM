@@ -121,13 +121,11 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
     window.location.reload()
       
     }catch(err:any){
-      const errorArr = Object.values(err?.response.data);
-      let error: string = "";
-      errorArr.forEach((item) => {
-        error += item;
-      });
+      // .join("\n") so multiple error messages land on separate lines instead of running
+      // together - paired with whitespace-pre-line on the <p> that renders this below.
+      const error = Object.values<string>(err?.response.data).join("\n");
       setAxiosError(error);
-      console.log(errorArr);
+      console.log(error);
 
     }
   }
@@ -208,9 +206,11 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
         >
           Email or password is not correct
         </p>
-        <p className="text-red-500 text-[12px] absolute top-0 ">
-                {axiosError}{googleError}
-              </p>
+        {(axiosError || googleError) && (
+          <p className="text-red-500 text-[12px] whitespace-pre-line text-center mb-[16px]">
+            {[axiosError, googleError].filter(Boolean).join("\n")}
+          </p>
+        )}
               <div className="w-full mb-[24px]" >
         <button
           className="w-[100%] bg-[#fab907] rounded-[6px] py-[15px] text-[15px] text-white font-light mb-[12px] hover:bg-[#FFFFFF] hover:!text-brand-navy "
