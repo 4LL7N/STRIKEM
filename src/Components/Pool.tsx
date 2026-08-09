@@ -89,7 +89,19 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
   const [whiteBoxHeight, setWhiteBoxHeight] = useState<number>(0);
   const [whiteBoxWidth, setWhiteBoxWidth] = useState<number>(0);
 
-  const [nameLength,setNameLength] = useState<number>(0)
+  // Computed as the initial value directly (same thresholds the mount effect used to set this
+  // with) instead of via a setNameLength() call inside that effect - this was already mount-only
+  // (nothing recomputes it on resize today), so this changes nothing about when/how the value
+  // updates, only that it's known from the very first render instead of one render later. Not
+  // touching ImageMap or anything about the map itself - nameLength is just a plain number passed
+  // down to ReservationOnTable.
+  const [nameLength,setNameLength] = useState<number>(() => {
+    if (window.innerWidth > 1045) return 0;
+    if (window.innerWidth > 460) return 4;
+    if (window.innerWidth > 382) return 3;
+    if (window.innerWidth > 336) return 2;
+    return 1;
+  })
 
   const avgRating = location.state.avg_rating;
 
@@ -164,18 +176,6 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
       setWhiteBoxWidth(whiteBoxWidth);
     }
     }, 1000);
-
-    if(window.innerWidth >1045){
-      setNameLength(0)
-    }else if(window.innerWidth > 460){
-      setNameLength(4)
-    }else if(window.innerWidth > 382){
-      setNameLength(3)
-    }else if(window.innerWidth > 336){
-      setNameLength(2)
-    }else{
-    setNameLength(1) 
-    }
 
     window.addEventListener("resize", () => {
       if(imgContainer?.current && img?.current && mapImage?.current){
