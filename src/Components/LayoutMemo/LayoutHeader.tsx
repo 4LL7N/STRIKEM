@@ -131,8 +131,8 @@ const LayoutHeader = memo(({setNotificationsOpen,setNotifications,headerHeight,u
                   instead of percentage sizing, so the number is actually centered and the badge sits
                   as a proper corner badge regardless of the icon's 25px/32px size. */}
               {!!unReadMatchUps && (
-                <div className="flex items-center justify-center rounded-[50%] bg-red-600 min-w-[16px] h-[16px] px-[3px] absolute -top-[6px] -right-[6px] z-40">
-                  <p className="text-[10px] text-white leading-none">{unReadMatchUps}</p>
+                <div className="flex items-center justify-center rounded-[50%] bg-red-600 min-w-[20px] h-[20px] px-[4px] absolute -top-[8px] -right-[8px] z-40">
+                  <p className="text-[12px] text-white leading-none translate-y-[0.5px]">{unReadMatchUps}</p>
                 </div>
               )}
               <FaRegMessage
