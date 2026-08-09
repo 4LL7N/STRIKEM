@@ -131,10 +131,20 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
   const whiteBoxRef = useRef<HTMLDivElement|null>(null);
 
   useEffect(() => {
-    if (img?.current?.complete) {
-      handleResize();
-    } else {
-      img?.current ?img.current.onload = handleResize:null;
+    // Always wire onload, not just when the image isn't loaded yet - room_image starts empty on a
+    // direct navigation/refresh (no router state to seed it with), so on mount here `img.current`
+    // has no src at all. An <img> with no src reports complete:true immediately (with
+    // naturalWidth 0), which used to take the `if` branch below and run handleResize() once, with
+    // wrong (all-zero) numbers - then never re-wire onload, so when the real room_image URL
+    // arrived a moment later from the Fetch() below, nothing ever recalculated the table-map
+    // layout again. Checking naturalWidth > 0 alongside complete distinguishes "actually loaded a
+    // real image" from "no src yet", and keeping onload wired unconditionally means a real image
+    // arriving later (on this direct-nav path) still triggers the recalculation once it loads.
+    if (img?.current) {
+      img.current.onload = handleResize;
+      if (img.current.complete && img.current.naturalWidth > 0) {
+        handleResize();
+      }
     }
 
     window.addEventListener("resize", handleResize);
