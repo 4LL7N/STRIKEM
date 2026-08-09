@@ -73,17 +73,17 @@ const ReservationOnTable = memo(({item,nameLength}:{item:Table,nameLength:number
     <div style={{position:"absolute",top:`${item.top}%`,left:`${item.left}%`}} className=" flex-col z-[100] w-[6%] h-[14%] p-2 bg-white rounded-md md:rounded-xl cursor-pointer flex justify-center items-center ">
         {
           item.free ?
-          <p className="text-[#fab907] text-[8px] sm:text-[12px] lg:text-[14px]">
+          <p className="!text-brand-gold text-[8px] sm:text-[12px] lg:text-[14px]">
             FREE
         </p>
           :
           <div className=" flex-col  bg-white flex justify-center items-center ">
-        <p className="text-[#fab907] text-[8px] sm:text-[12px] lg:text-[14px]">
+        <p className="!text-brand-gold text-[8px] sm:text-[12px] lg:text-[14px]">
           {nameLength?item.current_session.player_reserving.user.username.slice(0,nameLength):item.current_session.player_reserving.user.username}{nameLength?".. ":" "}
           {item.current_session.other_player_details?'vs':""}{" "}
           {item.current_session.other_player_details?nameLength?item.current_session.other_player_details.user.username.slice(0,nameLength):item.current_session.other_player_details.user.username:""}{item.current_session.other_player_details?nameLength?".. ":" ":""}
         </p>
-        <p className="text-[#fab907] text-[8px] sm:text-[12px] ">{timeLeft}</p>
+        <p className="!text-brand-gold text-[8px] sm:text-[12px] ">{timeLeft}</p>
         </div>
         }
         <button

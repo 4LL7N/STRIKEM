@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { EmailCodeCheck } from "../../../type";
+import type { EmailCodeCheck as EmailCodeCheckProps } from "../../../type";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useRef } from "react";
@@ -11,9 +11,10 @@ function EmailCodeCheck({
   uiExpire,
   setUiExpire,
   setAxiosError
-}: EmailCodeCheck) {
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+}: EmailCodeCheckProps) {
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const currentUser = useAppSelector((state) => state.currentUser);  
+  // const userSettings = useAppSelector((state) => state.userSettingsBox);
 
   const sendCodeToEmail = async () => {
     const token = Cookies.get("token");
@@ -21,7 +22,7 @@ function EmailCodeCheck({
     try {
       await axios.post(
         // "https://strikem.site/users/get-code-forget/",
-        "http://localhost:5100/users/get-code-forget/",
+        `http://localhost:5100/users/${"get-code-forget"}/`,
         {
           email:currentUser.user.email
         },
@@ -64,12 +65,12 @@ function EmailCodeCheck({
   return (
     <>
       <div
-        className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[16px] pb-[18px] hover:border-b-[#FFF] ${
+        className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[16px] pb-[18px] hover:border-b-[#FFFFFF] ${
           emptyEmailCodeErr ? "border-b-[#FC4747]" : null
         }  `}
       >
         <input
-          className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none  md:w-[200px] lg:w-[230px]"
+          className="w-[150px] text-[15px] text-white font-light bg-transparent focus:outline-none  md:w-[200px] lg:w-[230px]"
           type="text"
           name="emailCode"
           id="emailCode"
@@ -80,7 +81,7 @@ function EmailCodeCheck({
         <a
           className={`${
             emptyEmailCodeErr
-              ? "text-[13px] text-[#FC4747] font-light"
+              ? "text-[13px] !text-brand-red font-light"
               : "hidden"
           }`}
         >
@@ -94,7 +95,7 @@ function EmailCodeCheck({
         >
           send code on email{" "}
         </p>
-        <p className="text-[#757171]">{uiExpire > 0 ? uiExpire : ""}</p>
+        <p className="!text-muted-grey">{uiExpire > 0 ? uiExpire : ""}</p>
       </div>
     </>
   );

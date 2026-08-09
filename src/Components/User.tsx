@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import Cookies from 'js-cookie';
@@ -18,47 +17,6 @@ function User() {
   // const [winHistory,setWinHistory] = useState<GameResult[]>()
   // const [loseHistory,setLoseHistory] = useState<GameResult[]>()
 
-  const Fetch = async () => {
-    const token = Cookies.get('token')
-    
-    // const dataUrl = location.pathname.split('/')[2] == 'me'?"https://strikem.site/users/current-user":`https://strikem.site/api/players/${location.pathname.split('/')[2]}`
-    const dataUrl = location.pathname.split('/')[2] == 'me'?"http://localhost:5100/users/current-user":`http://localhost:5100/api/players/${location.pathname.split('/')[2]}`
-
-    try {
-      const response = await axios.get(
-        dataUrl,
-        {
-          headers: {
-            Authorization:
-              `JWT ${token}`,
-          },
-        }
-      );
-      const data = response.data;
-      setUserInfo(data);
-
-      const historyResponse = await axios.get(
-        // `https://strikem.site/api/players/${data.id}/history/`,
-        `http://localhost:5100/api/players/${data.id}/history/`,
-        {
-          headers: {
-            Authorization:
-              `JWT ${token}`,
-          },
-        }
-      );
-
-      const historyData = historyResponse.data
-      setGameHistory(historyData)
-      // const wins = historyData.filter((item:GameResult)=> {if(item.winner_player.user.first_name == data?.user.first_name && item.winner_player.user.last_name == data?.user.last_name)return item} )
-        // setWinHistory(wins)
-      // const loses = historyData.filter((item:GameResult)=> {if(item.loser_player.user.first_name == data?.user.first_name && item.loser_player.user.last_name == data?.user.last_name)return item} )      
-        // setLoseHistory(loses)
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const winHistory = useMemo(
     () => gameHistory?.filter(
       (item) => item.winner_player.user.id === userInfo?.user.id
@@ -74,6 +32,46 @@ function User() {
   );
 
   useEffect(() => {
+    const Fetch = async () => {
+      const token = Cookies.get('token')
+
+      // const dataUrl = location.pathname.split('/')[2] == 'me'?"https://strikem.site/users/current-user":`https://strikem.site/api/players/${location.pathname.split('/')[2]}`
+      const dataUrl = location.pathname.split('/')[2] == 'me'?"http://localhost:5100/users/current-user":`http://localhost:5100/api/players/${location.pathname.split('/')[2]}`
+
+      try {
+        const response = await axios.get(
+          dataUrl,
+          {
+            headers: {
+              Authorization:
+                `JWT ${token}`,
+            },
+          }
+        );
+        const data = response.data;
+        setUserInfo(data);
+
+        const historyResponse = await axios.get(
+          // `https://strikem.site/api/players/${data.id}/history/`,
+          `http://localhost:5100/api/players/${data.id}/history/`,
+          {
+            headers: {
+              Authorization:
+                `JWT ${token}`,
+            },
+          }
+        );
+
+        const historyData = historyResponse.data
+        setGameHistory(historyData)
+        // const wins = historyData.filter((item:GameResult)=> {if(item.winner_player.user.first_name == data?.user.first_name && item.winner_player.user.last_name == data?.user.last_name)return item} )
+          // setWinHistory(wins)
+        // const loses = historyData.filter((item:GameResult)=> {if(item.loser_player.user.first_name == data?.user.first_name && item.loser_player.user.last_name == data?.user.last_name)return item} )
+          // setLoseHistory(loses)
+      } catch (err) {
+        console.error(err);
+      }
+    };
     Fetch();
   }, [location.pathname]);
 

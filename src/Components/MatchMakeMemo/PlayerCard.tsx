@@ -44,37 +44,37 @@ const PlayerCard = React.memo(
         />
         <div className="flex flex-col h-[100%] items-start md:items-center justify-start md:justify-center md:gap-[10px] text-left gap-[1px] lg:gap-[6px]">
           <div className="flex gap-[2px] h-[48%] md:justify-start md:items-end" onClick={()=>{navigate(`/users/${player.id}`)}} >
-            <h1 className=" text-[15px] md:text-2xl lg:text-xl text-[#fff]">{player.user.username}</h1>
-            <h2 className=" hidden md:flex md:mb-[3px] md:text-[13px] text-[#ffffff57]">
+            <h1 className=" text-[15px] md:text-2xl lg:text-xl text-white">{player.user.username}</h1>
+            <h2 className=" hidden md:flex md:mb-[3px] md:text-[13px] !text-faint-white">
               ({player.user.first_name} {player.user.last_name})
             </h2>
           </div>
           <div className="flex items-center h-[100%] gap-[5px] md:hidden">
         <CiStar size={10} style={{ color: "white",height:'100%' }} />
-        <p className=" text-[9px] lg:text-[100%] text-[#fff]">{player.total_points}</p>
+        <p className=" text-[9px] lg:text-[100%] text-white">{player.total_points}</p>
       </div>
-          <h3 className=" text-[8px] lg:text-[60%] text-[#fff] self-start">
+          <h3 className=" text-[8px] lg:text-[60%] text-white self-start">
             Email:{player.user.email}
           </h3>
         </div>
       </div>
       <div className="md:flex items-center hidden h-[100%] gap-[5px]">
         <CiStar size={window.innerWidth < 768?32:28} style={{ color: "white",height:'100%' }} />
-        <p className="text-2xl lg:text-xl text-[#fff]">{player.total_points}</p>
+        <p className="text-2xl lg:text-xl text-white">{player.total_points}</p>
       </div>
       <button
         className={`${
           player.user.id == currentUser?.user.id
             ? "bg-transparent text-transparent"
             : "bg-[#fab907]"
-        } flex items-center justify-center  py-[4px] px-[8px] md:py-[6px] md:px-[12px] text-[#FFF]   hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px] md:rounded-[22px]  `}
+        } flex items-center justify-center  py-[4px] px-[8px] md:py-[6px] md:px-[12px] text-white   hover:bg-[#FFFFFF] hover:!text-brand-navy rounded-[20px] md:rounded-[22px]  `}
         onClick={() =>
           player.user.id != currentUser?.user.id &&
           onMatchmake(player.user.username)
         }
         // {sentInvitations?.some((item)=> item.player_invited == player.id ) ?disable:'Matchmake'}
       >
-        <p className={` text-[#FFF] text-xs  md:text-2xl lg:text-xl hover:text-[#161D2F]  ${player.user.id == currentUser?.user.id
+        <p className={` text-white text-xs  md:text-2xl lg:text-xl hover:!text-brand-navy  ${player.user.id == currentUser?.user.id
             ? "bg-transparent text-transparent"
             : ""} `} >{sentInvitations?.some((item)=> item.player_invited == player.id ) ?'Invited':'Matchmake'}</p>
       </button>

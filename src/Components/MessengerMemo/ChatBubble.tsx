@@ -35,7 +35,7 @@ interface ChatBubbleProps {
 const ChatBubble = React.memo(
   ({ item, isCurrentUser, rounded, margin }: ChatBubbleProps) => {
     const alignmentClass = isCurrentUser
-      ? " bg-[#fab907] text-[#fff]"
+      ? " bg-[#fab907] text-white"
       : " bg-slate-300 text-neutral-900";
 
     let formattedDate;
@@ -67,7 +67,7 @@ const ChatBubble = React.memo(
         <div
           className={`max-w-[70%] px-[16px] py-[8px] ${margin} ${rounded} ${alignmentClass}`}
         >
-          <p className="text-[20px]">{item.body}</p>
+          <p className="text-[20px] m-0">{item.body}</p>
         </div>
       </div>
     );

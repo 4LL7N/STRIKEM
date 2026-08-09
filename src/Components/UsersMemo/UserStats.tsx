@@ -29,27 +29,27 @@ const UserStats = ({ userInfo }: { userInfo: Profile | null }) => {
   return(
     <div className="flex flex-col md:flex-row gap-[5px]  md:gap-0 mt-[15px]" >
       <div className="flex-1 flex-col">
-        <p className="text-[#fff] text-[14px] md:text-[18px] lg:text-[24px]">
+        <p className="text-white text-[14px] md:text-[18px] lg:text-[24px]">
           Games: {userInfo?.games_played}
         </p>
-        <p className="text-[#fff] text-[14px] md:text-[18px] lg:text-[24px]">
+        <p className="text-white text-[14px] md:text-[18px] lg:text-[24px]">
           Wins: {userInfo?.games_won}
         </p>
-        <p className="text-[#fff] text-[14px] md:text-[18px] lg:text-[24px]">
+        <p className="text-white text-[14px] md:text-[18px] lg:text-[24px]">
           Loses: {userInfo?.games_played && userInfo?.games_played - userInfo?.games_won}
         </p>
-        <p className="text-[#fff] text-[14px] md:text-[18px] lg:text-[24px]">
+        <p className="text-white text-[14px] md:text-[18px] lg:text-[24px]">
           Meets: {userInfo?.opponents_met}
         </p>
-        <p className="text-[#fff] text-[14px] md:text-[18px] lg:text-[24px]">
+        <p className="text-white text-[14px] md:text-[18px] lg:text-[24px]">
           Points: {userInfo?.total_points}
         </p>
       </div>
       <div className="flex-col flex-1">
-        <p className="text-[#fff] text-[14px] md:text-[18px] lg:text-[24px]">
+        <p className="text-white text-[14px] md:text-[18px] lg:text-[24px]">
           Email: {userInfo?.user.email}
         </p>
-        <button className={`rounded-[10px] px-[8px] py-[6px] text-[#fff] bg-[#fab907] mt-[5px] z-[1000] ${currentUser.id != userInfo?.id && "hidden"} `} onClick={()=>{
+        <button className={`rounded-[10px] px-[8px] py-[6px] text-white bg-[#fab907] mt-[5px] z-[1000] ${currentUser.id != userInfo?.id && "hidden"} `} onClick={()=>{
             currentUser.password_is_null?
               // dispatch(setSetPasswordPage({open:true,settingsPage:"emailCode"}))
               dispatch(setSetPasswordPage({open:true,settingsPage:"settings"}))

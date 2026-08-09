@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -69,9 +68,6 @@ function Layout(props: {
   const [resize,setResize] = useState<boolean>(false)
 
 
-  const [contentW, setContentW] = useState<string>();
-  const [contentH, setContentH] = useState<string>();
-  const [headerHeight, setHeaderHeight] = useState<number>(100);
 
   const [openResultBox, setOpenResultBox] = useState<boolean>(false);
   const yourPointsInput = useRef<HTMLInputElement | null>(null);
@@ -104,84 +100,44 @@ function Layout(props: {
     return body?.length > 22 ? `${body.slice(0, 22)}...` : body;
   }, []);
 
-  const FetchCurrentUser = async () => {
-    const token = Cookies.get("token");        
-    try {
-      if (token && token != "logout") {
-        const currentUserResponse = await axios.get(
-          // "https://strikem.site/users/current-user",
-          "http://localhost:5100/users/current-user",
-          {
-            headers: { Authorization: `JWT ${token}` },
-          }
-        );        
-        dispatch(setCurrentUser(currentUserResponse.data));  
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const updateLayout = useCallback((pathname:string) => {
+  // Was 3 useState values (contentW/contentH/headerHeight) set imperatively by a callback that
+  // got invoked from 3 separate effects (on mount, on window resize via the `resize` toggle
+  // below, and on route change) - same computation, same inputs, same 3 triggers, just expressed
+  // as a value derived during render instead of state pushed in from outside. `resize` still
+  // exists as the plain toggle it always was; it's just a useMemo dependency now instead of a
+  // useEffect dependency, so window.innerWidth/innerHeight get re-read exactly when they used to.
+  const layoutDimensions = useMemo(() => {
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     const isSpecialPage =
-      pathname.includes("users") ||
-      pathname === "/messenger" ||
-      pathname.includes("Pools") ||
-      pathname === "/matchmake";
-    setContentW(
+      location.pathname.includes("users") ||
+      location.pathname === "/messenger" ||
+      location.pathname.includes("Pools") ||
+      location.pathname === "/matchmake";
+
+    const contentW =
       viewportWidth >= 1024 && !isSpecialPage
         ? `${viewportWidth - 191}px`
-        : "100%"
-    );
+        : "100%";
 
+    let contentH: string;
     if (viewportWidth < 768) {
-      setContentH(`${viewportHeight - 77}px`);
-      
+      contentH = `${viewportHeight - 77}px`;
     } else if (viewportWidth < 1024) {
-      setContentH(`${viewportHeight - 140}px`);
+      contentH = `${viewportHeight - 140}px`;
     } else {
-      setContentH(`${viewportHeight - 24}px`);
+      contentH = `${viewportHeight - 24}px`;
     }
 
     // `${window.innerHeight - 137}px`;
-    setHeaderHeight(
-      isSpecialPage || viewportWidth < 1024 ? 100 : window.innerHeight - 65
-    );
-    
-  }, [location.pathname]);
+    const headerHeight =
+      isSpecialPage || viewportWidth < 1024 ? 100 : window.innerHeight - 65;
+
+    return { contentW, contentH, headerHeight };
+  }, [location.pathname, resize]);
 
   
 
-  const FetchUnreadNotifications = useCallback(async () => {
-    const token = Cookies.get("token");
-    try {
-      const [unreadMatchUps,unreadNotifications] = await Promise.all([
-        // axios.get("https://strikem.site/api/unread-matchups/",
-        axios.get("http://localhost:5100/api/unread-matchups/",
-          {
-            headers: { Authorization: `JWT ${token}` },
-          }
-        ),
-        // axios.get("https://strikem.site/api/unread-notifications/",
-        axios.get("http://localhost:5100/api/unread-notifications/",
-          {
-            headers: { Authorization: `JWT ${token}` },
-          }
-        )
-      ]) 
-      // console.log(unreadNotifications.data.unread);
-      // console.log(unreadMatchUps.data.unread);
-      
-      
-      setUnReadNotifications(unreadNotifications.data.unread);
-      // setUnReadMatchUps(unreadMatchUps.data.unread);
-      dispatch(setUnReadMatchup(unreadMatchUps.data.unread))
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
 
   
 
@@ -215,22 +171,59 @@ function Layout(props: {
     
     if (token && token != "logout" && isTokenExpired(token)) {
       dispatch(setUserLogIn(true));
+
+      const FetchCurrentUser = async () => {
+        try {
+          if (token && token != "logout") {
+            const currentUserResponse = await axios.get(
+              // "https://strikem.site/users/current-user",
+              "http://localhost:5100/users/current-user",
+              {
+                headers: { Authorization: `JWT ${token}` },
+              }
+            );
+            dispatch(setCurrentUser(currentUserResponse.data));
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
+      const FetchUnreadNotifications = async () => {
+        try {
+          const [unreadMatchUps,unreadNotifications] = await Promise.all([
+            // axios.get("https://strikem.site/api/unread-matchups/",
+            axios.get("http://localhost:5100/api/unread-matchups/",
+              {
+                headers: { Authorization: `JWT ${token}` },
+              }
+            ),
+            // axios.get("https://strikem.site/api/unread-notifications/",
+            axios.get("http://localhost:5100/api/unread-notifications/",
+              {
+                headers: { Authorization: `JWT ${token}` },
+              }
+            )
+          ])
+          // console.log(unreadNotifications.data.unread);
+          // console.log(unreadMatchUps.data.unread);
+
+
+          setUnReadNotifications(unreadNotifications.data.unread);
+          // setUnReadMatchUps(unreadMatchUps.data.unread);
+          dispatch(setUnReadMatchup(unreadMatchUps.data.unread))
+        } catch (err) {
+          console.error(err);
+        }
+      };
+
       FetchCurrentUser();
       FetchUnreadNotifications();
     }
-    updateLayout(location.pathname);
     window.addEventListener("resize", () => {
       setResize((i)=>!i)
     });
   }, []);
-
-  useEffect(()=>{
-    updateLayout(location.pathname)
-  },[resize])
-
-  useEffect(() => {
-    updateLayout(location.pathname)
-  }, [location.pathname]);
 
   useEffect(() => {
     if (location.pathname.includes("Pool")) {
@@ -400,7 +393,7 @@ function Layout(props: {
         <ResultBoxMemo yourPointsInput={yourPointsInput} yourPoints={yourPoints} opponentsPointsInput={opponentsPointsInput} opponentsPoints={opponentsPoints} setYourPoints={setYourPoints} setOpponentsPoints={setOpponentsPoints} windowWidth={window.innerWidth} openResultBox={openResultBox} setOpenResultBox={setOpenResultBox} />
         <InvitationAcceptMemo acceptInvitation={props.acceptInvitation} setAcceptInvitation={props.setAcceptInvitation} lastJsonMessage={lastJsonMessage} />
         <Suspense fallback={<LoadingPage />} >
-          <LayoutHeader setNotificationsOpen={setNotificationsOpen} setNotifications={setNotifications} headerHeight={headerHeight} unReadNotifications={unReadNotifications} setLogOut={props.setLogOut} userLogIn={userLogIn} setLoginBox={setLoginBox} setSignUpBox={setSignUpBox} />
+          <LayoutHeader setNotificationsOpen={setNotificationsOpen} setNotifications={setNotifications} headerHeight={layoutDimensions.headerHeight} unReadNotifications={unReadNotifications} setLogOut={props.setLogOut} userLogIn={userLogIn} setLoginBox={setLoginBox} setSignUpBox={setSignUpBox} />
         </Suspense>
         <Suspense fallback={<LoadingPage />}>
           {notificationsList}
@@ -409,9 +402,9 @@ function Layout(props: {
           style={
             location.pathname == "/messenger"
               ?window.innerWidth < 1024
-                ? { width: contentW, height: contentH } // content fix
-                : { width: contentW, height: "100%" }
-              : { width: contentW }
+                ? { width: layoutDimensions.contentW, height: layoutDimensions.contentH } // content fix
+                : { width: layoutDimensions.contentW, height: "100%" }
+              : { width: layoutDimensions.contentW }
           }
           className={` ${
             location.pathname == "/matchmake" ||
@@ -435,7 +428,7 @@ function Layout(props: {
               src="/images/icon-search.svg"
             />
             <input
-              className="bg-transparent focus:outline-none text-[#FFF] text-[16px] font-light md:text-[24px] "
+              className="bg-transparent focus:outline-none text-white text-[16px] font-light md:text-[24px] "
               type="text"
               placeholder="Search for movies"
               onChange={

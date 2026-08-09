@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // MessageItem.tsx
 import React from 'react';
 import { useAppSelector } from '../../ReduxStore/ReduxHooks';
@@ -66,15 +65,22 @@ const MessageItem = React.memo(({ item, isSelected, onClick,goToProfile }: Messa
       onClick={onClick}
       className={`flex h-[124px] lg:h-[132px] p-[20px] gap-[20px] hover:bg-[#161d2f8e] ${isSelected ? "bg-[#0a173a8e]" : ""}`}
     >
-      <img src={otherPlayer.profile_image} className="h-[100%] aspect-square rounded-[50%]" alt="Profile" />
-      <div className="flex flex-col gap-[10px] justify-center items-start">
-        <div className="flex items-end">
-          <h1 className={` text-[16px] md:text-[24px] text-[#fff] mr-[2px] cursor-pointer ${item.last_message?.sender.id == currentUser.id ?'font-normal': item.read?'font-normal':'font-bold'} `} onClick={goToProfile} >{otherPlayer.user.username}</h1>
-          <h2 className={` text-[14px]  text-[#ffffff57] ${item.last_message?.sender.id == currentUser.id ?'font-normal': item.read?'font-normal':'font-bold'} `}>
+      <img src={otherPlayer.profile_image} className="h-[100%] aspect-square rounded-[50%] shrink-0" alt="Profile" />
+      <div className="flex flex-col gap-[10px] justify-center items-start min-w-0 flex-1">
+        <div className="flex flex-col min-w-0 w-full">
+          <h1
+            className={`text-white truncate max-w-full cursor-pointer m-0 ${item.last_message?.sender.id == currentUser.id ?'font-normal': item.read?'font-normal':'font-bold'} `}
+            style={{ fontSize: window.innerWidth >= 768 ? 24 : 16, lineHeight: "normal" }}
+            onClick={goToProfile}
+          >{otherPlayer.user.username}</h1>
+          <h2
+            className={`truncate max-w-full !text-faint-white m-0 ${item.last_message?.sender.id == currentUser.id ?'font-normal': item.read?'font-normal':'font-bold'} `}
+            style={{ fontSize: 14, lineHeight: "normal" }}
+          >
             ({otherPlayer.user.first_name} {otherPlayer.user.last_name})
           </h2>
         </div>
-        <p className={`text-[14px] md:text-[18px] text-[#fff] ${item.last_message?.sender.id == currentUser.id ?'font-normal': item.read?'font-normal':'font-bold'} `}>
+        <p className={`text-[14px] md:text-[18px] text-white truncate max-w-full ${item.last_message?.sender.id == currentUser.id ?'font-normal': item.read?'font-normal':'font-bold'} `}>
           {item.last_message?item.last_message?.sender.id == currentUser.id ? "you: " : `${item.last_message?.sender.user.username}: `:""}
           {item.last_message?.body?item.last_message?.body:""}
         </p>

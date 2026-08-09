@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "./CSS/Pool.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -81,7 +80,7 @@ const markerIcon = new L.Icon({
 function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnabled:any}) {
   
   const { coords, isGeolocationAvailable, isGeolocationEnabled } = props;
-  
+
   const { lastJsonMessage } = useWebSocketContext();
 
   const location = useLocation();
@@ -107,43 +106,44 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
   let positionVertical = 1;
   let positionHorizontal = 1;
 
-  const img = useRef<any>();
-  const overlayDiv = useRef<any>();
-  const imgContainer = useRef<any>();
-  const mapImage = useRef<any>();
-  const whiteBoxRef = useRef<any>();
+  const img = useRef<HTMLImageElement|null>(null);
+  const overlayDiv = useRef<HTMLDivElement|null>(null);
+  const imgContainer = useRef<HTMLDivElement|null>(null);
+  const mapImage = useRef<HTMLImageElement|null>(null);
+  const whiteBoxRef = useRef<HTMLDivElement|null>(null);
 
-  const Fetch = async () => {
-    try {
-      const [ratingResponse,poolResponse,tableResponse] = await Promise.all([
-        // axios.get(`https://strikem.site/api/poolhouses/${id}/ratings/`),
-        axios.get(`http://localhost:5100/api/poolhouses/${id}/ratings/`),
-        // axios.get(`https://strikem.site/api/poolhouses/${id}/`),
-        axios.get(`http://localhost:5100/api/poolhouses/${id}/`),
-        // axios.get(`https://strikem.site/api/poolhouses/${id}/tables/`)
-        axios.get(`http://localhost:5100/api/poolhouses/${id}/tables/`)
-
-      ])
-         
-      setPoolInfo(poolResponse.data)
-      setPoolTablesData(tableResponse.data)
-      setRatings(ratingResponse.data.results);
-    } catch (err) {
-      console.error(err);
-    }
-  };
   useEffect(() => {
-    if (img.current.complete) {
+    if (img?.current?.complete) {
       handleResize();
     } else {
-      img.current.onload = handleResize;
+      img?.current ?img.current.onload = handleResize:null;
     }
 
     window.addEventListener("resize", handleResize);
 
+    const Fetch = async () => {
+      try {
+        const [ratingResponse,poolResponse,tableResponse] = await Promise.all([
+          // axios.get(`https://strikem.site/api/poolhouses/${id}/ratings/`),
+          axios.get(`http://localhost:5100/api/poolhouses/${id}/ratings/`),
+          // axios.get(`https://strikem.site/api/poolhouses/${id}/`),
+          axios.get(`http://localhost:5100/api/poolhouses/${id}/`),
+          // axios.get(`https://strikem.site/api/poolhouses/${id}/tables/`)
+          axios.get(`http://localhost:5100/api/poolhouses/${id}/tables/`)
+
+        ])
+
+        setPoolInfo(poolResponse.data)
+        setPoolTablesData(tableResponse.data)
+        setRatings(ratingResponse.data.results);
+      } catch (err) {
+        console.error(err);
+      }
+    };
     Fetch();
 
     setTimeout(() => {
+      if(imgContainer?.current && img?.current && mapImage?.current){
       const heightPercent =
         (imgContainer?.current?.getBoundingClientRect().height * 100) /
         img?.current?.getBoundingClientRect().height /
@@ -162,6 +162,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
 
       setWhiteBoxHeight(whiteBoxHeight);
       setWhiteBoxWidth(whiteBoxWidth);
+    }
     }, 1000);
 
     if(window.innerWidth >1045){
@@ -177,6 +178,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
     }
 
     window.addEventListener("resize", () => {
+      if(imgContainer?.current && img?.current && mapImage?.current){
       const heightPercent =
         (imgContainer?.current?.getBoundingClientRect().height * 100) /
         img?.current?.getBoundingClientRect().height /
@@ -208,13 +210,13 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
       }else{
       setNameLength(1) 
       }
-    });    
+    }});
   }, []);
 
   function handleResize() {
-    const sectionNumHorizontal = img.current?.naturalWidth / 1920;
-    const sectionNumVertical = img.current?.naturalHeight / 1080;
-    if (overlayDiv.current) {
+    const sectionNumHorizontal = img?.current? img.current?.naturalWidth / 1920:1;
+    const sectionNumVertical = img?.current? img.current?.naturalHeight / 1080:1;
+    if (overlayDiv.current && imgContainer?.current) {
       overlayDiv.current.style.width = `${
         imgContainer.current.getBoundingClientRect().width *
         sectionNumHorizontal
@@ -222,7 +224,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
     }
 
     const rect = img.current?.getBoundingClientRect();
-    if (overlayDiv.current) {
+    if (overlayDiv.current && imgContainer?.current && rect && img?.current) {
       overlayDiv.current.style.height = `${rect.height}px`;
       imgContainer.current.style.height = `${
         img.current.getBoundingClientRect().height / sectionNumVertical
@@ -232,28 +234,35 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
   }
 
   function navigate(direction: string, resizing: boolean) {
-    const sectionNumHorizontal = img.current?.naturalWidth / 1920;
-    const sectionNumVertical = img.current?.naturalHeight / 1080;
-    const stepVertical = Number(
-      (img.current.getBoundingClientRect().height / sectionNumVertical).toFixed(
-        2
+    const sectionNumHorizontal = img?.current?img.current?.naturalWidth / 1920:1;
+    const sectionNumVertical = img?.current?img.current?.naturalHeight / 1080:1;
+    const stepVertical = img?.current?
+      Number(
+        (img.current.getBoundingClientRect().height / sectionNumVertical).toFixed(
+          2
+        )
       )
-    );
-    const stepHorizontal = Number(
-      (
-        img.current.getBoundingClientRect().width / sectionNumHorizontal
-      ).toFixed(2)
-    );
+    :
+      1;
 
-    const overlayTop = parseInt(overlayDiv.current.style.top, 10);
-    const overlayLeft = parseInt(overlayDiv.current.style.left, 10);
+    const stepHorizontal = img?.current? 
+      Number(
+        (
+          img.current.getBoundingClientRect().width / sectionNumHorizontal
+        ).toFixed(2)
+      )
+    :
+      1;
 
-    if (resizing) {
+    const overlayTop = overlayDiv?.current? parseInt(overlayDiv.current.style.top, 10):1;
+    const overlayLeft = overlayDiv?.current? parseInt(overlayDiv.current.style.left, 10):1;
+
+    if (resizing && overlayDiv?.current) {
       overlayDiv.current.style.top = `0px`;
       overlayDiv.current.style.left = `0px`;
       positionHorizontal = 1;
       positionVertical = 1;
-    } else {
+    } else if(overlayDiv?.current){
       let topSign, leftSign;
       let exact;
 
@@ -336,6 +345,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
   }
 
   function mapNavigation(direction: string) {
+    if(!whiteBoxRef.current) return;
     switch (direction) {
       case "east": {
         let left = whiteBoxRef.current.style.left;
@@ -374,8 +384,8 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
 
   const ImageMap = () => {
     setTimeout(() => {
-      whiteBoxRef.current.style.left = "0px";
-      whiteBoxRef.current.style.top = "0px";
+      whiteBoxRef?.current?whiteBoxRef.current.style.left = "0px":null;
+      whiteBoxRef?.current?whiteBoxRef.current.style.top = "0px":null;
     }, 10);
     return (
       <div className=" absolute right-0 top-0 w-[20%] z-[49] border border-black ">
@@ -468,24 +478,23 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
   }, [lastJsonMessage]);
 
 
-  const fetchNewRatings = async () => {
-    try {
-      const response = await axios.get(
-        // `https://strikem.site/api/poolhouses/${id}/ratings/`
-        `http://localhost:5100/api/poolhouses/${id}/ratings/`
-      );
-      setRatings(response.data.results);
-      dispatch(setUploadRatingBox({open:false,id:0,name:""}))
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   useEffect(() => {
     if(uploadRatingBox.id == -1){
+      const fetchNewRatings = async () => {
+        try {
+          const response = await axios.get(
+            // `https://strikem.site/api/poolhouses/${id}/ratings/`
+            `http://localhost:5100/api/poolhouses/${id}/ratings/`
+          );
+          setRatings(response.data.results);
+          dispatch(setUploadRatingBox({open:false,id:0,name:""}))
+        } catch (err) {
+          console.error(err);
+        }
+      }
       fetchNewRatings()
     }
-  },[uploadRatingBox])  
+  },[uploadRatingBox])
 
 
   return (
@@ -621,7 +630,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
           </div>
         </div>
         <div className="mt-[24px] lg:mt-[48px] flex flex-col justify-center md:justify-start  w-[100%] ">
-          <h1 className=" text-[#fff]  text-[32px] md:text-[48px]">
+          <h1 className=" text-white  text-[32px] md:text-[48px]">
             {poolInfo.title}
           </h1>
           <div className="flex items-center gap-[5px]">
@@ -630,7 +639,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
               style={{ color: "white" }}
             />
 
-            <h3 className=" text-[#fff]  text-[24px] md:text-[32px]">
+            <h3 className=" text-white  text-[24px] md:text-[32px]">
               {poolInfo.table_count}
             </h3>
           </div>
@@ -639,7 +648,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
               className=" w-[24px] md:w-[32px] h-[24px] md:h-[32px] "
               style={{ color: "white" }}
             />
-            <h3 className=" text-[#fff] text-[24px] md:text-[32px]">
+            <h3 className=" text-white text-[24px] md:text-[32px]">
               {poolInfo.address}
             </h3>
           </div>
@@ -701,7 +710,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
         <div className="flex flex-col justify-center  items-center md:items-start gap-[20px] w-[100%] mt-[24px] lg:mt-[48px]  ">
           <div className="flex gap-[20px] " > 
           <StarRating rating={avgRating} />
-          <h1 className="text-[#fff] text-4xl md:text-5xl   ">{avgRating}</h1>
+          <h1 className="text-white text-4xl md:text-5xl   ">{avgRating}</h1>
           </div>
           {userLogIn ?<button className="px-[10px] py-[4px] rounded-[20px] text-white text-[24px] md:text-[28px] bg-[#fab907] " onClick={()=>{dispatch(setUploadRatingBox({open:true,id:poolInfo.id,name:poolInfo.title}))}} >
             Rate
@@ -709,7 +718,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
           :null}
         </div>
         <div className="flex items-center gap-[20px]  mt-[24px] lg:mt-[48px]" >
-        <h1 className=" text-[#fff] text-[32px] md:text-[48px]  ">
+        <h1 className=" text-white text-[32px] md:text-[48px]  ">
           Reviews
         </h1>
         <button className="px-[8px] py-[2px] rounded-[20px] text-white text-[20px] bg-[#fab907] h-fit " onClick={()=>{dispatch(setAllReviewsBox({open:true,id:poolInfo.id,name:poolInfo.title}))}} >See all</button>
@@ -728,7 +737,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
                     alt=""
                   />
                   <div className="flex flex-col self-stretch justify-around ]">
-                    <h1 className="text-[#fff] text-[14px] lg:text-[20px] font-semibold ">
+                    <h1 className="text-white text-[14px] lg:text-[20px] font-semibold ">
                       {item.rater?.user.username}
                     </h1>
                     <div className="flex gap-[5px]">
@@ -739,7 +748,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
                           height: "19px",
                         }}
                       />
-                      <h2 className="text-[#fff] text-[16px] m-0 ">{item.rate}</h2>
+                      <h2 className="text-white text-[16px] m-0 ">{item.rate}</h2>
                       <TbLetterW
                         style={{
                           color: "white",
@@ -748,25 +757,25 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
                           marginLeft: "10px",
                         }}
                       />
-                      <h2 className="text-[#fff]  text-[16px] m-0 ">
+                      <h2 className="text-white  text-[16px] m-0 ">
                         {item.rater?.total_points}
                       </h2>
                     </div>
                   </div>
                 </div>
                 <div className=" bg-[#ffffff80] h-[1px] border-none my-[10px] " />
-                <p className="text-[#fff]">{item.review}</p>
+                <p className="text-white">{item.review}</p>
               </div>
             );
           })}
         </div>
         <div className=" flex items-center justify-center mt-[48px] rounded-[18px] overflow-hidden ">
           {!isGeolocationAvailable ? (
-            <h1 className="text-[20px] text-[#fff] ">
+            <h1 className="text-[20px] text-white ">
               Your browser does not support Geolocation
             </h1>
           ) : !isGeolocationEnabled ? (
-            <h1 className="text-[20px] text-[#fff] ">
+            <h1 className="text-[20px] text-white ">
               Geolocation is not enabled
             </h1>
           ) : coords ? (
@@ -803,7 +812,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
               </MapContainer>
             </div>
           ) : (
-            <h1 className="text-[20px] text-[#fff] ">
+            <h1 className="text-[20px] text-white ">
               Getting the location data&hellip;{" "}
             </h1>
           )}

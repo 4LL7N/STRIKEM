@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./CSS/home.css";
 import { MdTableRestaurant } from "react-icons/md";
@@ -39,40 +38,44 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
     // window.location.reload()
   // }, []);
 
-  const fetchData = useCallback(async () => {
-    try {
-      const response = await axios.get(
-        // "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316"
-        `http://localhost:5100/api/poolhouses-filter/?lat=${coords?.latitude}&lng=${coords?.longitude}`
-        // {
-        //   headers: { Authorization: `JWT ${token}` },
-        // }
-      );
-
-      setNearby(response.data);
-
-      const PoolHousesResponse = await axios.get(
-        // "https://strikem.site/api/poolhouses/",
-        "http://localhost:5100/api/poolhouses/",
-        {
-          // headers: { Authorization: `JWT ${token}` },
-        }
-      );
-
-      setRecommended(PoolHousesResponse.data);
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
-
   useEffect(() => {
     console.log("Geolocation Available:", isGeolocationAvailable);
     console.log("Geolocation Enabled:", isGeolocationEnabled);
     console.log("Coordinates:", coords);
     if (isGeolocationAvailable && isGeolocationEnabled) {
+      const fetchData = async () => {
+        try {
+          const response = await axios.get(
+            // "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316"
+            `http://localhost:5100/api/poolhouses-filter/?lat=${coords?.latitude}&lng=${coords?.longitude}`
+            // {
+            //   headers: { Authorization: `JWT ${token}` },
+            // }
+          );
+
+          setNearby(response.data);
+
+          const PoolHousesResponse = await axios.get(
+            // "https://strikem.site/api/poolhouses/",
+            "http://localhost:5100/api/poolhouses/",
+            {
+              // headers: { Authorization: `JWT ${token}` },
+            }
+          );
+
+          setRecommended(PoolHousesResponse.data);
+        } catch (err) {
+          console.error(err);
+        }
+      };
       fetchData();
     }
-  }, [fetchData]);
+    // Deliberately still just [] here (matching the old effect's practical behavior, since
+    // fetchData's own useCallback deps were [] too, so [fetchData] never actually changed after
+    // mount) - not touching the fact that coords/geolocation-available getting resolved later
+    // than this mount doesn't retrigger the fetch, that's the separate, already-known,
+    // deliberately-deferred issue.
+  }, []);
 
   const filteredSearchResults = useMemo(() => {
     if (props.search) {
@@ -93,7 +96,7 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
         <section className="flex flex-col w-[100%] bg-[#10141E] px-[16px] pb-[16px] md:pb-[0] md:px-[0]">
           {(isGeolocationAvailable && isGeolocationEnabled)??
           <div className="max-w-[100%] ">
-            <h1 className="text-[#FFF] text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] ">
+            <h1 className="text-white text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] ">
               Nearby
             </h1>
             <div className="imageScroll flex gap-[15px] overflow-x-scroll flex-nowrap max-w-[100%] mb-[24px] rounded-[8px] p-0 md:mb-[39px] md:gap-[40px] lg:overflow-x-scroll">
@@ -115,15 +118,15 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
                       <div className="flex items-center justify-between p-[8px]">
                         <div className="flex flex-col gap-[4px]">
                           <div className="flex items-center gap-[6px]  ">
-                            <p className="  text-[#FFF] text-[12px] font-light opacity-75 md:text-[15px] ">
+                            <p className="  text-white text-[12px] font-light opacity-75 md:text-[15px] ">
                               {item.address}
                             </p>
-                            <div className="w-[3px] h-[3px] bg-[#FFF] opacity-50 rounded-[50%] " />
-                            <p className="  text-[#FFF] text-[12px] font-light opacity-75 md:text-[15px] ">
+                            <div className="w-[3px] h-[3px] bg-[#FFFFFF] opacity-50 rounded-[50%] " />
+                            <p className="  text-white text-[12px] font-light opacity-75 md:text-[15px] ">
                               {item.table_count}
                             </p>
                           </div>
-                          <h2 className="text-[#FFF] text-[15px] font-medium md:text-[24px]">
+                          <h2 className="text-white text-[15px] font-medium md:text-[24px]">
                             {item.title}
                           </h2>
                         </div>
@@ -136,7 +139,7 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
           </div>
            }
           <div>
-            <h1 className="text-[#FFF] text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] lg:mb-[32px]">
+            <h1 className="text-white text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] lg:mb-[32px]">
               Recommended for you
             </h1>
             <div
@@ -174,7 +177,7 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
                         />
                         <p>{item.table_count}</p>
                       </span>
-                      <span className="w-0.5 h-0.5 bg-white bg-opacity-50 rounded-full mx-1"></span>
+                      <span className="w-0.5 h-0.5 bg-white/50 rounded-full mx-1"></span>
                       <span className="flex gap-[4px] md:gap-[6px]">
                         <CiStar
                         className=" w-[16px] md:w-[20px] h-[16px] md:h-[20px] "
@@ -197,7 +200,7 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
       ) : (
         <section className="flex flex-col min-h-[100vh] bg-[#10141E] px-[16px] md:px-[0]">
           <div>
-            <h1 className="text-[#FFF] text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] ">
+            <h1 className="text-white text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] ">
               Found {filteredSearchResults.length} results for ‘{props.search}’
             </h1>
             <div className="flex flex-wrap gap-x-[15px] gap-y-[16px]  md:w-[718px] md:mb-[39px]  md:gap-y-[29px] md:gap-x-[24px] lg:w-[1330px] lg:gap-x-[60px] lg:gap-y-[32px]">
@@ -218,23 +221,23 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
                     </div>
                     <div className="flex flex-col gap-[4px]">
                       <div className="flex flex-col items-start jus gap-[6px]">
-                        <p className="  text-[#FFF] text-[11px] font-light opacity-75 md:text-[13px]">
+                        <p className="  text-white text-[11px] font-light opacity-75 md:text-[13px]">
                           {item.address}
                         </p>
                         <div className="flex">
-                          <div className="w-[2px] h-[2px] bg-[#FFF] bg-opacity-50 " />
+                          <div className="w-[2px] h-[2px] bg-[#FFFFFF]/50 " />
                           <div className="flex items-center gap-[4px]">
-                            <p className="  text-[#FFF] text-[11px] font-light opacity-75 md:text-[13px] ">
+                            <p className="  text-white text-[11px] font-light opacity-75 md:text-[13px] ">
                               {item.table_count}
                             </p>
                           </div>
-                          <div className="w-[2px] h-[2px] bg-[#FFF] bg-opacity-50 "></div>
-                          <p className="  text-[#FFF] text-[11px] font-light opacity-75 md:text-[13px]">
+                          <div className="w-[2px] h-[2px] bg-[#FFFFFF]/50 "></div>
+                          <p className="  text-white text-[11px] font-light opacity-75 md:text-[13px]">
                             {item.avg_rating}
                           </p>
                         </div>
                       </div>
-                      <h2 className="text-[#FFF] text-[14px] font-medium md:text-[18px]">
+                      <h2 className="text-white text-[14px] font-medium md:text-[18px]">
                         {item.title}
                       </h2>
                     </div>

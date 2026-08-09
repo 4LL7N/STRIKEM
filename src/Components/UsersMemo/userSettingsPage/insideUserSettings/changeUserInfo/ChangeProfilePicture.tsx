@@ -1,8 +1,8 @@
 import { ChangeEvent} from "react"
 import { IoMdAdd } from "react-icons/io"
-import type { ChangeProfilePicture } from "../../../../../type"
+import type { ChangeProfilePicture as ChangeProfilePictureProps } from "../../../../../type"
 
-function ChangeProfilePicture({fileRef,emptyFileError,setSelectedFile,selectedFile}:ChangeProfilePicture) {
+function ChangeProfilePicture({fileRef,emptyFileError,setSelectedFile,selectedFile}:ChangeProfilePictureProps) {
 
     const uploadFile = (e:ChangeEvent<HTMLInputElement>|null) => {
         if (e?.target?.files && e.target.files.length > 0) {
@@ -37,7 +37,7 @@ function ChangeProfilePicture({fileRef,emptyFileError,setSelectedFile,selectedFi
       ref={fileRef}
       onChange={uploadFile}
     />
-  <p className="text-[#fab907]" onClick={deletePicture} >{selectedFile?"delete picture":"Add picture"}</p>
+  <p className="!text-brand-gold" onClick={deletePicture} >{selectedFile?"delete picture":"Add picture"}</p>
   </div>
   )
 }

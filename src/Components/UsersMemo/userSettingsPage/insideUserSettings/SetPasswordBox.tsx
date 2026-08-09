@@ -118,7 +118,7 @@ function SetPasswordBox() {
 
   return (
     <div
-      className={` flex flex-col items-center justify-center fixed top-0 w-[100vw] min-h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 z-50  `}
+      className={` flex flex-col items-center justify-center fixed top-0 w-[100vw] min-h-[100vh] px-[20px] bg-[#10141E]/90 z-50  `}
     >
       <div className="w-[100%] md:w-[536px] p-[24px] pb-[32px] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px] ">
         <div className="w-full flex justify-between items-center ">
@@ -127,10 +127,10 @@ function SetPasswordBox() {
             {userSettingsBox.settingsPage == "forget password"?
                             <>
                               <IoIosArrowForward style={{color:"white",width:"24px",height:"24px"}} className=" rotate-180 cursor-pointer " onClick={()=>{dispatch(setSettingsPage("settings"))}} />
-                              <h1 className="text-[20px] text-[#FFF] leading-6 ">{userSettingsBox.settingsPage}</h1> 
+                              <h1 className="text-[20px] text-white leading-6 ">{userSettingsBox.settingsPage}</h1> 
                             </> 
                           :
-                          <h1 className="text-[14px] text-[#FFF] leading-6 ">
+                          <h1 className="text-[14px] text-white leading-6 ">
                           Set a password to access the changes
                         </h1>  
                         }
@@ -159,7 +159,7 @@ function SetPasswordBox() {
                 {axiosError}
               </p>
             <button
-              className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-[#FFF] font-light hover:bg-[#FFF] hover:text-[#161D2F] "
+              className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-white font-light hover:bg-[#FFFFFF] hover:!text-brand-navy "
                 onClick={userSettingsBox.settingsPage == "emailCode" || userSettingsBox.settingsPage == "forget password"? handleEmailCode:handleNewPassword}
             >
               {userSettingsBox.settingsPage == "emailCode" || userSettingsBox.settingsPage == "forget password"?'Code Check':'submit'}

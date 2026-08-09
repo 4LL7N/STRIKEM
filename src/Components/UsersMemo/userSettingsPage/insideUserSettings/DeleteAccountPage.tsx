@@ -76,12 +76,12 @@ function DeleteAccountPage() {
   return (
     <section className="w-full mt-[24px]">
         <div
-        className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] pl-[16px] pb-[18px] hover:border-b-[#FFF] ${
+        className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] pl-[16px] pb-[18px] hover:border-b-[#FFFFFF] ${
             emptyPasswordErr  ? "border-b-[#FC4747]" : null
             } `}
       >
         <input
-          className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none  md:w-[200px] lg:w-[230px]"
+          className="w-[150px] text-[15px] text-white font-light bg-transparent focus:outline-none  md:w-[200px] lg:w-[230px]"
           type="password"
           name="Password"
           id="Password"
@@ -92,7 +92,7 @@ function DeleteAccountPage() {
         <a
           className={`${
             emptyPasswordErr
-              ? "text-[13px] text-[#FC4747] font-light"
+              ? "text-[13px] !text-brand-red font-light"
               : "hidden"
           }`}
         >
@@ -105,7 +105,7 @@ function DeleteAccountPage() {
                 {axiosError}
               </p>
       <button
-          className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-[#FFF] font-light hover:bg-[#FFF] hover:text-[#161D2F] "
+          className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-white font-light hover:bg-[#FFFFFF] hover:!text-brand-navy "
           onClick={handleAccount}
         >
           delete

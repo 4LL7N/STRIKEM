@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable react-hooks/exhaustive-deps */
 import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CiStar } from "react-icons/ci";
@@ -88,10 +87,14 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
     const [matchMakes, setMatchMakes] = useState<Message[]>([]);
     const [invitations, setInvitations] = useState<Invitation[]>([]);
     const [sentInvitations,setSentInvitations] = useState<{id:number,player_invited:number}[]>([])
-    const matchupSectionRef = useRef<any>();
-    const [isOn, setIsOn] = useState(false);
+    const matchupSectionRef = useRef<HTMLSelectElement|null>(null);
 
     const currentUser = useAppSelector((state) => state.currentUser);
+    // Starts from currentUser.inviting_to_play directly (Redux state, already available on first
+    // render) instead of useState(false) + a setIsOn() call in the mount effect below - same
+    // starting value, one less render. setIsOn is still called elsewhere as normal (after
+    // fetching fresh data, and from the toggle switch itself).
+    const [isOn, setIsOn] = useState(() => currentUser.inviting_to_play);
 
     const handleCheckboxChange = (num: number) => {
       let newFilter = [...filter]
@@ -113,36 +116,6 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
         setPlayersData(PlayersData);
         setPlayersDataSearch(PlayersData)
     }
-const Fetch = useCallback(async () => {
-    const token = Cookies.get("token");
-    try {
-        const [playersResponse, matchMakesResponse, invitationsResponse] = await Promise.all([
-            // axios.get("https://strikem.site/api/filter-ratings/", {
-            axios.get("http://localhost:5100/api/filter-ratings/", {
-              headers: { Authorization: `JWT ${token}` },
-            }),
-            // axios.get("https://strikem.site/api/matchups/", {
-            axios.get("http://localhost:5100/api/matchups/", {
-              headers: { Authorization: `JWT ${token}` },
-            }),
-            // axios.get(`https://strikem.site/api/player-details/`, {
-            axios.get(`http://localhost:5100/api/player-details/`, {
-              headers: { Authorization: `JWT ${token}` },
-            }),
-          ]);
-      
-        let PlayersData:Player[] = [...playersResponse.data]
-        PlayersData = !(invitationsResponse?.data?.inviting_to_play)? PlayersData.filter((item:Player)=> item.id != invitationsResponse?.data.id):[...PlayersData]
-        setPlayersData(PlayersData);
-        setPlayersDataSearch(PlayersData)
-        setMatchMakes(matchMakesResponse.data.results);
-        setIsOn(invitationsResponse?.data?.inviting_to_play)
-        setInvitations(invitationsResponse?.data?.received_invitations);
-        setSentInvitations(invitationsResponse?.data?.sent_invitations)
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
   
   
 
@@ -241,16 +214,44 @@ const Fetch = useCallback(async () => {
   };
 
   useEffect(() => {
-    setIsOn(currentUser.inviting_to_play)
-      
+    const Fetch = async () => {
+      const token = Cookies.get("token");
+      try {
+        const [playersResponse, matchMakesResponse, invitationsResponse] = await Promise.all([
+          // axios.get("https://strikem.site/api/filter-ratings/", {
+          axios.get("http://localhost:5100/api/filter-ratings/", {
+            headers: { Authorization: `JWT ${token}` },
+          }),
+          // axios.get("https://strikem.site/api/matchups/", {
+          axios.get("http://localhost:5100/api/matchups/", {
+            headers: { Authorization: `JWT ${token}` },
+          }),
+          // axios.get(`https://strikem.site/api/player-details/`, {
+          axios.get(`http://localhost:5100/api/player-details/`, {
+            headers: { Authorization: `JWT ${token}` },
+          }),
+        ]);
+
+        let PlayersData:Player[] = [...playersResponse.data]
+        PlayersData = !(invitationsResponse?.data?.inviting_to_play)? PlayersData.filter((item:Player)=> item.id != invitationsResponse?.data.id):[...PlayersData]
+        setPlayersData(PlayersData);
+        setPlayersDataSearch(PlayersData)
+        setMatchMakes(matchMakesResponse.data.results);
+        setIsOn(invitationsResponse?.data?.inviting_to_play)
+        setInvitations(invitationsResponse?.data?.received_invitations);
+        setSentInvitations(invitationsResponse?.data?.sent_invitations)
+      } catch (err) {
+        console.log(err);
+      }
+    };
     Fetch();
 
     const windwoHeight = window.innerHeight;
     setTimeout(() => {
-      if(window.innerWidth >= 1024){
+      if(window.innerWidth >= 1024 && matchupSectionRef.current){
       const sectionPosition =
         matchupSectionRef.current?.getBoundingClientRect().top;
-      matchupSectionRef.current.style.height = `${
+        matchupSectionRef.current.style.height = `${
         windwoHeight - sectionPosition - 33
       }px`;
     }
@@ -261,16 +262,12 @@ const Fetch = useCallback(async () => {
     // })
   }, []);
 
-  const filteredPlayers = useCallback(() => {
+  useEffect(()=>{
     const newArr = playersDataSearch.filter((item: Player) =>
       item.user.username.startsWith(usersSearch)
     );
-  
-    setPlayersData(newArr)
-  }, [playersData, usersSearch]);
 
-  useEffect(()=>{
-    filteredPlayers()
+    setPlayersData(newArr)
   },[usersSearch])
 
   const toggleSlider = () => {
@@ -330,10 +327,10 @@ const Fetch = useCallback(async () => {
   return (
     <section ref={matchupSectionRef} className="flex flex-col-reverse lg:flex-row w-[100%] gap-[2%] px-[10px] py-[24px] lg:pb-[0] ">
       <div className=" flex flex-col  w-[100%]  ">
-      <div className={` flex ml-[16px] my-[16px] md:my-[24px] md:ml-[0] md:mb-[33px] `} ><img className="w-[24px] h-[24px] mr-[16px] md:w-[32px] md:h-[32px] md:mr-[24px]" src="/images/icon-search.svg"  /><input className="bg-transparent focus:outline-none text-[#FFF] text-[16px] font-light md:text-[24px] " type="text" placeholder="Search for movies" onChange={(event) =>{setUsersSearch(event.target.value)}} /></div>
+      <div className={` flex ml-[16px] my-[16px] md:my-[24px] md:ml-[0] md:mb-[33px] `} ><img className="w-[24px] h-[24px] mr-[16px] md:w-[32px] md:h-[32px] md:mr-[24px]" src="/images/icon-search.svg"  /><input className="bg-transparent focus:outline-none text-white text-[16px] font-light md:text-[24px] " type="text" placeholder="Search for movies" onChange={(event) =>{setUsersSearch(event.target.value)}} /></div>
 
         <div className={` flex flex-col `}>
-          <h1 className=" text-[20px] md:text-[32px] lg:text-[48px] text-[#fff] ">Filter</h1>
+          <h1 className=" text-[20px] md:text-[32px] lg:text-[48px] text-white ">Filter</h1>
           <div className="flex mt-[8px] md:mt-[16px] lg:mt-[20px] justify-between ">
             <div className="flex gap-[10px] md:gap-[20px] ">
               <label
@@ -350,8 +347,8 @@ const Fetch = useCallback(async () => {
                   className="hidden"
                 />
                 <span
-                  className={` flex flex-col gap-[4px] p-[8px] md:p-[12px] rounded-[20px]  border-[1px] borer-[#fff] ${
-                    filter.includes(1) ? "bg-[#fff]" : ""
+                  className={` flex flex-col gap-[4px] p-[8px] md:p-[12px] rounded-[20px]  border-[1px] borer-[#ffffff] ${
+                    filter.includes(1) ? "bg-[#ffffff]" : ""
                   } `}
                 >
                     <div className=" flex items-center gap-[5px] " >
@@ -364,9 +361,9 @@ const Fetch = useCallback(async () => {
                         : { color: "white" }
                     }
                   />
-                  <p className={`text-[14px] leading-[17px] md:text-[20px] md:leading-6 lg:text-[18px] lg:leading-5   ${filter.includes(1) ? "text-[#000]" : "text-[#fff]"} `} >location</p>
+                  <p className={`text-[14px] leading-[17px] md:text-[20px] md:leading-6 lg:text-[18px] lg:leading-5   ${filter.includes(1) ? "text-black" : "text-white"} `} >location</p>
                   </div>
-                  <p className={`text-[8px] md:text-[12px] lg:text-[10px] ${filter.includes(1) ? "text-[#0000007b]" : "text-[#ffffff86]"} `} >find player 4km radius</p>
+                  <p className={`text-[8px] md:text-[12px] lg:text-[10px] ${filter.includes(1) ? "!text-faint-black" : "!text-dim-white"} `} >find player 4km radius</p>
                 </span>
               </label>
               <label
@@ -381,8 +378,8 @@ const Fetch = useCallback(async () => {
                   className="hidden"
                 />
                 <div
-                  className={` flex flex-col gap-[4px] p-[8px] md:p-[12px] rounded-[20px] border-[1px] borer-[#fff] ${
-                    filter.includes(2) ? "bg-[#fff]" : ""
+                  className={` flex flex-col gap-[4px] p-[8px] md:p-[12px] rounded-[20px] border-[1px] borer-[#ffffff] ${
+                    filter.includes(2) ? "bg-[#ffffff]" : ""
                   } `}
                 >
                     <div className=" flex items-center gap-[5px] " >
@@ -394,9 +391,9 @@ const Fetch = useCallback(async () => {
                         : { color: "white" }
                     }
                   />
-                  <p className={`text-[14px] leading-[17px] md:text-[20px] md:leading-6 lg:text-[18px] lg:leading-5 ${filter.includes(2) ? "text-[#000]" : "text-[#fff]"} `} >Rating</p>
+                  <p className={`text-[14px] leading-[17px] md:text-[20px] md:leading-6 lg:text-[18px] lg:leading-5 ${filter.includes(2) ? "text-black" : "text-white"} `} >Rating</p>
                   </div>
-                  <p className={`text-[8px] md:text-[12px] lg:text-[10px] ${filter.includes(2) ? "text-[#0000007b]" : "text-[#ffffff86]"} `} >find player ↑ 200 ↓ rating</p>
+                  <p className={`text-[8px] md:text-[12px] lg:text-[10px] ${filter.includes(2) ? "!text-faint-black" : "!text-dim-white"} `} >find player ↑ 200 ↓ rating</p>
                 </div>
               </label>
             </div>
@@ -423,14 +420,14 @@ const Fetch = useCallback(async () => {
                 }`}
               ></div>
             </div>
-            <p className={`text-[8px] md:text-[12px] lg:text-[10px] text-[#ffffff86] `} >Turn on match making requests</p>
+            <p className={`text-[8px] md:text-[12px] lg:text-[10px] !text-dim-white `} >Turn on match making requests</p>
 
             </div>
           </div>
         </div>
         <main className="flex flex-col gap-[20px] mt-[24px] mb-[24px] md:mt-[32px] lg:h-[100%] lg:mb-0 overflow-hidden ">
           <div className="flex items-end justify-between" >
-          <h1 className="text-[20px] md:text-[32px] lg:text-[48px] text-[#fff] ">Players</h1>
+          <h1 className="text-[20px] md:text-[32px] lg:text-[48px] text-white ">Players</h1>
           <div className={`flex items-end justify-center h-[30px] aspect-square mr-[26px] ${isSpinning ? "spin" : ""} `} onClick={()=>{refreshData()}} >
             <IoRefreshSharp className="w-[24px] h-[24px] " style={{color:'white'}} /></div>
           </div>
@@ -453,7 +450,7 @@ const Fetch = useCallback(async () => {
       </div>
       <div className=" flex flex-col mt-[16px] md:mt-[24px] w-[100%] lg:w-[55%] gap-[6%] mb-[24px] lg:max-h-[100%] lg:mb-0 ">
         <div className="flex flex-col lg:h-[47%] gap-[20px] ">
-          <h1 className="text-[20px] md:text-[32px] lg:text-[48px] text-[#fff] ">Matchups</h1>
+          <h1 className="text-[20px] md:text-[32px] lg:text-[48px] text-white ">Matchups</h1>
           <div className="flex flex-col flex-grow rounded-[20px]  border-[1px] border-[#243257d5] h-[238px] md:h-[358px] overflow-y-auto messagesScroll  ">
             {matchMakes?.map((item: Message, i: number) => {
               const index = (i + 10) * 100;
@@ -469,7 +466,7 @@ const Fetch = useCallback(async () => {
           </div>
         </div>
         <div className="flex flex-col lg:h-[47%] gap-[20px] ">
-          <h1 className="text-[20px] md:text-[32px] lg:text-[48px] text-[#fff] ">invations</h1>
+          <h1 className="text-[20px] md:text-[32px] lg:text-[48px] text-white ">invations</h1>
           <div className="flex flex-col flex-grow rounded-[20px]  border-[1px] border-[#243257d5] h-[238px] md:h-[358px] overflow-y-auto messagesScroll  ">
             {invitations?.map((item: Invitation, i: number) => {
               const index = (i + 10) * 100;

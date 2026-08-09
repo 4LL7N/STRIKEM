@@ -106,19 +106,22 @@ const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo
             }}
           />
           <div className="flex flex-col md:gap-[4px] ">
-            <h1 className="text-[14px] md:text-[18px] text-[#fff] ">
+            <h1
+              className="text-white"
+              style={{ fontSize: window.innerWidth >= 768 ? 18 : 14, lineHeight: "normal", fontWeight: 400 }}
+            >
               {item.type != "GSE" && item.type != "SPW" && item.sent_by.user.username} {message()}
             </h1>
             <div className="flex gap-[3px]  ">
               <p
                 className={`${
                   item.type == "MSG" ? "" : " hidden "
-                } text-[10px] md:text-[14px] text-[#fff]`}
+                } text-[10px] md:text-[14px] text-white`}
               >
                 {messageContent(item.body)}
               </p>
               <p
-                className={`text-[10px] md:text-[14px] text-[#7e7e7e] `}
+                className={`text-[10px] md:text-[14px] !text-muted-grey-2 `}
               >
                 {" "}
                 {timeAgo(item.timestamp)}{" "}

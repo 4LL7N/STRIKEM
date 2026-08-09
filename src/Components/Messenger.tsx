@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import {
@@ -79,9 +78,9 @@ function Messenger() {
 
   const [isSwiped, setIsSwiped] = useState(false);
 
-  const messageChat = useRef<any>();
-  const chatBox = useRef<any>();
-  const messengersBox = useRef<any>();
+  const messageChat = useRef<HTMLSelectElement|null>(null);
+  const chatBox = useRef<HTMLElement|null>(null)
+  const messengersBox = useRef<HTMLDivElement|null>(null)
 
   
 
@@ -97,44 +96,31 @@ function Messenger() {
   const [openChat, setOpenChat] = useState<string>("");
   const [chat, setChat] = useState<chatMessage[]>([]);
 
-  const [messageTo, setMessageTo] = useState<any|null>(null);
+  // Same pattern as boxHeight above: read the initial value straight from localStorage instead of
+  // setting it from inside the mount effect. setMessageTo is still called elsewhere as normal
+  // (selecting a chat, the effect's own cleanup) - only this one "what's the starting value" read
+  // moves.
+  const [messageTo, setMessageTo] = useState<any|null>(() => {
+    const localMessageTo = localStorage.getItem("MessageTo");
+    return localMessageTo ? JSON.parse(localMessageTo) : null;
+  });
 
-  const [boxHeight, setBoxHeight] = useState<number>(0);
+  // Computed up front as the initial value (same formula setChatBoxHeight below uses) instead of
+  // being set from inside the mount effect - avoids an extra render on mount for a value that's
+  // knowable immediately. The resize listener further down still calls setChatBoxHeight()
+  // imperatively on actual resize events, which is the correct/expected pattern (setState from
+  // inside a subscribed callback), so that part is untouched.
+  const [boxHeight, setBoxHeight] = useState<number>(() =>
+    window.innerWidth > 768 ? window.innerHeight - 160 : window.innerHeight - 97
+  );
 
   const currentUser = useAppSelector((state) => state.currentUser);
   const dispatch = useAppDispatch();
 
-  const chatInput = useRef<any>();
+  const chatInput = useRef<HTMLInputElement|null>(null);
 
   const token = Cookies.get("token");
   const MatchUpId = localStorage.getItem("matchUpId"); 
-  const Fetch = async () => {
-    
-   
-    try {
-      // const response = await axios("https://strikem.site/api/matchups/", {
-      const response = await axios("http://localhost:5100/api/matchups/", {
-        headers: {
-          Authorization: `JWT ${token}`,
-        },
-      });
-      setNextMessages(response.data.next);
-      setMessages(response.data.results);
-      if (response.data.results.length > 0) {
-        
-         
-        if(MatchUpId){
-          messagesFetch(MatchUpId);
-        }
-       
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-
-
   const messagesFetch = useCallback(
     async (id: string) => {
       try {
@@ -253,43 +239,6 @@ function Messenger() {
     setMessages(allChats);
   };
 
-  const addChats = async () => {
-    
-    if (nextChats) {
-      try {
-        const ChatResponse = await axios(nextChats, {
-          headers: { Authorization: `JWT ${token}` },
-        });
-        
-        const chatData = ChatResponse.data.results;
-        const nextChatsEndpoint = ChatResponse.data.next;
-        const newChat = [...chat,...chatData];
-        setNextChats(nextChatsEndpoint);
-        setChat(newChat);
-        
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  };
-
-  const addMessages = async () => {
-    
-    if (nextMessages) {
-      try {
-        const MessagesResponse = await axios(nextMessages, {
-          headers: { Authorization: `JWT ${token}` },
-        });
-        const messagesData = MessagesResponse.data.results;
-        const newMessages = [...messages,...messagesData];
-        setMessages(newMessages);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  };
-
-
   const handleChatScroll = (e: any) => {
     const target = e.target as HTMLElement;
 
@@ -318,17 +267,30 @@ function Messenger() {
   };
 
   useEffect(() => {
+    const Fetch = async () => {
+      try {
+        // const response = await axios("https://strikem.site/api/matchups/", {
+        const response = await axios("http://localhost:5100/api/matchups/", {
+          headers: {
+            Authorization: `JWT ${token}`,
+          },
+        });
+        setNextMessages(response.data.next);
+        setMessages(response.data.results);
+        if (response.data.results.length > 0) {
+          if(MatchUpId){
+            messagesFetch(MatchUpId);
+          }
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
     Fetch();
-
-    setChatBoxHeight();
 
     window.addEventListener("resize", () => {
       setChatBoxHeight();
     });
-
-    
-    const localMessageTo = localStorage.getItem("MessageTo");
-    localMessageTo ? setMessageTo(JSON.parse(localMessageTo)) : null;
 
     if (messageChat.current && messengersBox.current) {
       messageChat.current.scrollTop = messageChat.current.scrollHeight;
@@ -349,15 +311,42 @@ function Messenger() {
     }
   }, []);
 
-  useEffect(() => {    
-    
+  useEffect(() => {
     if (addNextChat && nextChats) {
+      const addChats = async () => {
+        try {
+          const ChatResponse = await axios(nextChats, {
+            headers: { Authorization: `JWT ${token}` },
+          });
+
+          const chatData = ChatResponse.data.results;
+          const nextChatsEndpoint = ChatResponse.data.next;
+          const newChat = [...chat,...chatData];
+          setNextChats(nextChatsEndpoint);
+          setChat(newChat);
+        } catch (err) {
+          console.log(err);
+        }
+      };
       addChats();
     }
   }, [addNextChat]);
 
   useEffect(()=>{
     if (addNextMessages) {
+      const addMessages = async () => {
+        if (!nextMessages) return;
+        try {
+          const MessagesResponse = await axios(nextMessages, {
+            headers: { Authorization: `JWT ${token}` },
+          });
+          const messagesData = MessagesResponse.data.results;
+          const newMessages = [...messages,...messagesData];
+          setMessages(newMessages);
+        } catch (err) {
+          console.log(err);
+        }
+      };
       addMessages();
     }
   },[addNextMessages])
@@ -566,7 +555,7 @@ function Messenger() {
         {messagesList}
       </div>
       <div className="flex justify-between items-center w-[100%] h-[84px] md:h-[128px] border-b-[1px] border-b-[#243257d5] p-[10px] md:p-[16px] lg:hidden ">
-        <div className="flex items-center text-[#fff] h-full  ">
+        <div className="flex items-center text-white h-full  ">
           <FaArrowLeft
             style={{ color: "white" }}
             className="w-[32px] h-[32px] md:w-[40px] md:h-[40px]"
@@ -579,7 +568,7 @@ function Messenger() {
         <div className="flex gap-[10px] h-[100%] ">
           <div className=" flex flex-col h-[100%] justify-evenly items-end ">
             <h1
-              className="text-[#fff] text-[16px] md:text-[24px] cursor-pointer "
+              className="text-white text-[16px] md:text-[24px] cursor-pointer "
               onClick={() => {
                 naviagte(`/users/${messageTo.id}`);
                 localStorage.setItem("matchUpId", "");
@@ -587,7 +576,7 @@ function Messenger() {
             >
               {messageTo?.user.username}
             </h1>
-            <h2 className="text-[#ffffff57] text-[16px] md:text-[24px] ">
+            <h2 className="!text-faint-white text-[16px] md:text-[24px] ">
               ({messageTo?.user.first_name} {messageTo?.user.last_name})
             </h2>
           </div>
@@ -613,7 +602,7 @@ function Messenger() {
           {!MatchUpId && !messageTo ? (
             <div className="flex flex-col justify-center items-center h-[100%]  ">
               <FaRegMessage style={{ color: "#fab907", width: "118px", height: "118px" }}/>
-              <p className="text-[24px] text-[#fab907]" >Chose chat</p>
+              <p className="text-[24px] !text-brand-gold" >Chose chat</p>
                             
             </div>
           ) : null}

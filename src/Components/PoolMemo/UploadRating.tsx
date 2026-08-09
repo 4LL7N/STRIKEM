@@ -43,7 +43,7 @@ const UploadRating = memo(({uploadRatingBox}:{uploadRatingBox:RatingBoxState}) =
 
     return (
       <div
-        className={` flex flex-col items-center justify-center fixed top-0 w-[100vw] h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90  z-[1000] transform transition-all duration-300 ${
+        className={` flex flex-col items-center justify-center fixed top-0 w-[100vw] h-[100vh] px-[20px] bg-[#10141E]/90  z-[1000] transform transition-all duration-300 ${
           uploadRatingBox.open ? "" : "hidden"
         } `}
       >
@@ -84,7 +84,7 @@ const UploadRating = memo(({uploadRatingBox}:{uploadRatingBox:RatingBoxState}) =
                 }}
               />
             </Stack>
-            <p className="text-[#fab907] text-[24px] m-0">{selectedStars}</p>
+            <p className="!text-brand-gold text-[24px] m-0">{selectedStars}</p>
           </div>
           <textarea
             className="w-[100%] bg-transparent rounded-[20px] border-[1px] border-[#fab907] mt-[24px] resize-none focus:outline-none p-[10px] text-white "

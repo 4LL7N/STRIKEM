@@ -35,7 +35,7 @@ function LoginForgetPassword() {
 
 
   const CheckEmailRef = useRef<HTMLInputElement|null>(null)
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const timer = () => {
     let timerTime = 59;
@@ -203,7 +203,7 @@ function LoginForgetPassword() {
 
   return (
     <div
-        className={` flex flex-col items-center justify-center fixed top-0 w-[100vw] min-h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 z-50  
+        className={` flex flex-col items-center justify-center fixed top-0 w-[100vw] min-h-[100vh] px-[20px] bg-[#10141E]/90 z-50  
           `}
       >
         <div className="w-[100%] md:w-[536px] p-[24px] pb-[32px] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px] ">
@@ -211,13 +211,13 @@ function LoginForgetPassword() {
                   <div className="flex gap-[2px] items-center">
                     
                     {userSettingsBox.settingsPage == "emailCheck"?
-                                    <h1 className="text-[32px] text-[#FFF] leading-6 ">
+                                    <h1 className="text-[32px] text-white leading-6 ">
                                     Email Check
                                   </h1>
                                   :
                                   <>
                                     <IoIosArrowForward style={{color:"white",width:"24px",height:"24px"}} className=" rotate-180 cursor-pointer " onClick={goBack} />
-                                      <h1 className="text-[20px] text-[#FFF] leading-6 ">
+                                      <h1 className="text-[20px] text-white leading-6 ">
                                         {userSettingsBox.settingsPage == "loginCodeCheck"?"Check code":"set Password"}
                                       </h1> 
                                     </>   
@@ -244,7 +244,7 @@ function LoginForgetPassword() {
                 {axiosError}{notEmailCheckEmailErr}
               </p>
             <button
-              className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-[#FFF] font-light hover:bg-[#FFF] hover:text-[#161D2F] flex justify-center "
+              className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-white font-light hover:bg-[#FFFFFF] hover:!text-brand-navy flex justify-center "
                 onClick={userSettingsBox.settingsPage == "emailCheck" ? emailCheckHandle:userSettingsBox.settingsPage == "loginCodeCheck"?codeCheckHandle:newPasswordHandle}
             >
               

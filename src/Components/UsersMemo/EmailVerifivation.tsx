@@ -3,31 +3,31 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 function EmailVerifivation() {
-  const [verified, setVerified] = useState<number>(0);
   const { uid, token } = useParams<{ uid: string; token: string }>();
-
-  const verifyEmail = async () => {
-    try {
-      const response = await axios(
-        // `https://strikem.site/users/activate/${uid}/${token}/`
-        `http://localhost:5100/users/activate/${uid}/${token}/`
-      );
-      if (response.status === 200) {
-        setVerified(1);
-      }else{
-        setVerified(2)
-      }
-    } catch (err) {
-      console.log(err);
-      setVerified(2)
-    }
-  };
+  // Missing uid/token means there's nothing to verify - decide that up front as the initial
+  // state instead of setState-ing it from inside the effect below, so the "something went wrong"
+  // state is what's rendered on the very first paint rather than an effect-triggered re-render.
+  const [verified, setVerified] = useState<number>(!uid || !token ? 2 : 0);
 
   useEffect(()=>{
-    if(!uid || !token){
+    if(!uid || !token) return;
+
+    const verifyEmail = async () => {
+      try {
+        const response = await axios(
+          // `https://strikem.site/users/activate/${uid}/${token}/`
+          `http://localhost:5100/users/activate/${uid}/${token}/`
+        );
+        if (response.status === 200) {
+          setVerified(1);
+        }else{
+          setVerified(2)
+        }
+      } catch (err) {
+        console.log(err);
         setVerified(2)
-         return
-    }
+      }
+    };
     verifyEmail()
   },[])
 

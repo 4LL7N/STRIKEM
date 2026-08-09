@@ -1,11 +1,13 @@
 // App.tsx
-import 'bootstrap/dist/css/bootstrap.min.css'; // Global CSS
+// Bootstrap's CSS is imported from index.css now (layered there, see the comment above the
+// `@import "bootstrap/dist/css/bootstrap.min.css" layer(bootstrap);` line) instead of here, so it
+// participates in the same cascade-layer system Tailwind's utilities use.
 
 import { lazy, Suspense, useState } from 'react'
 import { Navigate , createBrowserRouter , RouterProvider } from 'react-router-dom';
 import { WebSocketProvider } from './Components/Websocket';
 // import Layout from './Components/Layout';
-// import Home from './Components/Home';
+// import Home from './Components/Home';s
 // import Pool from './Components/Pool'
 import User from './Components/User';
 // import Messenger from './Components/Messenger';

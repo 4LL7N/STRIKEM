@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { IoMdClose } from "react-icons/io";
@@ -18,7 +17,7 @@ const AllReviews = memo(({allReviewsBox}:{allReviewsBox:RatingBoxState}) => {
     const [filter,setFilter] = useState<number>(0)
     
 
-    const ratingsScroll = useRef<any>()
+    const ratingsScroll = useRef<HTMLElement|null>(null)
 
     const fetchReviews = async () => {
         // const ratingsUrl = `https://strikem.site/api/poolhouses/${allReviewsBox.id}/filter-ratings/${filter?`?filter=${filter}`:""}`   
@@ -53,7 +52,7 @@ const AllReviews = memo(({allReviewsBox}:{allReviewsBox:RatingBoxState}) => {
         return (
             [1,2,3,4,5].map((index) =>{                 
                 return(
-                <div key={index} className={` cursor-pointer border-[1px]  rounded-[50%] w-[26px] aspect-square  text-center ${filter == index?" text-[#fab907] border-[#fab907] ":" text-white border-white "} `} onClick={()=>chooseRating(index)} >{index}</div>
+                <div key={index} className={` cursor-pointer border-[1px]  rounded-[50%] w-[26px] aspect-square  text-center ${filter == index?" !text-brand-gold border-[#fab907] ":" text-white border-white "} `} onClick={()=>chooseRating(index)} >{index}</div>
             )})
         )
     },[filter])
@@ -81,7 +80,7 @@ const AllReviews = memo(({allReviewsBox}:{allReviewsBox:RatingBoxState}) => {
 
   return (
     <div
-      className={` flex flex-col items-center justify-center fixed top-0 w-[100vw] h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90  z-[1000] transform transition-all duration-300 ${allReviewsBox.open ? "" : "hidden"}`}
+      className={` flex flex-col items-center justify-center fixed top-0 w-[100vw] h-[100vh] px-[20px] bg-[#10141E]/90  z-[1000] transform transition-all duration-300 ${allReviewsBox.open ? "" : "hidden"}`}
     >
     <main className="flex flex-col bg-[#161D2F] p-[24px] pb-[32px] rounded-[10px] md:rounded-[20px] w-[100%] md:w-[536px] h-[500px] ">
         <div className="flex justify-end  ">
@@ -106,12 +105,12 @@ const AllReviews = memo(({allReviewsBox}:{allReviewsBox:RatingBoxState}) => {
         <section ref={ratingsScroll} className="w-[100%] flex flex-col gap-[10px] overflow-y-auto chatScroll mt-[12px] " >
             {ratings.map((rating,index) => {
                 return (
-                    <div key={index} className="flex flex-col gap-[10px] p-[10px] border-[1px] border-[#fff] rounded-[20px]">
+                    <div key={index} className="flex flex-col gap-[10px] p-[10px] border-[1px] border-[#ffffff] rounded-[20px]">
                         <div className="flex items-center gap-[10px]">
                             <img src={rating.rater.profile_image} alt="Profile" className="w-[50px] h-[50px] rounded-[50%]" />
                             <div className="flex flex-col gap-[5px]">
                             <div className="flex items-center gap-[20px]" >
-                                <h1 className="text-[#fff] text-[18px]">{rating.rater.user.username}</h1>
+                                <h1 className="text-white text-[18px]">{rating.rater.user.username}</h1>
                                 {/* <Rating name="read-only" value={rating.rate} readOnly /> */}
                                 <div className="flex items-center gap-[4px]" >
                                     <CiStar
@@ -121,10 +120,10 @@ const AllReviews = memo(({allReviewsBox}:{allReviewsBox:RatingBoxState}) => {
                                                               height: "19px",
                                                             }}
                                                           />
-                                                          <h2 className="text-[#fff] text-[16px] m-0">{rating.rate}</h2>
+                                                          <h2 className="text-white text-[16px] m-0">{rating.rate}</h2>
                                 </div>
                                 </div>
-                                <p className="text-[#fff] text-[14px]">{rating.review}</p>
+                                <p className="text-white text-[14px]">{rating.review}</p>
                                 
                             </div>
                         </div>

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { IoIosArrowForward } from "react-icons/io";
 import { useAppDispatch } from "../../../../../ReduxStore/ReduxHooks";
 import { setSettingsPage } from "../../../../../ReduxStore/features/userSettingsBox";

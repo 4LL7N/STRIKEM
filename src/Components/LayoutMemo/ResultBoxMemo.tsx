@@ -121,7 +121,7 @@ const ResultBoxMemo = memo(
       >
         <div className="flex justify-between items-center">
           <p
-            className={`flex self-center text-[#fff] ${
+            className={`flex self-center text-white ${
               windowWidth <= 365
                 ? "text-[10px]"
                 : windowWidth <= 400
@@ -148,7 +148,7 @@ const ResultBoxMemo = memo(
                     : windowWidth <= 400
                     ? "text-[12px]"
                     : "text-[14px] md:text-[16px]"
-                } text-[#fab907]`}
+                } !text-brand-gold`}
               >
                 You
               </p>
@@ -160,7 +160,7 @@ const ResultBoxMemo = memo(
                     : windowWidth <= 400
                     ? "text-[12px]"
                     : "text-[14px] md:text-[16px]"
-                } text-[#fff] bg-transparent outline-none border-1 border-[#fab907] `}
+                } text-white bg-transparent outline-none border-1 border-[#fab907] `}
                 ref={yourPointsInput}
                 value={yourPoints}
                 onChange={(e) => {
@@ -178,7 +178,7 @@ const ResultBoxMemo = memo(
                     : windowWidth <= 400
                     ? "text-[12px]"
                     : "text-[14px] md:text-[16px]"
-                } text-[#fab907]`}
+                } !text-brand-gold`}
               >
                 V
               </p>
@@ -207,7 +207,7 @@ const ResultBoxMemo = memo(
                     : windowWidth <= 400
                     ? "text-[12px]"
                     : "text-[14px] md:text-[16px]"
-                } text-[#fff] bg-transparent outline-none border-1 border-red-600 `}
+                } text-white bg-transparent outline-none border-1 border-red-600 `}
                 ref={opponentsPointsInput}
                 value={opponentsPoints}
                 onChange={(e) => {
@@ -239,7 +239,7 @@ const ResultBoxMemo = memo(
                 : windowWidth <= 400
                 ? "text-[12px]"
                 : "text-[14px] md:text-[16px]"
-            } text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] `}
+            } text-white hover:bg-[#FFFFFF] hover:!text-brand-navy `}
             onClick={handleSubmit}
           >
             Submit
@@ -253,7 +253,7 @@ const ResultBoxMemo = memo(
                 : windowWidth <= 400
                 ? "text-[12px]"
                 : "text-[14px] md:text-[16px]"
-            } text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] `}
+            } text-white hover:bg-[#FFFFFF] hover:!text-brand-navy `}
             onClick={handleCancel}
           >
             Cancel
@@ -270,7 +270,7 @@ const ResultBoxMemo = memo(
                 : windowWidth <= 400
                 ? "text-[12px]"
                 : "text-[14px] md:text-[16px]"
-            } text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] w-full `}
+            } text-white hover:bg-[#FFFFFF] hover:!text-brand-navy w-full `}
             onClick={handleSubmit}
           >
             Submit
@@ -284,7 +284,7 @@ const ResultBoxMemo = memo(
                 : windowWidth <= 400
                 ? "text-[12px]"
                 : "text-[14px] md:text-[16px]"
-            } text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] w-full `}
+            } text-white hover:bg-[#FFFFFF] hover:!text-brand-navy w-full `}
             onClick={handleCancel}
           >
             Cancel

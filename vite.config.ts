@@ -4,6 +4,9 @@ import VitePluginInspect from 'vite-plugin-inspect';
 import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
+  legacy: {
+    inconsistentCjsInterop: true,
+  },
   plugins: [react(),VitePluginInspect()],
   server: {
     hmr: true

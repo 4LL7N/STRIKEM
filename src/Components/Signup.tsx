@@ -36,12 +36,18 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
 
   const clientId = "350212676070-7iflui6iruag475r9hla0hq0amtkqvk4.apps.googleusercontent.com";
 
-  let emptyUsernameChk = false;
-  let emptyFirstNameChk = false;
-  let emptyLastNameChk = false;
-  let emptyEmailChk = false;
-  let emptyPasswordChk = false;
-  let emailErrChk = false;
+  // Plain mutable boxes for reading the "would-be" validity of each field synchronously within
+  // the same HandleSignup call - setEmptyEmail() etc. (the actual React state) won't reflect the
+  // new value until the next render, but the check below needs the current call's answer right
+  // away. useRef is the React-sanctioned way to hold a value like this (mutable, doesn't trigger
+  // a render, persists its identity across renders) - unlike a plain `let` redeclared in the
+  // component body, which is what this used to be.
+  const emptyUsernameChk = useRef(false);
+  const emptyFirstNameChk = useRef(false);
+  const emptyLastNameChk = useRef(false);
+  const emptyEmailChk = useRef(false);
+  const emptyPasswordChk = useRef(false);
+  const emailErrChk = useRef(false);
 
   function HandleSignup() {
     // console.log(email?.current.value);
@@ -50,61 +56,61 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
       //   console.log("email.current " + email.current);
 
       setEmptyEmail(true);
-      emptyEmailChk = true;
+      emptyEmailChk.current = true;
       // console.log(password.current.value);
       // console.log(repPassword.current.value);
     } else if (!emailRegex.test(email.current.value)) {
       //   console.log(emailRegex.test(email.current.value));
 
       setEmailerr(true);
-      emailErrChk = true;
+      emailErrChk.current = true;
     } else {
       setEmptyEmail(false);
-      emptyEmailChk = false;
+      emptyEmailChk.current = false;
       setEmailerr(false);
-      emailErrChk = false;
+      emailErrChk.current = false;
     }
 
     if (!password.current?.value) {
       setEmptyPassword(true);
-      emptyPasswordChk = true;
+      emptyPasswordChk.current = true;
     } else {
       setEmptyPassword(false);
-      emptyPasswordChk = false;
+      emptyPasswordChk.current = false;
     }
 
     if (!userName.current?.value) {
       setEmptyUsername(true);
-      emptyUsernameChk = true;
+      emptyUsernameChk.current = true;
     } else {
       setEmptyUsername(false);
-      emptyUsernameChk = false;
+      emptyUsernameChk.current = false;
     }
 
     if (!firstName.current?.value) {
       setEmptyFirstName(true);
-      emptyFirstNameChk = true;
+      emptyFirstNameChk.current = true;
     } else {
       setEmptyFirstName(false);
-      emptyFirstNameChk = false;
+      emptyFirstNameChk.current = false;
     }
 
     if (!lastName.current?.value) {
       setEmptyLastName(true);
-      emptyLastNameChk = true;
+      emptyLastNameChk.current = true;
     } else {
       setEmptyLastName(false);
-      emptyLastNameChk = false;
+      emptyLastNameChk.current = false;
     }
 
     if (
-      !emptyUsernameChk &&
-      !emailErrChk &&
+      !emptyUsernameChk.current &&
+      !emailErrChk.current &&
       // !repPassErrChk &&
-      !emptyEmailChk &&
-      !emptyPasswordChk &&
-      !emptyFirstNameChk &&
-      !emptyLastNameChk
+      !emptyEmailChk.current &&
+      !emptyPasswordChk.current &&
+      !emptyFirstNameChk.current &&
+      !emptyLastNameChk.current
       // !repEmptyPasswordChk &&
     ) {
       signUp();
@@ -215,13 +221,13 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
   return (
     <>
     <div
-        className={` flex flex-col items-center justify-center  w-[100vw] h-[100vh] px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+        className={` flex flex-col items-center justify-center  w-[100vw] h-[100vh] px-[20px] bg-[#10141E]/90 absolute z-50 transform transition-all duration-300 ${
           signUpBox ? "" : "hidden"
         } `}
       >
       <div className="w-[100%] md:w-[536px] p-[24px] pb-[32px] flex flex-col items-center bg-[#161D2F] rounded-[10px] md:rounded-[20px]">
         <div className="w-[100%] flex justify-between items-center mb-[40px] ">
-          <h1 className="text-[32px] text-[#FFF] font-light tracking-[-0.5px] self-start	">
+          <h1 className="text-[32px] text-white font-light tracking-[-0.5px] self-start	">
             Sign Up
           </h1>
           <IoMdClose
@@ -245,12 +251,12 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
         ) : (
           <div className="w-[100%]">
             <div
-              className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
+              className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFFFFF] ${
                 emptyUsername ? "border-b-[#FC4747]" : null
               } `}
             >
               <input
-                className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
+                className="w-[150px] text-[15px] text-white font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
                 type="text"
                 name="SignUpUsername"
                 id="SignUpUsername"
@@ -258,18 +264,18 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
                 autoComplete="off"
                 ref={userName}
               />
-              <a className="text-[13px] text-[#FC4747] font-light">
+              <a className="text-[13px] !text-brand-red font-light">
                 {emptyUsername ? "Can’t be empty" : null}
               </a>
             </div>
               <div>
             <div
-              className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
+              className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFFFFF] ${
                 emptyEmail || emailerr ? "border-b-[#FC4747]" : null
               } `}
             >
               <input
-                className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
+                className="w-[150px] text-[15px] text-white font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
                 type="email"
                 name="SignUpEmail"
                 id="SignUpEmail"
@@ -277,7 +283,7 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
                 autoComplete="off"
                 ref={email}
               />
-              <a className="text-[13px] text-[#FC4747] font-light">
+              <a className="text-[13px] !text-brand-red font-light">
                 {emailerr
                   ? "wrong Email form"
                   : emptyEmail
@@ -287,30 +293,30 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
             </div>
 
             <div
-              className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
+              className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFFFFF] ${
                 emptyPassword ? "border-b-[#FC4747]" : null
               } `}
             >
               <input
-                className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none  md:w-[200px] lg:w-[230px]"
+                className="w-[150px] text-[15px] text-white font-light bg-transparent focus:outline-none  md:w-[200px] lg:w-[230px]"
                 type="password"
                 name="password"
                 id="password"
                 placeholder="Password"
                 ref={password}
               />
-              <a className="text-[13px] text-[#FC4747] font-light">
+              <a className="text-[13px] !text-brand-red font-light">
                 {emptyPassword ? "Can’t be empty" : null}
               </a>
             </div>
 
             <div
-              className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
+              className={`w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFFFFF] ${
                 emptyFirstName ? "border-b-[#FC4747]" : null
               } `}
             >
               <input
-                className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
+                className="w-[150px] text-[15px] text-white font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
                 type="text"
                 name="FirstName"
                 id="FirstName"
@@ -318,17 +324,17 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
                 autoComplete="off"
                 ref={firstName}
               />
-              <a className="text-[13px] text-[#FC4747] font-light">
+              <a className="text-[13px] !text-brand-red font-light">
                 {emptyFirstName ? "Can’t be empty" : null}
               </a>
             </div>
             <div
-              className={` relative w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFF] ${
+              className={` relative w-[100%] flex justify-between border-b border-b-solid border-b-[#5A698F] mb-[24px] pl-[12px] pb-[14px] md:pl-[16px] md:pb-[18px]  hover:border-b-[#FFFFFF] ${
                 emptyLastName ? "border-b-[#FC4747]" : null
               } `}
             >
               <input
-                className="w-[150px] text-[15px] text-[#FFF] font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
+                className="w-[150px] text-[15px] text-white font-light bg-transparent focus:outline-none md:w-[200px] lg:w-[230px]"
                 type="text"
                 name="LastName"
                 id="LastName"
@@ -336,7 +342,7 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
                 autoComplete="off"
                 ref={lastName}
               />
-              <a className="text-[13px] text-[#FC4747] font-light">
+              <a className="text-[13px] !text-brand-red font-light">
                 {emptyLastName ? "Can’t be empty" : null}
               </a>
             </div>
@@ -347,7 +353,7 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
                 {axiosError}{googleError}
               </p>
               <button
-                className="w-[100%] bg-[#fab907] rounded-[6px] py-[15px] text-[15px] text-[#FFF] font-light mb-[24px] hover:bg-[#8b7127] hover:text-[#161D2F]"
+                className="w-[100%] bg-[#fab907] rounded-[6px] py-[15px] text-[15px] text-white font-light mb-[24px] hover:bg-[#8b7127] hover:!text-brand-navy"
                 onClick={HandleSignup}
               >
                 Create an account
@@ -368,11 +374,11 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
             </div>
             
             <span className=" mt-[24px] flex justify-center items-center">
-              <a className="w-[166px] text-[15px] text-[#FFF] font-light mr-[9px]">
+              <a className="w-[166px] text-[15px] text-white font-light mr-[9px]">
                 Do you have an account?
               </a>
               <p
-                className="text-[15px] text-[#fab907] font-light cursor-pointer "
+                className="text-[15px] !text-brand-gold font-light cursor-pointer "
                 onClick={() => {
                   setSignUpBox(false);
                   setLoginBox(true);

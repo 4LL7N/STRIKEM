@@ -56,17 +56,17 @@ const InvitationsCard = React.memo(
             className="rounded-[50%] aspect-square h-[70%] "
             alt="image"
           />
-          <h1 className="text-[12px] md:text-[16px] text-[#fff] ">
+          <h1 className="text-[12px] md:text-[16px] text-white ">
             {item.player_inviting.user.username}
           </h1>
         </div>
         <div className=" flex items-center w-full justify-between ">
-          <h1 className=" text-[14px] md:text-[24px] lg:text-[20px] text-[#fff] ">
+          <h1 className=" text-[14px] md:text-[24px] lg:text-[20px] text-white ">
             {item.player_inviting.user.username} invited you
           </h1>
           <div className="flex flex-col justify-center h-[100%] gap-[10%] ">
             <button
-              className="bg-[#fab907] px-[6px] py-[2px] md:px-[8px] md:py-[4px] lg:px-[6px] lg:py-[2px] text-[14px] md:text-[20px] lg:text-[17px] text-[#FFF] hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px] "
+              className="bg-[#fab907] px-[6px] py-[2px] md:px-[8px] md:py-[4px] lg:px-[6px] lg:py-[2px] text-[14px] md:text-[20px] lg:text-[17px] text-white hover:bg-[#FFFFFF] hover:!text-brand-navy rounded-[20px] "
               onClick={() => {
                 acceptMatchMake(item.player_inviting.user.username);
               }}
@@ -74,7 +74,7 @@ const InvitationsCard = React.memo(
               ACCEPT
             </button>
             <button
-              className="bg-red-600 px-[6px] py-[2px] md:px-[8px] md:py-[4px] lg:px-[6px] lg:py-[2px] text-[14px] md:text-[20px] lg:text-[17px] text-[#FFF] hover:bg-[#FFF] hover:text-[#161D2F] rounded-[20px] "
+              className="bg-red-600 px-[6px] py-[2px] md:px-[8px] md:py-[4px] lg:px-[6px] lg:py-[2px] text-[14px] md:text-[20px] lg:text-[17px] text-white hover:bg-[#FFFFFF] hover:!text-brand-navy rounded-[20px] "
               onClick={() => {
                 declineMatchMake(item.player_inviting.user.username);
               }}

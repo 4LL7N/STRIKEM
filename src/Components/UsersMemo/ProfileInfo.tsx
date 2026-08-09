@@ -41,19 +41,19 @@ const ProfileInfo = React.memo(({ userInfo }: { userInfo: Profile | null }) => {
     <span className="text-white bg-[#5a5a5a] text-[10px] md:text-[16px] px-[8px] py-[4px] rounded-[20px] translate-y-[120%] "  >Change profile picture</span>  
   </div>
       </div>
-       <h1 className="text-[#fff] text-[20px] md:text-[32px] lg:text-[48px] md:hidden">
+       <h1 className="text-white text-[20px] md:text-[32px] lg:text-[48px] md:hidden">
             {userInfo?.user.username}
           </h1>
-          <p className="text-[#7e7e7e] text-[14px] md:text-[20px] lg:text-[32px] md:hidden ">
+          <p className="!text-muted-grey-2 text-[14px] md:text-[20px] lg:text-[32px] md:hidden ">
             ({userInfo?.user.first_name} {userInfo?.user.last_name})
           </p>
       </div>
       <div className="flex flex-col flex-grow">
         <div className="w-[100%] justify-start items-end hidden md:flex ">
-          <h1 className="text-[#fff] text-[20px] md:text-[32px] lg:text-[48px]">
+          <h1 className="text-white text-[20px] md:text-[32px] lg:text-[48px]">
             {userInfo?.user.username}
           </h1>
-          <p className="text-[#7e7e7e] text-[14px] md:text-[20px] lg:text-[32px]">
+          <p className="!text-muted-grey-2 text-[14px] md:text-[20px] lg:text-[32px]">
             ({userInfo?.user.first_name} {userInfo?.user.last_name})
           </p>
         </div>

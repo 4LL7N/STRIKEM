@@ -1,15 +1,103 @@
+/* Establishes layer precedence up front: "bootstrap" first (lowest priority), then Tailwind's own
+   four layers (declared for real by the @import below) in their normal order, "utilities" last
+   (highest priority). Layer-only statements like this are explicitly allowed before @import rules,
+   unlike ordinary rules. Without this, Bootstrap's CSS below would be unlayered, and per the
+   cascade-layers spec, unlayered normal-priority declarations always beat layered ones regardless
+   of specificity or source order - meaning every Bootstrap default (h1..h6 font-size/color/weight,
+   .nav-tabs, form control resets, etc.) would silently win over the matching Tailwind utility
+   class no matter what, only "coincidentally" looking right where Bootstrap's default happened to
+   already match what was wanted. Layering it here instead makes Tailwind's later-declared
+   "utilities" layer correctly outrank it, the same as any normal Tailwind override would. */
+@layer bootstrap, theme, base, components, utilities;
+@import "bootstrap/dist/css/bootstrap.min.css" layer(bootstrap);
+@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500&display=swap');
 
+/* Custom theme values - migrated from tailwind.config.js's theme.extend, since Tailwind v4
+   doesn't auto-load a JS config anymore, and @config has to sit before every @import (including
+   the Google Fonts one below), which isn't possible here. Defining them directly is the v4-native
+   way anyway. */
+@theme {
+  --animate-dot1: dot1 2s steps(1, end) infinite;
+  --animate-dot2: dot2 2s steps(1, end) infinite;
+  --animate-dot3: dot3 2s steps(1, end) infinite;
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+  /* Named tokens for this app's custom palette. Needed because text-[#hexvalue] (arbitrary hex
+     color on the text- utility specifically) silently generates no CSS under this Tailwind v4/
+     Rolldown setup - text- is overloaded for both font-size and color, and bracket-arbitrary
+     color values collide with that. bg-[#hex]/border-[#hex] aren't affected, only text- is;
+     named utilities (!text-brand-navy, etc.) sidestep the bug entirely instead of fighting it. */
+  --color-brand-navy: #161d2f;
+  --color-brand-gold: #fab907;
+  --color-brand-red: #fc4747;
+  --color-bs-red: #dc3545;
+  --color-bs-green: #28a745;
+  --color-muted-grey: #757171;
+  --color-muted-grey-2: #7e7e7e;
 
+  /* Same bug, 8-digit (RGBA) hex this time - the original sweep only checked 3- and 6-digit
+     hex, so these slipped through. */
+  --color-faint-white: #ffffff57;
+  --color-dim-white: #ffffff86;
+  --color-faint-black: #0000007b;
+}
 
-*{
-  font-family: "Outfit";
-  padding: 0;
-  margin: 0;
+@keyframes dot1 {
+  /* Dot 1 is visible from 0% to 75%, then off for the last 25% */
+  0%, 75% { opacity: 1; }
+  75.01%, 100% { opacity: 0; }
+}
+@keyframes dot2 {
+  /* Dot 2: hidden from 0-25%, visible from 25-75%, then hidden. */
+  0%, 25% { opacity: 0; }
+  25%, 75% { opacity: 1; }
+  75.01%, 100% { opacity: 0; }
+}
+@keyframes dot3 {
+  /* Dot 3: hidden from 0-50%, visible from 50-75%, then hidden. */
+  0%, 50% { opacity: 0; }
+  50%, 75% { opacity: 1; }
+  75.01%, 100% { opacity: 0; }
+}
+
+/* Wrapped in Tailwind's own "base" layer (declared internally by @import "tailwindcss" above) -
+   unlayered CSS always beats layered CSS regardless of specificity, so this universal reset was
+   silently overriding every single margin/padding utility class in the app (m-[...], p-[...],
+   etc. all computed to 0 no matter what value was requested) until it was put in the same layer
+   system Tailwind's own utilities live in. */
+@layer base {
+  * {
+    font-family: "Outfit";
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Same fix, same reason, for the rest of Bootstrap's unlayered "h1..h6 {...}" rule - it sets
+     color, font-size (responsively, up to a flat 2.5rem past the 1200px breakpoint), font-weight,
+     and line-height, all of which were beating whatever Tailwind color/text-size/font-weight
+     utility a heading was actually given, the same "unlayered wins" way, and just as
+     inconsistently (only actually wins where the property doesn't already resolve to something
+     from another unlayered/layered source). Resetting every one of them to `inherit` here (in
+     the same base layer Tailwind's own utilities layer overrides) makes every heading correctly
+     pick up whatever utilities it's actually given, consistently, instead of silently keeping
+     whichever of these four properties Bootstrap happened to win on. */
+  h1, h2, h3, h4, h5, h6 {
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+
+  /* The active profile tab (Games/Wins/Loses) has its own deliberate unlayered
+     "!important" rule giving it dark text on its gold background, so it stays readable -
+     otherwise it'd inherit the same gold text every other (inactive) tab uses, which is
+     invisible against a gold background. That rule needs to win over the tabs' own
+     `!text-brand-gold` utility (also !important), so it has to sit in an earlier-declared
+     layer than "utilities" - important declarations in an earlier layer beat important
+     declarations in a later one, same mechanism as the other base-layer fixes above. */
+  .nav-tabs .nav-link.active {
+    color: #10141e !important;
+  }
 }
 
 :root {

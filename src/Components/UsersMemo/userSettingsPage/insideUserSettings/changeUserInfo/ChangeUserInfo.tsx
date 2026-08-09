@@ -126,7 +126,7 @@ function ChangeUserInfo() {
                   {axiosError}
                 </p>
         <button
-            className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-[#FFF] font-light hover:bg-[#FFF] hover:text-[#161D2F] "
+            className="w-[100%] max-w-[488px] bg-[#fab907] rounded-[6px] py-[12px] text-[15px] text-white font-light hover:bg-[#FFFFFF] hover:!text-brand-navy "
             onClick={userSettingsBox.settingsPage == "change username"?handleUsername:handlePicture}
           >
             update

@@ -21,12 +21,12 @@ const InvitationAcceptMemo = memo(({acceptInvitation,setAcceptInvitation,lastJso
               } bg-[#161d2f] `}
             >
               <div className="flex justify-between items-center">
-                <p className="flex self-center text-[14px] text-[#fff] ml-2 ">
+                <p className="flex self-center text-[14px] text-white ml-2 ">
                   invitation accepted, go to chat
                 </p>
                 <div className="flex items-center gap-[10px]">
                   <button
-                    className=" bg-[#fab907] rounded-[20px] px-[8px] py-[4px] text-[14px] text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] "
+                    className=" bg-[#fab907] rounded-[20px] px-[8px] py-[4px] text-[14px] text-white hover:bg-[#FFFFFF] hover:!text-brand-navy "
                     onClick={
                       lastJsonMessage?.protocol == "handling_invite_response"
                         ? () => {
@@ -43,7 +43,7 @@ const InvitationAcceptMemo = memo(({acceptInvitation,setAcceptInvitation,lastJso
                     Chat
                   </button>
                   <button
-                    className=" bg-red-600  rounded-[20px] px-[8px] py-[4px]  text-[14px] text-[#fff] hover:bg-[#FFF] hover:text-[#161D2F] "
+                    className=" bg-red-600  rounded-[20px] px-[8px] py-[4px]  text-[14px] text-white hover:bg-[#FFFFFF] hover:!text-brand-navy "
                     onClick={() => {
                       setAcceptInvitation(-1);
                     }}

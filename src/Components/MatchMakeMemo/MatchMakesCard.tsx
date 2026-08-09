@@ -41,24 +41,24 @@ const MatchMakesCard = React.memo(
             : ""
         } `}
       >
-        <div className="flex flex-col h-[100%] gap-[10%] justify-center items-center  min-w-[74px] md:min-w-[96px] ">
+        <div className="flex flex-col justify-center items-center gap-[6px] min-w-[74px] max-w-[35%] md:min-w-[96px] ">
           <img
             src={item.player_accepting.profile_image}
-            className="rounded-[50%] h-[70%] aspect-square "
+            className="rounded-[50%] h-[40px] md:h-[56px] aspect-square shrink-0"
             alt="image"
           />
-          <h1 className="text-[12px] md:text-[16px] text-[#fff] ">
+          <h1 className="text-white w-full truncate" style={{ textAlign: "center", fontSize: window.innerWidth >= 768 ? 16 : 12, lineHeight: "normal", fontWeight: 400 }}>
             {item.player_accepting.user.username}
           </h1>
         </div>
         <div className="flex flex-col gap-[5px] items-center w-[100%] "></div>
-        <div className="flex flex-col h-[100%] gap-[10%] justify-center items-center  min-w-[74px] md:min-w-[96px] ">
+        <div className="flex flex-col justify-center items-center gap-[6px] min-w-[74px] max-w-[35%] md:min-w-[96px] ">
           <img
             src={item.player_inviting.profile_image}
-            className="rounded-[50%] aspect-square h-[70%] "
+            className="rounded-[50%] aspect-square h-[40px] md:h-[56px] shrink-0"
             alt="image"
           />
-          <h1 className="text-[12px] md:text-[16px] text-[#fff] ">
+          <h1 className="text-white w-full truncate" style={{ textAlign: "center", fontSize: window.innerWidth >= 768 ? 16 : 12, lineHeight: "normal", fontWeight: 400 }}>
             {item.player_inviting.user.username}
           </h1>
         </div>

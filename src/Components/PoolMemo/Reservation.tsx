@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "../CSS/Reservation.css";
 
@@ -34,7 +33,7 @@ interface Player {
   };
 }
 
-interface Reservation {
+interface ReservationSlot {
   duration: number;
   finished_reservation: boolean;
   id: number;
@@ -117,12 +116,12 @@ const Reservation = memo(
     const [opponentsList, setOpponentsList] = useState<Player[]>([]);
     const [openOpponents, setOpenOpponents] = useState<boolean>(false);
 
-    const [todayReservation, setTodayReservation] = useState<Reservation[]>([]);
+    const [todayReservation, setTodayReservation] = useState<ReservationSlot[]>([]);
     const [tomorrowReservation, setTomorrowReservation] = useState<
-      Reservation[]
+      ReservationSlot[]
     >([]);
     const [afterTomorrowReservation, setAfterTomorrowReservation] = useState<
-      Reservation[]
+      ReservationSlot[]
     >([]);
 
     const userLogIn = useAppSelector((state) => state.userLogIn);
@@ -298,7 +297,7 @@ const Reservation = memo(
       ? tomorrowReservation
       : afterTomorrowReservation;
       
-      const arr = schedule.map((item: Reservation) => {
+      const arr = schedule.map((item: ReservationSlot) => {
         const currentDay = new Date().getDate(); // Extract the current day
         const updatedStartTime = item.start_time.replace(
           tableDate.split("/")[tableDate.split("/").length - 1].split("-")[0],
@@ -398,9 +397,9 @@ const Reservation = memo(
         const end1 =dayjs(start1).add(duration1, "minute");
         const end2 = start2.add(duration2, "minute");
        
-        let overlap = false
+        let overlap: boolean;
 
-        if(dayjs(start1).hour()<start2.hour()){ 
+        if(dayjs(start1).hour()<start2.hour()){
           if(end1.hour()<=start2.hour()){
             if(end1.hour()==start2.hour()){
               if((start2.minute()-end1.minute()) >= 5){
@@ -446,7 +445,7 @@ const Reservation = memo(
         return
       }
 
-      const error = schedule.some((item:Reservation)=>{return checkOverlap(newReserveTime,selectedDuration+5,item.start_time,item.duration)})
+      const error = schedule.some((item:ReservationSlot)=>{return checkOverlap(newReserveTime,selectedDuration+5,item.start_time,item.duration)})
       if(error){
         setReserverError('time overlap, change reservation time or duration')
         return
@@ -474,7 +473,7 @@ const Reservation = memo(
 
     return (
       <div
-        className={` flex flex-col items-center justify-center  w-[100vw] ${userLogIn?window.innerHeight < 992?"h-[992px] md:h-screen ":"h-screen":window.innerHeight < 565?"h-[565px] md:h-screen ":"h-screen"} px-[20px] bg-[#10141E] bg-opacity-90 absolute z-50 transform transition-all duration-300 ${
+        className={` flex flex-col items-center justify-center  w-[100vw] ${userLogIn?window.innerHeight < 992?"h-[992px] md:h-screen ":"h-screen":window.innerHeight < 565?"h-[565px] md:h-screen ":"h-screen"} px-[20px] bg-[#10141E]/90 absolute z-50 transform transition-all duration-300 ${
           reservationBox && location.state? "" : "hidden"
         }  `}
       >

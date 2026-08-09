@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-refresh/only-export-components */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -34,20 +33,11 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       }
   };
 
-  useEffect(() => {
-    if(token && token != 'logout' && isTokenExpired(token))triggerConnection();
-  }, [token]);
-
-  const { sendJsonMessage, lastJsonMessage } = useWebSocket(
-    wsUrl,
-    {
-      onOpen: () => console.log("WebSocket connection opened"),
-      onClose: () => console.log("WebSocket connection closed"),
-      onError: (event) => console.error("WebSocket error:", event),
-      shouldReconnect: () => true
-    }
-  );
-
+  // Declared above the effect below (rather than after it) so nothing references it before its
+  // own declaration point - functionally identical either way, since the effect callback only
+  // ever runs after this whole component function has finished executing once, but keeping
+  // declaration order matching reference order is what the linter (and a plain top-to-bottom
+  // read) expects.
   const triggerConnection = () => {
     const fetchWsToken = async () => {
       try {
@@ -67,6 +57,20 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     };
     fetchWsToken()
   };
+
+  useEffect(() => {
+    if(token && token != 'logout' && isTokenExpired(token))triggerConnection();
+  }, [token]);
+
+  const { sendJsonMessage, lastJsonMessage } = useWebSocket(
+    wsUrl,
+    {
+      onOpen: () => console.log("WebSocket connection opened"),
+      onClose: () => console.log("WebSocket connection closed"),
+      onError: (event) => console.error("WebSocket error:", event),
+      shouldReconnect: () => true
+    }
+  );
 
   return (
     <WebSocketContext.Provider value={{ sendJsonMessage, lastJsonMessage,triggerConnection}}>
