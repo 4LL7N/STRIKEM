@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import useWebSocket from "react-use-websocket";
@@ -62,18 +62,41 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if(token && token != 'logout' && isTokenExpired(token))triggerConnection();
   }, [token]);
 
+  // Additive pub/sub alongside lastJsonMessage below - lets a component react to incoming
+  // messages from inside a real subscription callback (fired straight from the socket's own
+  // onmessage event) instead of a useEffect keyed on lastJsonMessage, which calls setState
+  // synchronously in the effect body every time a message arrives. lastJsonMessage itself is
+  // untouched and still updates the same way it always did, for anything still reading it
+  // directly (e.g. InvitationAcceptMemo reads it as a prop, not through an effect, so it doesn't
+  // need to move).
+  const listenersRef = useRef<Set<(data: any) => void>>(new Set());
+  const subscribe = useCallback((listener: (data: any) => void) => {
+    listenersRef.current.add(listener);
+    return () => {
+      listenersRef.current.delete(listener);
+    };
+  }, []);
+
   const { sendJsonMessage, lastJsonMessage } = useWebSocket(
     wsUrl,
     {
       onOpen: () => console.log("WebSocket connection opened"),
       onClose: () => console.log("WebSocket connection closed"),
       onError: (event) => console.error("WebSocket error:", event),
+      onMessage: (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          listenersRef.current.forEach((listener) => listener(data));
+        } catch (err) {
+          console.error("Failed to parse WebSocket message:", err);
+        }
+      },
       shouldReconnect: () => true
     }
   );
 
   return (
-    <WebSocketContext.Provider value={{ sendJsonMessage, lastJsonMessage,triggerConnection}}>
+    <WebSocketContext.Provider value={{ sendJsonMessage, lastJsonMessage, triggerConnection, subscribe }}>
       {children}
     </WebSocketContext.Provider>
   );
