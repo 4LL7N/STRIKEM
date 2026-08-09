@@ -124,9 +124,17 @@ const LayoutHeader = memo(({setNotificationsOpen,setNotifications,headerHeight,u
                 location.pathname != "/messenger" && localStorage.setItem("matchUpId", "");
               }}
             >
-              <div className={` ${!unReadMatchUps && 'hidden'}  ${ location.pathname == "/messenger" || location.pathname.includes("Pools") || location.pathname.includes("users")? '' :'lg:hidden'} flex  items-center justify-center rounded-[50%] bg-red-600 w-[70%] h-[70%] absolute right-[-10%] top-[-10%] z-40 `} >
-                <p className="text-[12px] text-white " >{unReadMatchUps}</p>
-              </div>
+              {/* Shows purely based on whether there are unread matchups - no longer tied to which
+                  page you're on or the current viewport width, which is what was making it show on
+                  the top-bar (mobile) layout and disappear on the left-sidebar (desktop) layout for
+                  every page except messenger/pools/users. Fixed-pixel corner offset + leading-none
+                  instead of percentage sizing, so the number is actually centered and the badge sits
+                  as a proper corner badge regardless of the icon's 25px/32px size. */}
+              {!!unReadMatchUps && (
+                <div className="flex items-center justify-center rounded-[50%] bg-red-600 min-w-[16px] h-[16px] px-[3px] absolute -top-[6px] -right-[6px] z-40">
+                  <p className="text-[10px] text-white leading-none">{unReadMatchUps}</p>
+                </div>
+              )}
               <FaRegMessage
                 style={{ color: "#fab907", width: "100%", height: "100%" }}
               />
