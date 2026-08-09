@@ -72,7 +72,7 @@ export interface Message {
 
 
 function Messenger() {
-  const { sendJsonMessage, lastJsonMessage } = useWebSocketContext();
+  const { sendJsonMessage, subscribe } = useWebSocketContext();
 
   const naviagte = useNavigate();
 
@@ -352,28 +352,27 @@ function Messenger() {
   },[addNextMessages])
 
   useEffect(() => {
-    
-    if (lastJsonMessage) {
-      console.log(lastJsonMessage);
-      
-      if (lastJsonMessage.matchup_id == MatchUpId) {
+    const unsubscribe = subscribe((data: any) => {
+      console.log(data);
+
+      if (data.matchup_id == MatchUpId) {
         const lastMessage = {
-          body: lastJsonMessage.message,
+          body: data.message,
           sender: {
-            id: lastJsonMessage.sender_player_id,
+            id: data.sender_player_id,
           },
-          time_sent: lastJsonMessage?.getFormattedTime,
+          time_sent: data?.getFormattedTime,
         };
         const chatContent = [lastMessage, ...chat];
         setChat(chatContent);
-        
+
         if (messages.length == 0) return;
         const MessagesList: any = [...messages];
         for (let i = 0; i < MessagesList?.length; i++) {
-          if (MessagesList[i].id == lastJsonMessage.matchup_id) {
+          if (MessagesList[i].id == data.matchup_id) {
             const [chat] = MessagesList.splice(i, 1);
-            
-            chat.last_message = {body:lastJsonMessage.message,sender:{id:lastJsonMessage.sender_player_id,user:{username:lastJsonMessage.username}}};
+
+            chat.last_message = {body:data.message,sender:{id:data.sender_player_id,user:{username:data.username}}};
             chat.read = false;
             MessagesList.splice(0, 0, chat);
           }
@@ -384,18 +383,25 @@ function Messenger() {
         if (messages.length == 0) return;
         const MessagesList: any = [...messages];
         for (let i = 0; i < MessagesList?.length; i++) {
-          if (MessagesList[i].id == lastJsonMessage.matchup_id) {
+          if (MessagesList[i].id == data.matchup_id) {
             const [chat] = MessagesList.splice(i, 1);
-            
-            chat.last_message = {body:lastJsonMessage.message,sender:{id:lastJsonMessage.sender_player_id,user:{username:lastJsonMessage.username}}};
+
+            chat.last_message = {body:data.message,sender:{id:data.sender_player_id,user:{username:data.username}}};
             chat.read = false;
             MessagesList.splice(0, 0, chat);
           }
         }
         setMessages(MessagesList);
       }
-    }
-  }, [lastJsonMessage]);
+    });
+    return unsubscribe;
+    // Re-subscribes (fresh closure) whenever chat/messages/MatchUpId change, matching the
+    // freshness the old useEffect(..., [lastJsonMessage]) got "for free" (a new effect closure is
+    // created every render either way - the old version just gated *invocation* on
+    // lastJsonMessage changing, while this gates *re-subscription* on these instead, since
+    // subscribe() itself never changes and would otherwise pin this to a stale mount-time
+    // closure forever).
+  }, [subscribe, chat, messages, MatchUpId]);
 
   const messagesList = useMemo(() => {
     return messages?.map((item: Message) => {
