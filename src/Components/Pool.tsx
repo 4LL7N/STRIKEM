@@ -81,7 +81,7 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
   
   const { coords, isGeolocationAvailable, isGeolocationEnabled } = props;
 
-  const { lastJsonMessage } = useWebSocketContext();
+  const { subscribe } = useWebSocketContext();
 
   const location = useLocation();
   const [ratings, setRatings] = useState<rating[]>([]);
@@ -426,33 +426,36 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
   },[poolTablesData,nameLength])
 
   useEffect(() => {
-    // console.log(lastJsonMessage)
-    // console.log(poolTablesData)
-    if (lastJsonMessage) {
-      if (lastJsonMessage.protocol === "now_busy") {
+    // Only ever reads the incoming message and uses setPoolTablesData's functional-updater form
+    // (prev => ...), never the outer poolTablesData directly - so unlike Messenger/Matchup's WS
+    // handlers, this one has nothing to go stale and can safely subscribe once with plain
+    // [subscribe] deps. Doesn't touch ImageMap or anything about the map itself - this only
+    // changes how the table-occupancy data arrives, not what's done with it or how it's rendered.
+    const unsubscribe = subscribe((data: any) => {
+      if (data.protocol === "now_busy") {
         setPoolTablesData((prev) => {
           return prev.map((item) => {
-            if (item.id === lastJsonMessage.changed_table_id) {
+            if (item.id === data.changed_table_id) {
               return {
                 ...item,
                 current_session: {
-                  duration:lastJsonMessage.duration,
+                  duration:data.duration,
                   finished_reservation:false,
                   other_player_details: {
-                    id:lastJsonMessage.other_player_id,
-                    profile_image:lastJsonMessage.other_player_profile,
+                    id:data.other_player_id,
+                    profile_image:data.other_player_profile,
                     user:{
-                      username:lastJsonMessage.other_player_username
+                      username:data.other_player_username
                     }
                   },
                   player_reserving:{
-                    id:lastJsonMessage.player_reserving_id,
-                    profile_image:lastJsonMessage.player_reserving_profile_picture,
+                    id:data.player_reserving_id,
+                    profile_image:data.player_reserving_profile_picture,
                     user:{
-                      username:lastJsonMessage.player_reserving_username
+                      username:data.player_reserving_username
                     }
                   },
-                  start_time:lastJsonMessage.start_time
+                  start_time:data.start_time
                 },
                 free:false,
               };
@@ -460,10 +463,10 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
             return item;
           });
         });
-      }else if(lastJsonMessage.protocol === "now_free"){
+      }else if(data.protocol === "now_free"){
         setPoolTablesData((prev) => {
           return prev.map((item) => {
-            if (item.id === lastJsonMessage.changed_table_id) {
+            if (item.id === data.changed_table_id) {
               return {
                 ...item,
                 current_session: null,
@@ -474,8 +477,9 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
           });
         });
       }
-    }
-  }, [lastJsonMessage]);
+    });
+    return unsubscribe;
+  }, [subscribe]);
 
 
   useEffect(() => {
