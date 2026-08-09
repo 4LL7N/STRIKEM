@@ -31,8 +31,20 @@ const InvitationAcceptMemo = memo(({acceptInvitation,setAcceptInvitation,lastJso
                       lastJsonMessage?.protocol == "handling_invite_response"
                         ? () => {
                             navigate("/messenger");
+                            // Was "matchupId" (lowercase u) - every other place in the app
+                            // reads/writes this key as "matchUpId" (Messenger.tsx,
+                            // LayoutHeader.tsx, NotificationsBoxItemsMemo.tsx). With the wrong
+                            // casing, Messenger.tsx's localStorage.getItem("matchUpId") never
+                            // picked up the just-created matchup's real id here - it stayed on
+                            // whatever conversation was selected before (or empty, for a
+                            // genuinely first-ever chat), so a message sent right after accepting
+                            // an invite landed against the wrong (or no) matchup locally. The
+                            // backend still received and persisted it via opponent_username
+                            // regardless, which is why refreshing - which re-fetches and
+                            // re-selects the conversation through the correct path - always
+                            // eventually showed it.
                             localStorage.setItem(
-                              "matchupId",
+                              "matchUpId",
                               lastJsonMessage.matchup_id
                             );
                             setAcceptInvitation(-1);
