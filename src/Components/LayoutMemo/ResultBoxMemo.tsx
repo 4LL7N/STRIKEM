@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import { memo, useEffect, useState} from "react";
 import Cookies from "js-cookie";
@@ -54,6 +55,7 @@ const ResultBoxMemo = memo(
     const currentUser = useAppSelector((state) => state.currentUser);
 
     const [currentSession, setCurrentSession] = useState<Match>();
+    const [axiosError, setAxiosError] = useState("");
 
     const fetchCurrentSession = async () => {
       const token = Cookies.get("token");
@@ -72,39 +74,50 @@ const ResultBoxMemo = memo(
       }
     };
 
+    // No try/catch here anymore - lets a failed request throw straight up to handleSubmit, which
+    // is the one place that actually decides what closing/clearing on success vs. staying open
+    // with an error on failure should look like. Swallowing the error here (the old code just
+    // console.log'd it) was what let handleSubmit close the popup and discard the score
+    // unconditionally, whether or not the result was ever actually saved.
     const postResult = async () => {
       const token = Cookies.get("token");
-      
-      try {
-        const response = await axios.post(
-          // `https://strikem.site/api/players/${currentUser?.id}/history/`,
-          `http://localhost:5100/api/players/${currentUser?.id}/history/`,
-          {
-            game_session: sessionId,
-            winner_player: yourPoints > opponentsPoints ? currentUser?.id : currentUser?.id==currentSession?.players[0]?.id? currentSession?.players[1]?.id:currentSession?.players[0]?.id,
-            loser_player: yourPoints < opponentsPoints ? currentUser?.id : currentUser?.id==currentSession?.players[0]?.id? currentSession?.players[1]?.id:currentSession?.players[0]?.id,
-            result_winner: yourPoints > opponentsPoints? yourPoints:opponentsPoints,
-            result_loser: yourPoints < opponentsPoints? yourPoints:opponentsPoints
-          },
-          {
-            headers: { Authorization: `JWT ${token}` },
-          }
-        );
-        console.log(response.data);
-        
-      } catch (error) {
-        console.log(error);
-      }
+      const response = await axios.post(
+        // `https://strikem.site/api/players/${currentUser?.id}/history/`,
+        `http://localhost:5100/api/players/${currentUser?.id}/history/`,
+        {
+          game_session: sessionId,
+          winner_player: yourPoints > opponentsPoints ? currentUser?.id : currentUser?.id==currentSession?.players[0]?.id? currentSession?.players[1]?.id:currentSession?.players[0]?.id,
+          loser_player: yourPoints < opponentsPoints ? currentUser?.id : currentUser?.id==currentSession?.players[0]?.id? currentSession?.players[1]?.id:currentSession?.players[0]?.id,
+          result_winner: yourPoints > opponentsPoints? yourPoints:opponentsPoints,
+          result_loser: yourPoints < opponentsPoints? yourPoints:opponentsPoints
+        },
+        {
+          headers: { Authorization: `JWT ${token}` },
+        }
+      );
+      console.log(response.data);
     };
-          
-    const handleSubmit = () => {
-      postResult()
-      localStorage.removeItem("sessionId")
-      setOpenResultBox(false);
+
+    const handleSubmit = async () => {
+      try {
+        await postResult();
+        localStorage.removeItem("sessionId");
+        setAxiosError("");
+        setOpenResultBox(false);
+      } catch (err: any) {
+        const errorArr = Object.values(err?.response?.data ?? {});
+        let error: string = "";
+        errorArr.forEach((item) => {
+          error += item;
+        });
+        setAxiosError(error || "Something went wrong submitting the result - please try again.");
+        console.error(err);
+      }
     };
 
     const handleCancel = () => {
       localStorage.removeItem("sessionId")
+      setAxiosError("");
       setOpenResultBox(false);
     };
 
@@ -229,6 +242,9 @@ const ResultBoxMemo = memo(
               </p>
             </div>
           </div>
+          {axiosError && (
+            <p className="text-red-500 text-[12px] md:text-[13px]">{axiosError}</p>
+          )}
           <div className="flex gap-2" >
           <button
             className={`${

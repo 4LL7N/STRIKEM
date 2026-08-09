@@ -20,6 +20,8 @@ function SetPasswordBox() {
 
     const emailCode = useRef<HTMLInputElement|null>(null)
     const userSettings = useAppSelector((state) => state.userSettingsBox);
+    const currentUser = useAppSelector((state) => state.currentUser);
+
 
     const [emptyEmailCodeErr, setEmptyEmailCodeErr] = useState(false);
     const [uiExpire, setUiExpire] = useState<number>(0);
@@ -40,6 +42,13 @@ function SetPasswordBox() {
 
   const sendEmailCode = async (code:string) =>{
     const token = Cookies.get("token");
+    var sendCode:{
+      code:string,      
+      email?:string
+    } = {
+      code:code,
+    };
+    userSettings.settingsPage != "emailCode" ?sendCode.email = currentUser.user.email:null;
     try{
         // const response = await axios.post("https://strikem.site/users/verify-code/",{
         const response = await axios.post(`http://localhost:5100/users/${userSettings.settingsPage == "emailCode"?"verify-code":"verify-code-forget"}/`,{
@@ -76,8 +85,8 @@ function SetPasswordBox() {
   const sendNewPassword = async () => {
     const token = Cookies.get("token");
     try{
-        // axios.post('https://strikem.site/users/set-g-password/',{
-        axios.post('http://localhost:5100/users/set-g-password/',{
+        // await axios.post('https://strikem.site/users/set-g-password/',{
+        await axios.post('http://localhost:5100/users/set-g-password/',{
                 key,
                 password:newPassword.current?.value
             },

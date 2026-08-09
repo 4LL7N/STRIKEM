@@ -230,10 +230,21 @@ const Reservation = memo(
           headers: { Authorization: `JWT ${token}` },
         })
         // window.location.reload()
+        setReserverError(null)
         dispatch(setReservationBox(false))
         // setReservationBox(false)
-      }catch(err){
-        console.log(err)
+      }catch(err:any){
+        // Was: just console.log(err), so a failed reservation gave the user zero feedback -
+        // didn't incorrectly close the popup (that part was already fine, since the close-dispatch
+        // only sat in the success path), but silently did nothing instead of surfacing why. Reusing
+        // reserverError, the same error slot the validation checks above already use.
+        const errorArr = Object.values(err?.response?.data ?? {});
+        let error: string = "";
+        errorArr.forEach((item) => {
+          error += item;
+        });
+        setReserverError(error || "Something went wrong reserving this table - please try again.");
+        console.error(err);
       }
     }
 
