@@ -29,7 +29,6 @@ import AllReviews from "./PoolMemo/AllReviews";
 import LayoutHeader from "./LayoutMemo/LayoutHeader";
 import LoadingPage from "./LoadingPage";
 import UserSettings from "./UsersMemo/UserSettings";
-import SetPasswordBox from "./UsersMemo/userSettingsPage/insideUserSettings/UserSettingsPage";
 import LoginForgetPassword from "./LoginForgetPassword/LoginForgetPassword";
 
 const NotificationsBoxItemsMemo = lazy(() => import("./LayoutMemo/NotificationsBoxItemsMemo"));
@@ -360,8 +359,14 @@ function Layout(props: {
         {uploadRatingBox && <UploadRating uploadRatingBox={uploadRatingBox} />}
         {allReviewsBox.open && <AllReviews allReviewsBox={allReviewsBox} />}
         {location.state && <Reservation reservationBox={reservationBox} PoolInfo={location.state} />}
-        {userSettingsBox.open ?userSettingsBox.settingsPage == "emailCode" || userSettingsBox.settingsPage == "setPassword" ?<SetPasswordBox/>:null:null}
-        {userSettingsBox.open ?userSettingsBox.settingsPage == "settings" || userSettingsBox.settingsPage == "change username" || userSettingsBox.settingsPage == "change profile" || userSettingsBox.settingsPage == "change user" || userSettingsBox.settingsPage == "change password" || userSettingsBox.settingsPage == "forget password" || userSettingsBox.settingsPage == "delete account" || userSettingsBox.settingsPage == "Profile from Profile" ? <UserSettings/>:null:null}
+        {/* Was: a separate branch rendering UserSettingsPage.tsx bare (no modal/backdrop wrapper at
+            all - just a floating <section>) for "emailCode"/"setPassword", instead of routing them
+            through the properly-wrapped <UserSettings/> modal below like every other settingsPage
+            value. That's what showed as an unstyled white box when clicking "Edit profile" on an
+            account with no password yet (which dispatches settingsPage:"emailCode"). Removed - both
+            states are now in the list below instead, and UserSettings.tsx's own routing (see the
+            fix there) sends them to SetPasswordBox.tsx, which already correctly handles them. */}
+        {userSettingsBox.open ?userSettingsBox.settingsPage == "settings" || userSettingsBox.settingsPage == "change username" || userSettingsBox.settingsPage == "change profile" || userSettingsBox.settingsPage == "change user" || userSettingsBox.settingsPage == "change password" || userSettingsBox.settingsPage == "forget password" || userSettingsBox.settingsPage == "delete account" || userSettingsBox.settingsPage == "Profile from Profile" || userSettingsBox.settingsPage == "emailCode" || userSettingsBox.settingsPage == "setPassword" ? <UserSettings/>:null:null}
         
       <div
         className={`w-[100vw] ${

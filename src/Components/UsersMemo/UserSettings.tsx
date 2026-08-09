@@ -57,7 +57,11 @@ const UserSettings = () => {
           userSettingsBox.settingsPage == "change password"?
           <ChangePasswordPage/>
           :
-          userSettingsBox.settingsPage == "forget password"?
+          // "emailCode" (set-a-first-password, account has no password yet) and "setPassword"
+          // (the step right after the code is verified) are both steps of the same flow
+          // SetPasswordBox.tsx already handles internally alongside "forget password" - it just
+          // was never actually reachable through this modal before.
+          userSettingsBox.settingsPage == "forget password" || userSettingsBox.settingsPage == "emailCode" || userSettingsBox.settingsPage == "setPassword"?
           <SetPasswordBox/>
           :
           userSettingsBox.settingsPage == "delete account"?
