@@ -60,6 +60,7 @@ function SetPasswordBox() {
         )        
         setKey(response.data.key)
         setEmptyEmailCodeErr(false)
+        setAxiosError("")
         dispatch(setSetPasswordPage({open:true,settingsPage:'setPassword'}))
     }catch(err:any){
         // The backend returns errors shaped {"field": ["msg1", "msg2", ...]} - each value is an
@@ -95,6 +96,7 @@ function SetPasswordBox() {
             }
         )   
         setKey("")
+        setAxiosError("")
         dispatch(setPasswordOnUser())
         dispatch(setUserSettingsBoxClose());
     }catch(err:any){

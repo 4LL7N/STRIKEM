@@ -31,7 +31,8 @@ function ChangePasswordPage() {
           {
               headers: { Authorization: `JWT ${token}` },
           }
-         )   
+         )
+         setAxiosError("")
          dispatch(setUserSettingsBoxClose());
       }catch(err:any){
         // The backend returns errors shaped {"field": ["msg1", "msg2", ...]} - each value is an

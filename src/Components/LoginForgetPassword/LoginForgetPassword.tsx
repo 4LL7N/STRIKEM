@@ -67,6 +67,7 @@ function LoginForgetPassword() {
       )
       setPending(false)
       if(response.status == 200){
+        setAxiosError("")
         timer()
         dispatch(setSettingsPage("loginCodeCheck"))
       }
@@ -120,6 +121,7 @@ function LoginForgetPassword() {
         }
       )      
       setPending(false)
+      setAxiosError("")
       setLoginUuid(response.data.key)
       dispatch(setSettingsPage("loginSetPassword"))
     }catch(err:any){
@@ -165,6 +167,7 @@ function LoginForgetPassword() {
         }
       )
       setPending(false)
+      setAxiosError("")
       dispatch(setUserSettingsBoxClose())
     }catch(err:any){
       // The backend returns errors shaped {"field": ["msg1", "msg2", ...]} - each value is an

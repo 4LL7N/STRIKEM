@@ -37,6 +37,7 @@ function ChangeUserInfo() {
           }
         )
         logUsername.current?.value && dispatch(setNewUsername(logUsername.current.value))
+        setAxiosError("")
         dispatch(setUserSettingsBoxClose());
       }catch(err:any){
         // The backend returns errors shaped {"field": ["msg1", "msg2", ...]} - each value is an
@@ -88,8 +89,9 @@ function ChangeUserInfo() {
                     headers: { Authorization: `JWT ${token}` },
                 }
             )
+            setAxiosError("")
             dispatch(setUserSettingsBoxClose());
-            window.location.reload()
+            // window.location.reload()
         }catch(err:any){
             // The backend returns errors shaped {"field": ["msg1", "msg2", ...]} - each value is
             // an ARRAY of messages, not a single string. .flat() before .join("\n") is required,

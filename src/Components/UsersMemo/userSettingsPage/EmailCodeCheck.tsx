@@ -30,6 +30,7 @@ function EmailCodeCheck({
           headers: { Authorization: `JWT ${token}` },
         }
       );
+      setAxiosError("");
     } catch (err:any) {
       // The backend returns errors shaped {"field": ["msg1", "msg2", ...]} - each value is an
       // ARRAY of messages, not a single string. .flat() before .join("\n") is required, or
