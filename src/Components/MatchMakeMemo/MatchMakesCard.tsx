@@ -51,7 +51,12 @@ const MatchMakesCard = React.memo(
             {item.player_accepting.user.username}
           </h1>
         </div>
-        <div className="flex flex-col gap-[5px] items-center w-[100%] "></div>
+        {/* Was an empty div - nothing here in this component's history, in this repo or the user's
+        own older source. Filling it with a simple "VS" between the two matched players, the
+        conventional head-to-head indicator, since there's no original design to restore. */}
+        <div className="flex flex-col gap-[5px] items-center justify-center w-[100%] ">
+          <h1 className="!text-brand-gold text-[16px] md:text-[20px] font-semibold">VS</h1>
+        </div>
         <div className="flex flex-col justify-center items-center gap-[6px] min-w-[74px] max-w-[35%] md:min-w-[96px] ">
           <img
             src={item.player_inviting.profile_image}
