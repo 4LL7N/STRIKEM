@@ -75,7 +75,7 @@ interface Invitation {
 }
 
 function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSearch: string,setUsersSearch:(userSearch:string)=>void,setAcceptInvitation:(acceptInvitation:any)=>void }) {
-    const { sendJsonMessage, lastJsonMessage } = useWebSocketContext();
+    const { sendJsonMessage, subscribe } = useWebSocketContext();
 
       const [isSpinning, setIsSpinning] = useState(false);
 
@@ -120,49 +120,53 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
   
 
   useEffect(() => {
-    if(lastJsonMessage && lastJsonMessage.protocol == 'invited'){
-    const newInvites = [...invitations];
-    const newInvite:any = {
-      player_invited: {
-        profile_image: currentUser?.profile_image,
-        total_points: currentUser?.total_points,
-        user:currentUser?.user
-      },
-    player_inviting:{
-        profile_image:lastJsonMessage.inviter_profile_image,
-        user:{
-            username:lastJsonMessage?.inviteSenderUsername            
+    const unsubscribe = subscribe((data: any) => {
+      if(data && data.protocol == 'invited'){
+        const newInvites = [...invitations];
+        const newInvite:any = {
+          player_invited: {
+            profile_image: currentUser?.profile_image,
+            total_points: currentUser?.total_points,
+            user:currentUser?.user
+          },
+          player_inviting:{
+            profile_image:data.inviter_profile_image,
+            user:{
+              username:data?.inviteSenderUsername
+            }
+          }
+        };
+        newInvites.push(newInvite);
+
+        setInvitations(newInvites)
+      }else if(data && data.protocol == 'handling_invite_response' && data.invite_response == "ACCEPTED" ){
+        const newMatchUps = [...matchMakes]
+        const newMatchUp = {
+          id:data.matchup_id,
+          player_accepting:{
+            user:{
+              username:data.accepterUsername,
+            },
+            profile_image:data.responder_profile_image
+
+          },
+          player_inviting:{
+            user:{
+              username:data.inviteSenderUsername,
+            },
+            profile_image:data.invite_sender_profile_pic
+          }
         }
-    }
-
-    };
-    newInvites.push(newInvite);
-     
-    setInvitations(newInvites)
-}else if(lastJsonMessage && lastJsonMessage.protocol == 'handling_invite_response' && lastJsonMessage.invite_response == "ACCEPTED" ){
-  const newMatchUps = [...matchMakes]
-  const newMatchUp = {
-    id:lastJsonMessage.matchup_id,
-    player_accepting:{
-      user:{
-        username:lastJsonMessage.accepterUsername,
-      },
-      profile_image:lastJsonMessage.responder_profile_image
-
-    },
-    player_inviting:{
-      user:{
-        username:lastJsonMessage.inviteSenderUsername,
-      },
-      profile_image:lastJsonMessage.invite_sender_profile_pic
-    }
-  }
-  newMatchUps.push(newMatchUp)
-  setMatchMakes(newMatchUps)
-  setInvitations((prev)=>prev.filter((item)=> item.player_inviting.user.username != lastJsonMessage.inviteSenderUsername))
-}
-
-  }, [lastJsonMessage]);
+        newMatchUps.push(newMatchUp)
+        setMatchMakes(newMatchUps)
+        setInvitations((prev)=>prev.filter((item)=> item.player_inviting.user.username != data.inviteSenderUsername))
+      }
+    });
+    return unsubscribe;
+    // Re-subscribes whenever invitations/matchMakes/currentUser change, same reasoning as the
+    // Messenger.tsx WS handler - this callback closes over them, so it needs a fresh registration
+    // each time rather than being pinned to subscribe()'s permanently-stable reference.
+  }, [subscribe, invitations, matchMakes, currentUser]);
 
   const sendMatchmake = (username: string) => {
     
