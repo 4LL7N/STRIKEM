@@ -38,44 +38,50 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
     // window.location.reload()
   // }, []);
 
+  // "Recommended for you" doesn't depend on geolocation at all, so it gets its own effect that
+  // only ever needs to run once - it's no longer coupled to (and can't be taken down by) the
+  // geolocation-dependent fetch below, the way it was when both lived in one try block sharing
+  // one catch.
+  useEffect(() => {
+    const fetchRecommended = async () => {
+      try {
+        const PoolHousesResponse = await axios.get(
+          // "https://strikem.site/api/poolhouses/",
+          "http://localhost:5100/api/poolhouses/"
+        );
+        setRecommended(PoolHousesResponse.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchRecommended();
+  }, []);
+
+  // react-geolocated resolves isGeolocationAvailable/isGeolocationEnabled/coords asynchronously,
+  // often after this component's first render - depending on them here (instead of []) means
+  // this effect correctly re-fires and actually fetches once geolocation finishes resolving,
+  // rather than only ever checking their value once at mount and giving up silently if they
+  // weren't ready yet. The explicit !coords check also stops this from ever firing with
+  // lat=undefined&lng=undefined, which is what produced the 400 seen earlier.
   useEffect(() => {
     console.log("Geolocation Available:", isGeolocationAvailable);
     console.log("Geolocation Enabled:", isGeolocationEnabled);
     console.log("Coordinates:", coords);
-    if (isGeolocationAvailable && isGeolocationEnabled) {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(
-            // "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316"
-            `http://localhost:5100/api/poolhouses-filter/?lat=${coords?.latitude}&lng=${coords?.longitude}`
-            // {
-            //   headers: { Authorization: `JWT ${token}` },
-            // }
-          );
+    if (!isGeolocationAvailable || !isGeolocationEnabled || !coords) return;
 
-          setNearby(response.data);
-
-          const PoolHousesResponse = await axios.get(
-            // "https://strikem.site/api/poolhouses/",
-            "http://localhost:5100/api/poolhouses/",
-            {
-              // headers: { Authorization: `JWT ${token}` },
-            }
-          );
-
-          setRecommended(PoolHousesResponse.data);
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      fetchData();
-    }
-    // Deliberately still just [] here (matching the old effect's practical behavior, since
-    // fetchData's own useCallback deps were [] too, so [fetchData] never actually changed after
-    // mount) - not touching the fact that coords/geolocation-available getting resolved later
-    // than this mount doesn't retrigger the fetch, that's the separate, already-known,
-    // deliberately-deferred issue.
-  }, []);
+    const fetchNearby = async () => {
+      try {
+        const response = await axios.get(
+          // "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316"
+          `http://localhost:5100/api/poolhouses-filter/?lat=${coords.latitude}&lng=${coords.longitude}`
+        );
+        setNearby(response.data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchNearby();
+  }, [isGeolocationAvailable, isGeolocationEnabled, coords?.latitude, coords?.longitude]);
 
   const filteredSearchResults = useMemo(() => {
     if (props.search) {
@@ -94,7 +100,7 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
     <>
       {!props.search ? (
         <section className="flex flex-col w-[100%] bg-[#10141E] px-[16px] pb-[16px] md:pb-[0] md:px-[0]">
-          {(isGeolocationAvailable && isGeolocationEnabled)??
+          {(isGeolocationAvailable && isGeolocationEnabled) &&
           <div className="max-w-[100%] ">
             <h1 className="text-white text-[20px] font-light tracking-[-0.312px] mb-[16px] md:text-[32px] md:mb-[25px] md:tracking-[-0.5px] ">
               Nearby
