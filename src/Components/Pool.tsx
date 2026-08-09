@@ -1,6 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "./CSS/Pool.css";
-import "bootstrap/dist/css/bootstrap.min.css";
+// Bootstrap's CSS is imported from index.css (layered there - see the comment above
+// `@import "bootstrap/dist/css/bootstrap.min.css" layer(bootstrap);`), same as App.tsx already
+// does. This used to also import it directly here, unlayered - per the cascade-layers spec,
+// unlayered rules always beat layered ones regardless of specificity, so this single leftover
+// import was silently overriding every Tailwind class on this page with Bootstrap's plain
+// element defaults (h1/h2 font-size, button border-radius:0, etc.) - exactly why the "same size"
+// and "rounded corners" fixes above had no visible effect until this was removed. The JS bundle
+// import (Bootstrap's carousel/dropdown/etc. behavior) is unaffected and stays.
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -769,20 +776,22 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
                     <h1 className="text-white text-[14px] lg:text-[20px] font-semibold ">
                       {item.rater?.user.username}
                     </h1>
-                    <div className="flex gap-[5px]">
+                    {/* Icons were 19px, the numbers next to them text-[16px] - visibly mismatched.
+                    Both icons now match the number size exactly. */}
+                    <div className="flex items-center gap-[5px]">
                       <CiStar
                         style={{
                           color: "white",
-                          width: "19px",
-                          height: "19px",
+                          width: "16px",
+                          height: "16px",
                         }}
                       />
                       <h2 className="text-white text-[16px] m-0 ">{item.rate}</h2>
                       <TbLetterW
                         style={{
                           color: "white",
-                          width: "19px",
-                          height: "19px",
+                          width: "16px",
+                          height: "16px",
                           marginLeft: "10px",
                         }}
                       />
