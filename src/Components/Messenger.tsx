@@ -280,6 +280,27 @@ function Messenger() {
         if (response.data.results.length > 0) {
           if(MatchUpId){
             messagesFetch(MatchUpId);
+          } else {
+            // Set by an "ACP" (invitation accepted) notification click - there's no matchup id
+            // handy there (unlike MSG's item.extra), only the other player's id, so find the
+            // matchup that pairs them with the current user instead. The matchup is guaranteed to
+            // already exist by the time this notification is clickable - it's created in the same
+            // backend transaction as the notification itself.
+            const openWithPlayerId = localStorage.getItem("openChatWithPlayerId");
+            if (openWithPlayerId) {
+              const match = response.data.results.find((m: Message) =>
+                `${m.player_accepting.id}` == openWithPlayerId || `${m.player_inviting.id}` == openWithPlayerId
+              );
+              if (match) {
+                const otherPlayer = match.player_accepting.id === currentUser.id ? match.player_inviting : match.player_accepting;
+                setOpenChat(match.id);
+                localStorage.setItem("matchUpId", match.id);
+                messagesFetch(match.id);
+                setMessageTo(otherPlayer);
+                localStorage.setItem("MessageTo", JSON.stringify(otherPlayer));
+              }
+              localStorage.setItem("openChatWithPlayerId", "");
+            }
           }
         }
       } catch (err) {

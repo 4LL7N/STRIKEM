@@ -38,10 +38,12 @@ interface NotificationsBoxItemsProps {
     timeAgo: (timestamp: string) => string;
     navigate: (path: string) => void;
     notifications: Message[];
+    setNotifications: (notifications: Message[]) => void;
+    setUnReadNotifications: (updater: (prev: number) => number) => void;
     setOpenResultBox: (openResultBox: boolean) => void;
 }
 
-const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo,navigate,notifications,setOpenResultBox}:NotificationsBoxItemsProps) => {
+const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo,navigate,notifications,setNotifications,setUnReadNotifications,setOpenResultBox}:NotificationsBoxItemsProps) => {
     const message = () => {
         switch (item.type) {
           case "INV":
@@ -71,18 +73,36 @@ const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo
       }
 
       const handleNotificationClick = () => {
-        
+
         if (item.type == "INV") {
           navigate(`/matchmake`);
         } else if (item.type == "MSG") {
           navigate(`/messenger`);
           localStorage.setItem("matchUpId", item.extra);
+        } else if (item.type == "REJ") {
+          navigate(`/matchmake`);
+        } else if (item.type == "ACP") {
+          // The backend doesn't hand back a matchup id for ACP notifications directly (unlike MSG's
+          // item.extra) - but accepting an invite creates the matchup in the same transaction as
+          // this notification, so it's guaranteed to already exist by the time this is clickable.
+          // Messenger.tsx looks it up by the other player's id instead of a matchup id.
+          navigate(`/messenger`);
+          localStorage.setItem("matchUpId", "");
+          localStorage.setItem("openChatWithPlayerId", `${item.sent_by.id}`);
         } else if (item.type == "GSE") {
           localStorage.setItem("sessionId", item.extra);
           setOpenResultBox(true);
         }
-        
-        !item.read && ReadNotifications();
+
+        // Was: only the API call (ReadNotifications) ran - nothing updated the notifications array
+        // or unReadNotifications count held by the parent, so the background/bold styling and the
+        // header's red count badge both stayed stuck until the next full refetch. Mirrors the same
+        // fix already applied to the chat list (Messenger.tsx's readChat).
+        if (!item.read) {
+          ReadNotifications();
+          setNotifications(notifications.map((n) => n.id === item.id ? { ...n, read: true } : n));
+          setUnReadNotifications((prev) => Math.max(0, prev - 1));
+        }
       }
 
       return (
@@ -94,7 +114,7 @@ const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo
             i == notifications.length - 1
               ? ""
               : "border-b-[1px] border-b-[#243257d5] "
-          } p-[12px] md:p-[14px] lg:p-4 ${item.read ? "" : "bg-[#1d2537]"} `}
+          } p-[12px] md:p-[14px] lg:p-4 ${item.read ? "" : "bg-[#1d2b4f]"} `}
           onClick={handleNotificationClick}
         >
           <img

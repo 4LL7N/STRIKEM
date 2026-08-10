@@ -338,7 +338,7 @@ function Layout(props: {
           <div className="flex flex-col w-full h-full overflow-y-auto notificationsScroll relative rounded-[10px] ">
           
             {notifications?.map((item: Message, i: number) => {
-              return <NotificationsBoxItemsMemo key={i} item={item} i={i} goProfile={goProfile} messageContent={messageContent} timeAgo={timeAgo} navigate={navigate}  notifications={notifications} setOpenResultBox={setOpenResultBox} />
+              return <NotificationsBoxItemsMemo key={i} item={item} i={i} goProfile={goProfile} messageContent={messageContent} timeAgo={timeAgo} navigate={navigate}  notifications={notifications} setNotifications={setNotifications} setUnReadNotifications={setUnReadNotifications} setOpenResultBox={setOpenResultBox} />
             })}
           </div>
         </div>
