@@ -160,13 +160,22 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
         newMatchUps.push(newMatchUp)
         setMatchMakes(newMatchUps)
         setInvitations((prev)=>prev.filter((item)=> item.player_inviting.user.username != data.inviteSenderUsername))
+      }else if(data && data.protocol == 'handling_invite_response' && data.invite_response == "DENIED"){
+        // Sent only to the original inviter - the decliner's own list is updated optimistically
+        // in declineMatchmake() instead, since this broadcast never reaches them. Without this,
+        // that player's card stayed stuck showing "Invited" (re-inviting disabled) here even
+        // after they'd said no, until a page reload refetched sent_invitations from the server.
+        const declinedPlayer = playersData.find((p) => p.user.username == data.accepterUsername);
+        if (declinedPlayer) {
+          setSentInvitations((prev) => prev.filter((item) => item.player_invited != declinedPlayer.id));
+        }
       }
     });
     return unsubscribe;
-    // Re-subscribes whenever invitations/matchMakes/currentUser change, same reasoning as the
-    // Messenger.tsx WS handler - this callback closes over them, so it needs a fresh registration
-    // each time rather than being pinned to subscribe()'s permanently-stable reference.
-  }, [subscribe, invitations, matchMakes, currentUser]);
+    // Re-subscribes whenever invitations/matchMakes/currentUser/playersData change, same reasoning
+    // as the Messenger.tsx WS handler - this callback closes over them, so it needs a fresh
+    // registration each time rather than being pinned to subscribe()'s permanently-stable reference.
+  }, [subscribe, invitations, matchMakes, currentUser, playersData]);
 
   const sendMatchmake = (username: string) => {
     
@@ -208,13 +217,21 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
   };
 
   const declineMatchmake = (username: string) => {
-    
+
     sendJsonMessage({
       action: "matchmake",
       username: currentUser?.user.username,
       invite_sender_username: username,
       invite_response: "deny",
     });
+
+    // The backend's DENIED broadcast only goes to the original inviter (so their sentInvitations
+    // list can update below) - it never comes back to the person who declined, unlike ACCEPTED
+    // which is sent to both sides. Without this, the card just sat here forever until a page
+    // reload, even though the invitation was already gone server-side.
+    setInvitations((prev) =>
+      prev.filter((item) => item.player_inviting.user.username != username)
+    );
   };
 
   useEffect(() => {
