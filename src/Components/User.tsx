@@ -5,6 +5,7 @@ import { useLocation } from "react-router-dom";
 import ProfileInfo from "./UsersMemo/ProfileInfo";
 import TabsNavigation from "./UsersMemo/TabsNavigation";
 import { GameResult, Player } from "../type";
+import { API_BASE_URL } from "../config";
 
 
 
@@ -35,8 +36,7 @@ function User() {
     const Fetch = async () => {
       const token = Cookies.get('token')
 
-      // const dataUrl = location.pathname.split('/')[2] == 'me'?"https://strikem.site/users/current-user":`https://strikem.site/api/players/${location.pathname.split('/')[2]}`
-      const dataUrl = location.pathname.split('/')[2] == 'me'?"http://localhost:5100/users/current-user":`http://localhost:5100/api/players/${location.pathname.split('/')[2]}`
+      const dataUrl = location.pathname.split('/')[2] == 'me'?`${API_BASE_URL}/users/current-user`:`${API_BASE_URL}/api/players/${location.pathname.split('/')[2]}`
 
       try {
         const response = await axios.get(
@@ -52,8 +52,7 @@ function User() {
         setUserInfo(data);
 
         const historyResponse = await axios.get(
-          // `https://strikem.site/api/players/${data.id}/history/`,
-          `http://localhost:5100/api/players/${data.id}/history/`,
+          `${API_BASE_URL}/api/players/${data.id}/history/`,
           {
             headers: {
               Authorization:

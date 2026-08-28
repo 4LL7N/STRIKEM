@@ -7,6 +7,7 @@ import { CiStar } from "react-icons/ci";
 import "../CSS/messenger.css"
 import { useAppDispatch } from "../../ReduxStore/ReduxHooks";
 import { setAllReviewsBox } from "../../ReduxStore/features/allReviewsBox";
+import { API_BASE_URL } from "../../config";
 const AllReviews = memo(({allReviewsBox}:{allReviewsBox:RatingBoxState}) => {
 
 
@@ -20,8 +21,7 @@ const AllReviews = memo(({allReviewsBox}:{allReviewsBox:RatingBoxState}) => {
     const ratingsScroll = useRef<HTMLElement|null>(null)
 
     const fetchReviews = async () => {
-        // const ratingsUrl = `https://strikem.site/api/poolhouses/${allReviewsBox.id}/filter-ratings/${filter?`?filter=${filter}`:""}`   
-        const ratingsUrl = `http://localhost:5100/api/poolhouses/${allReviewsBox.id}/filter-ratings/${filter?`?filter=${filter}`:""}`              
+        const ratingsUrl = `${API_BASE_URL}/api/poolhouses/${allReviewsBox.id}/filter-ratings/${filter?`?filter=${filter}`:""}`              
         try{
             const response = await axios(ratingsUrl)
             setRatings(response.data.results)

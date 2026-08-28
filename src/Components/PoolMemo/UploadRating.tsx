@@ -7,6 +7,7 @@ import { Rating, Stack } from "@mui/material";
 import { RatingBoxState } from "../../type";
 import Cookies from "js-cookie";
 import axios from "axios";
+import { API_BASE_URL } from "../../config";
 
 const UploadRating = memo(({uploadRatingBox}:{uploadRatingBox:RatingBoxState}) => {
     const [selectedStars, setSelectedStars] = useState<number>(1);
@@ -16,8 +17,7 @@ const UploadRating = memo(({uploadRatingBox}:{uploadRatingBox:RatingBoxState}) =
     const postRating = async () => {
       const token = Cookies.get("token");
       try{
-        // await axios.post(`https://strikem.site/api/poolhouses/${uploadRatingBox.id}/ratings/`,{
-        await axios.post(`http://localhost:5100/api/poolhouses/${uploadRatingBox.id}/ratings/`,{
+        await axios.post(`${API_BASE_URL}/api/poolhouses/${uploadRatingBox.id}/ratings/`,{
           rate:selectedStars,
           review:ratingDescription
         }, {

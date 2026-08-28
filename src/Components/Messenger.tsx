@@ -24,6 +24,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { useAppDispatch, useAppSelector } from "../ReduxStore/ReduxHooks";
 import { unReadMatchupDecrement } from "../ReduxStore/features/unReadMatchups";
 import { chatMessage } from "../type";
+import { API_BASE_URL } from "../config";
 
 export interface Message {
   id: string;
@@ -125,8 +126,7 @@ function Messenger() {
     async (id: string) => {
       try {
         const Chatresponse = await axios(
-          // `https://strikem.site/api/matchups/${id}/chat/`,
-          `http://localhost:5100/api/matchups/${id}/chat/`,
+          `${API_BASE_URL}/api/matchups/${id}/chat/`,
           { headers: { Authorization: `JWT ${token}` } }
         );
         const chatData = Chatresponse.data.results;
@@ -210,7 +210,7 @@ function Messenger() {
             if (!chat.read) {
               axios
                 .put(
-                  `http://localhost:5100/api/read-matchup/${chat.id}/`,
+                  `${API_BASE_URL}/api/read-matchup/${chat.id}/`,
                   {},
                   { headers: { Authorization: `JWT ${token}` } }
                 )
@@ -240,8 +240,7 @@ function Messenger() {
 
   const readChat = async (id: string) => {
     await axios.put(
-      // `https://strikem.site/api/read-matchup/${id}/`,
-      `http://localhost:5100/api/read-matchup/${id}/`,
+      `${API_BASE_URL}/api/read-matchup/${id}/`,
       {},
       {
         headers: { Authorization: `JWT ${token}` },
@@ -284,8 +283,7 @@ function Messenger() {
   useEffect(() => {
     const Fetch = async () => {
       try {
-        // const response = await axios("https://strikem.site/api/matchups/", {
-        const response = await axios("http://localhost:5100/api/matchups/", {
+        const response = await axios(`${API_BASE_URL}/api/matchups/`, {
           headers: {
             Authorization: `JWT ${token}`,
           },

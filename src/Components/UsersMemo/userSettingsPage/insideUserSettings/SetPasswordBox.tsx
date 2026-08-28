@@ -8,6 +8,7 @@ import axios from 'axios';
 import Cookies from "js-cookie";
 import SetNewPasswordPage from "../SetNewPasswordPage";
 import { setPasswordOnUser } from "../../../../ReduxStore/features/currentUser";
+import { API_BASE_URL } from "../../../../config";
 
 function SetPasswordBox() {
     
@@ -50,8 +51,7 @@ function SetPasswordBox() {
     };
     userSettings.settingsPage != "emailCode" ?sendCode.email = currentUser.user.email:null;
     try{
-        // const response = await axios.post("https://strikem.site/users/verify-code/",{
-        const response = await axios.post(`http://localhost:5100/users/${userSettings.settingsPage == "emailCode"?"verify-code":"verify-code-forget"}/`,{
+        const response = await axios.post(`${API_BASE_URL}/users/${userSettings.settingsPage == "emailCode"?"verify-code":"verify-code-forget"}/`,{
                 code
             },
             {
@@ -86,8 +86,7 @@ function SetPasswordBox() {
   const sendNewPassword = async () => {
     const token = Cookies.get("token");
     try{
-        // await axios.post('https://strikem.site/users/set-g-password/',{
-        await axios.post('http://localhost:5100/users/set-g-password/',{
+        await axios.post(`${API_BASE_URL}/users/set-g-password/`,{
                 key,
                 password:newPassword.current?.value
             },

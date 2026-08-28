@@ -4,6 +4,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useRef } from "react";
 import { useAppSelector } from "../../../ReduxStore/ReduxHooks";
+import { API_BASE_URL } from "../../../config";
 
 function EmailCodeCheck({
   emailCode,
@@ -21,8 +22,7 @@ function EmailCodeCheck({
     timer();
     try {
       await axios.post(
-        // "https://strikem.site/users/get-code-forget/",
-        `http://localhost:5100/users/${userSettings.settingsPage == "emailCode"?"get-code":"get-code-forget"}/`,
+        `${API_BASE_URL}/users/${userSettings.settingsPage == "emailCode"?"get-code":"get-code-forget"}/`,
         {
           email:currentUser.user.email
         },

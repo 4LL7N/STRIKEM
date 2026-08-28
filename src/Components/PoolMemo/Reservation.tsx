@@ -19,6 +19,7 @@ import { useLocation } from "react-router-dom";
 import { Autocomplete, TextField } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../ReduxStore/ReduxHooks";
 import { setReservationBox } from "../../ReduxStore/features/reservationBox";
+import { API_BASE_URL } from "../../config";
 
 interface Player {
   id: number;
@@ -143,8 +144,7 @@ const Reservation = memo(
     const fetchPlayers = async () => {
       const token = Cookies.get("token");
       try {
-        // const response = await axios.get("https://strikem.site/api/matchups/", {
-        const response = await axios.get("http://localhost:5100/api/matchups/", {
+        const response = await axios.get(`${API_BASE_URL}/api/matchups/`, {
           headers: { Authorization: `JWT ${token}` },
         });
 
@@ -179,24 +179,21 @@ const Reservation = memo(
         const [todayResponse, tomorrowResponse, afterTomorrowResponse] =
           await Promise.all([
             axios.get(
-              // `https://strikem.site/api/poolhouses/${
-              `http://localhost:5100/api/poolhouses/${
+              `${API_BASE_URL}/api/poolhouses/${
                 poolInfo?.id
               }/tables/${tableID}/reserve/?date=${
                 tillClose ? date(-1) :
                  date(0)}`
             ),
             axios.get(
-              // `https://strikem.site/api/poolhouses/${
-              `http://localhost:5100/api/poolhouses/${
+              `${API_BASE_URL}/api/poolhouses/${
                 poolInfo?.id
               }/tables/${tableID}/reserve/?date=${
                 tillClose ? date(0) :
                  date(1)}`
             ),
             axios.get(
-              // `https://strikem.site/api/poolhouses/${
-              `http://localhost:5100/api/poolhouses/${
+              `${API_BASE_URL}/api/poolhouses/${
                 poolInfo?.id
               }/tables/${tableID}/reserve/?date=${
                 tillClose ? date(1) :
@@ -223,8 +220,7 @@ const Reservation = memo(
   })=>{
       const token = Cookies.get("token");
       try{
-        // await axios.post(`https://strikem.site/api/poolhouses/${poolInfo?.id}/tables/${tableID}/reserve/`
-        await axios.post(`http://localhost:5100/api/poolhouses/${poolInfo?.id}/tables/${tableID}/reserve/`
+        await axios.post(`${API_BASE_URL}/api/poolhouses/${poolInfo?.id}/tables/${tableID}/reserve/`
         ,body
         ,{
           headers: { Authorization: `JWT ${token}` },

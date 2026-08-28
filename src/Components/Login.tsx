@@ -9,6 +9,7 @@ import { IoMdClose } from "react-icons/io";
 import { CredentialResponse, GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { useAppDispatch } from "../ReduxStore/ReduxHooks";
 import { setSetPasswordPage } from "../ReduxStore/features/userSettingsBox";
+import { API_BASE_URL, GOOGLE_CLIENT_ID } from "../config";
 
 
 function Login({loginBox,setLoginBox,setSignUpBox}:any) {
@@ -24,7 +25,7 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
 
   const [googleError, setGoogleError] = useState<string>("");
 
-  const clientId = "350212676070-7iflui6iruag475r9hla0hq0amtkqvk4.apps.googleusercontent.com";
+  const clientId = GOOGLE_CLIENT_ID;
 
   const dispatch = useAppDispatch()
 
@@ -65,8 +66,7 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
   const Login = async () => {
     try {
       const response = await axios.post(
-        // "https://strikem.site/auth/jwt/create",
-        "http://localhost:5100/auth/jwt/create",
+        `${API_BASE_URL}/auth/jwt/create`,
         {
           username: logUsername.current?.value,
           password: logPassword.current.value,
@@ -99,8 +99,7 @@ function Login({loginBox,setLoginBox,setSignUpBox}:any) {
 
   const googleToBack = async (googleToken:string) => {
     try{
-      // const response = await axios.post("https://strikem.site/users/google-auth/", {
-      const response = await axios.post("http://localhost:5100/users/google-auth/", {
+      const response = await axios.post(`${API_BASE_URL}/users/google-auth/`, {
         id_token: googleToken,
       })
       // console.log(response);

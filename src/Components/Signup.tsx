@@ -6,6 +6,7 @@ import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { CredentialResponse } from "@react-oauth/google";
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL, GOOGLE_CLIENT_ID } from "../config";
 
 
 function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
@@ -34,7 +35,7 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
 
   const [changeToVerify, setChangeToVerify] = useState<boolean>(false);
 
-  const clientId = "350212676070-7iflui6iruag475r9hla0hq0amtkqvk4.apps.googleusercontent.com";
+  const clientId = GOOGLE_CLIENT_ID;
 
   // Plain mutable boxes for reading the "would-be" validity of each field synchronously within
   // the same HandleSignup call - setEmptyEmail() etc. (the actual React state) won't reflect the
@@ -119,8 +120,7 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
 
   const signUp = async () => {
     try {
-      // await axios.post("https://strikem.site/auth/users/", {
-      await axios.post("http://localhost:5100/auth/users/", {
+      await axios.post(`${API_BASE_URL}/auth/users/`, {
         username: userName.current?.value,
         password: password.current?.value,
         email: email.current?.value,
@@ -154,8 +154,7 @@ function Signup({signUpBox, setSignUpBox, setLoginBox }: any) {
 
   const googleToBack = async (id_token:string) => {
     try{
-      // const response = await axios.post("https://strikem.site/users/google-auth/", {
-      const response = await axios.post("http://localhost:5100/users/google-auth/", {
+      const response = await axios.post(`${API_BASE_URL}/users/google-auth/`, {
         id_token,
         from: "register"
       })

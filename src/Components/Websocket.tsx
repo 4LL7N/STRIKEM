@@ -5,6 +5,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import useWebSocket from "react-use-websocket";
 import { jwtDecode } from "jwt-decode";
+import { API_BASE_URL } from "../config";
 
 
 
@@ -41,8 +42,7 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const triggerConnection = () => {
     const fetchWsToken = async () => {
       try {
-        // const response = await axios("https://strikem.site/users/auth_for_ws_connection/", {
-        const response = await axios("http://localhost:5100/users/auth_for_ws_connection/", {
+        const response = await axios(`${API_BASE_URL}/users/auth_for_ws_connection/`, {
           headers: { Authorization: `JWT ${token}` },
         });
         if (response.data.uuid) {

@@ -7,6 +7,7 @@ import { setUserSettingsBoxClose } from "../../../../ReduxStore/features/userSet
 import { removeCurrentUser } from "../../../../ReduxStore/features/currentUser";
 import { setUserLogIn } from "../../../../ReduxStore/features/userLogIn";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../../../../config";
 
 function DeleteAccountPage() {
 
@@ -34,8 +35,7 @@ function DeleteAccountPage() {
       const token = Cookies.get("token");
 
       try{
-        // await axios.post("https://strikem.site/users/delete-user/",
-        await axios.post("http://localhost:5100/users/delete-user/",
+        await axios.post(`${API_BASE_URL}/users/delete-user/`,
           {
             password:password.current?.value,
           },

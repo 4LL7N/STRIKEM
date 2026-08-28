@@ -13,6 +13,7 @@ import InvitationsCard from "./MatchMakeMemo/InvitationsCard";
 import { IoRefreshSharp } from "react-icons/io5";
 import { useAppSelector } from "../ReduxStore/ReduxHooks";
 import { Player } from "../type";
+import { API_BASE_URL } from "../config";
 
 
 interface Message {
@@ -106,8 +107,7 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
     const fetchPlayers = async(newFilter:number[],IsOn:boolean|null)=>{
       const token = Cookies.get("token");
       
-      // const url = `https://strikem.site/api/filter-ratings/${newFilter.length !=0?'?':''}${newFilter.includes(2)?'filter=rating':''}${newFilter.length==2?"&":""}${newFilter.includes(1)?"filter_location=true":""}`
-      const url = `http://localhost:5100/api/filter-ratings/${newFilter.length !=0?'?':''}${newFilter.includes(2)?'filter=rating':''}${newFilter.length==2?"&":""}${newFilter.includes(1)?"filter_location=true":""}`
+      const url = `${API_BASE_URL}/api/filter-ratings/${newFilter.length !=0?'?':''}${newFilter.includes(2)?'filter=rating':''}${newFilter.length==2?"&":""}${newFilter.includes(1)?"filter_location=true":""}`
       const playersResponse = await axios(url,{
         headers: { Authorization: `JWT ${token}` },
       })
@@ -239,16 +239,13 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
       const token = Cookies.get("token");
       try {
         const [playersResponse, matchMakesResponse, invitationsResponse] = await Promise.all([
-          // axios.get("https://strikem.site/api/filter-ratings/", {
-          axios.get("http://localhost:5100/api/filter-ratings/", {
+          axios.get(`${API_BASE_URL}/api/filter-ratings/`, {
             headers: { Authorization: `JWT ${token}` },
           }),
-          // axios.get("https://strikem.site/api/matchups/", {
-          axios.get("http://localhost:5100/api/matchups/", {
+          axios.get(`${API_BASE_URL}/api/matchups/`, {
             headers: { Authorization: `JWT ${token}` },
           }),
-          // axios.get(`https://strikem.site/api/player-details/`, {
-          axios.get(`http://localhost:5100/api/player-details/`, {
+          axios.get(`${API_BASE_URL}/api/player-details/`, {
             headers: { Authorization: `JWT ${token}` },
           }),
         ]);
@@ -325,8 +322,7 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
     setIsSpinning(true); 
     const token = Cookies.get("token");
     try {
-      // const response = await axios(`https://strikem.site/api/filter-ratings/?${filter.includes(2)?'filter=rating':''}${filter.length==2?"&":""}${filter.includes(1)?"filter_location=true":""}`,{
-      const response = await axios(`http://localhost:5100/api/filter-ratings/?${filter.includes(2)?'filter=rating':''}${filter.length==2?"&":""}${filter.includes(1)?"filter_location=true":""}`,{
+      const response = await axios(`${API_BASE_URL}/api/filter-ratings/?${filter.includes(2)?'filter=rating':''}${filter.length==2?"&":""}${filter.includes(1)?"filter_location=true":""}`,{
         headers: { Authorization: `JWT ${token}` },
       })
       let PlayersData:Player[] = [...response.data]

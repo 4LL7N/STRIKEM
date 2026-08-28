@@ -3,6 +3,7 @@ import axios from "axios";
 import { memo, useEffect, useState} from "react";
 import Cookies from "js-cookie";
 import { useAppSelector } from "../../ReduxStore/ReduxHooks";
+import { API_BASE_URL } from "../../config";
 
 interface Player {
   id: number;
@@ -61,8 +62,7 @@ const ResultBoxMemo = memo(
       const token = Cookies.get("token");
       try {
         const CurrentSessionResponse = await axios(
-          // `https://strikem.site/api/game-session/${sessionId}/`,
-          `http://localhost:5100/api/game-session/${sessionId}/`,
+          `${API_BASE_URL}/api/game-session/${sessionId}/`,
           {
             headers: { Authorization: `JWT ${token}` },
           }
@@ -82,8 +82,7 @@ const ResultBoxMemo = memo(
     const postResult = async () => {
       const token = Cookies.get("token");
       const response = await axios.post(
-        // `https://strikem.site/api/players/${currentUser?.id}/history/`,
-        `http://localhost:5100/api/players/${currentUser?.id}/history/`,
+        `${API_BASE_URL}/api/players/${currentUser?.id}/history/`,
         {
           game_session: sessionId,
           winner_player: yourPoints > opponentsPoints ? currentUser?.id : currentUser?.id==currentSession?.players[0]?.id? currentSession?.players[1]?.id:currentSession?.players[0]?.id,

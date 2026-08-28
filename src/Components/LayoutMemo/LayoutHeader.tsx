@@ -9,6 +9,7 @@ import { setUserLogIn } from "../../ReduxStore/features/userLogIn";
 import { Link, useNavigate } from "react-router-dom";
 import { LayoutHeaderProps } from "../../type";
 import { IoLogoGameControllerB } from "react-icons/io";
+import { API_BASE_URL } from "../../config";
 
 
 const LayoutHeader = memo(({setNotificationsOpen,setNotifications,headerHeight,unReadNotifications,setLogOut,userLogIn,setLoginBox,setSignUpBox}:LayoutHeaderProps) => {
@@ -25,8 +26,7 @@ const LayoutHeader = memo(({setNotificationsOpen,setNotifications,headerHeight,u
         const token = Cookies.get("token");
         try {
           const response = await axios.get(
-            // "https://strikem.site/api/notifications/",
-            "http://localhost:5100/api/notifications/",
+            `${API_BASE_URL}/api/notifications/`,
             {
               headers: { Authorization: `JWT ${token}` },
             }

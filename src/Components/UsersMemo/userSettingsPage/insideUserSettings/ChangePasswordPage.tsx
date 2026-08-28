@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { useRef, useState } from "react"
 import { useAppDispatch } from "../../../../ReduxStore/ReduxHooks";
 import { setUserSettingsBoxClose } from "../../../../ReduxStore/features/userSettingsBox";
+import { API_BASE_URL } from "../../../../config";
 
 function ChangePasswordPage() {
 
@@ -22,8 +23,7 @@ function ChangePasswordPage() {
     const sendNewPassword = async () =>{
       const token = Cookies.get("token");
       try{
-        // await axios.post('https://strikem.site/auth/users/set_password/',
-        await axios.post('http://localhost:5100/auth/users/set_password/',
+        await axios.post(`${API_BASE_URL}/auth/users/set_password/`,
           {
             current_password:oldPassword.current?.value ,
             new_password: newPassword.current?.value

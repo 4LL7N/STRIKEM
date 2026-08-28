@@ -2,6 +2,7 @@
 import axios from "axios";
 import { memo } from "react";
 import Cookies from "js-cookie";
+import { API_BASE_URL } from "../../config";
 
 interface User {
   id: number;
@@ -65,8 +66,7 @@ const NotificationsBoxItemsMemo = memo(({item,i,goProfile,messageContent,timeAgo
 
       const ReadNotifications = async()=>{
         const token = Cookies.get("token");
-        // axios.put(`https://strikem.site/api/notifications/${item.id}/`,
-        axios.put(`http://localhost:5100/api/notifications/${item.id}/`,
+        axios.put(`${API_BASE_URL}/api/notifications/${item.id}/`,
         {
           headers: { Authorization: `JWT ${token}` },
         },{})

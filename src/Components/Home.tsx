@@ -6,6 +6,7 @@ import "./CSS/home.css";
 import { MdTableRestaurant } from "react-icons/md";
 import { CiStar } from "react-icons/ci";
 import { GeoLocation, GeoLocationCoords } from "../type";
+import { API_BASE_URL } from "../config";
 
 interface PoolHall {
   id: number;
@@ -57,8 +58,7 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
     const fetchRecommended = async () => {
       try {
         const PoolHousesResponse = await axios.get(
-          // "https://strikem.site/api/poolhouses/",
-          "http://localhost:5100/api/poolhouses/"
+          `${API_BASE_URL}/api/poolhouses/`
         );
         setRecommended(PoolHousesResponse.data);
       } catch (err) {
@@ -86,8 +86,7 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
     const fetchNearby = async () => {
       try {
         const response = await axios.get(
-          // "https://strikem.site/api/poolhouses-filter/?lat=41.713403481245244&lng=44.782889824435316"
-          `http://localhost:5100/api/poolhouses-filter/?lat=${coords.latitude}&lng=${coords.longitude}`
+          `${API_BASE_URL}/api/poolhouses-filter/?lat=${coords.latitude}&lng=${coords.longitude}`
         );
         setNearby(response.data);
       } catch (err) {
