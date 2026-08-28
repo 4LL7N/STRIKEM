@@ -199,13 +199,28 @@ function Messenger() {
           if (MessagesList[i].id == MatchUpId) {
             const [chat] = MessagesList.splice(i, 1);
             const newChat = {...chat}
-            
+
             newChat.last_message = {body:chatInput.current.value,sender:{id:currentUser.id,user:{username:currentUser.user.username}}};
             // ?chat.last_message.body = chatInput.current.value:null
+            // This used to only flip `read` in local state, so the sidebar looked read but the
+            // server's shared Read flag on the matchup was never actually updated - the header
+            // badge stayed stuck unread and the next page load reverted the sidebar too. Mirror
+            // readChat()'s real persistence (PUT read-matchup + decrement the badge) whenever
+            // sending a message is what's clearing a conversation that was actually unread.
+            if (!chat.read) {
+              axios
+                .put(
+                  `http://localhost:5100/api/read-matchup/${chat.id}/`,
+                  {},
+                  { headers: { Authorization: `JWT ${token}` } }
+                )
+                .catch((err) => console.log(err));
+              dispatch(unReadMatchupDecrement());
+            }
             newChat.read = true;
-            
+
             MessagesList.splice(0, 0, newChat);
-            
+
           }
         }
         
