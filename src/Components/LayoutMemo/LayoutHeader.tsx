@@ -173,7 +173,11 @@ const LayoutHeader = memo(({setNotificationsOpen,setNotifications,headerHeight,u
             </div>
             <img
               className="w-[24px] h-[24px] md:w-[32px] md:h-[32px] rounded-[50%] "
-              src={currentUser?.profile_image}
+              // profile_image starts as "" in the Redux default state, before the real user
+              // fetch resolves - src="" (as opposed to no src at all) makes some browsers
+              // re-request the current document, which is the exact bug React's console warning
+              // above is about. Falling back to undefined drops the attribute entirely instead.
+              src={currentUser?.profile_image || undefined}
               onClick={() => {
                 navigate("/users/me");
                 localStorage.setItem("matchUpId", "");

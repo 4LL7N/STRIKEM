@@ -46,8 +46,13 @@ export const WebSocketProvider: React.FC<{ children: React.ReactNode }> = ({ chi
           headers: { Authorization: `JWT ${token}` },
         });
         if (response.data.uuid) {
-          // setWsUrl(`wss://strikem.site/ws/base/?uuid=${response.data.uuid}`);
-          setWsUrl(`ws://localhost:5100/ws/base/?uuid=${response.data.uuid}`);
+          // Was hardcoded to ws://localhost:5100 - missed by the earlier API_BASE_URL rewrite
+          // pass since that only matched http:// strings, not this ws:// one. Derived from
+          // API_BASE_URL instead (https -> wss, http -> ws) so it points at whatever backend the
+          // rest of the app is actually talking to, local or deployed.
+          const wsScheme = API_BASE_URL.startsWith("https") ? "wss" : "ws";
+          const wsBase = API_BASE_URL.replace(/^https?/, wsScheme);
+          setWsUrl(`${wsBase}/ws/base/?uuid=${response.data.uuid}`);
         } else {
           console.error("Cannot connect: Token is missing.");
         }

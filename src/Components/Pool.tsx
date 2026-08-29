@@ -658,7 +658,11 @@ function Pool(props:{coords:any, isGeolocationAvailable:any, isGeolocationEnable
                     {TableReservationList}
                     <img
                       ref={img}
-                      src={poolInfo.room_image}
+                      // Was poolInfo.room_image (fetched from the backend, backed by Azure Blob
+                      // Storage) - per your request, no longer sourced from the database/blob at
+                      // all. Same file the ImageMap thumbnail above already uses, served as a
+                      // static frontend asset instead of a network round-trip.
+                      src="/images/testPool.jpg"
                       id="largeImage"
                       className="img-fluid z-10 "
                     />

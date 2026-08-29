@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import './index.css'
+import './authInterceptor.ts'
 import { Provider } from 'react-redux'
 import { store } from './ReduxStore/store.ts'
 
