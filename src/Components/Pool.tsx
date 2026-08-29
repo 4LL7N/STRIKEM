@@ -57,7 +57,7 @@ const Star = ({ fillPercentage }: { fillPercentage: number }) => {
   );
 };
 
-const StarRating = ({ rating }: { rating: number | undefined }) => {
+const StarRating = ({ rating }: { rating: number | null | undefined }) => {
   const maxStars = 5;
 
   if (!rating) return;

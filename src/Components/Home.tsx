@@ -13,7 +13,7 @@ interface PoolHall {
   title: string;
   address: string;
   tables: Table[];
-  avg_rating: number;
+  avg_rating: number | null;
   pics: Picture[];
   table_count: number;
 }
@@ -221,7 +221,10 @@ function Home(props: { search: string,coords:GeoLocationCoords|undefined, isGeol
                             color: "white",
                           }}
                         />
-                        <p>{item.avg_rating.toFixed(1)}</p>
+                        {/* avg_rating is null from the backend for a venue with zero ratings so
+                        far (e.g. a brand new pool house) - .toFixed() on null crashed the whole
+                        page's render, not just this card. */}
+                        <p>{item.avg_rating != null ? item.avg_rating.toFixed(1) : "New"}</p>
                       </span>
                     </div>
                     <h2 className="text-white text-sm font-medium md:text-lg">

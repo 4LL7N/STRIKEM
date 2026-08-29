@@ -83,7 +83,7 @@ export interface PoolHall {
   title: string;
   address: string;
   tables: Table[];
-  avg_rating: number;
+  avg_rating: number | null;
   pics: Picture[];
   room_image:string
   table_count: number;
