@@ -7,6 +7,7 @@ import { setUserSettingsBoxClose } from "../../../../../ReduxStore/features/user
 import { setNewUsername, setProfileImage } from "../../../../../ReduxStore/features/currentUser";
 import ChangeUsername from "./ChangeUsername";
 import ChangeProfilePicture from "./ChangeProfilePicture";
+import { API_BASE_URL } from "../../../../../config";
 
 function ChangeUserInfo() {
     const currentUser = useAppSelector((state) => state.currentUser);
@@ -25,8 +26,7 @@ function ChangeUserInfo() {
     const updateUsername = async ()=>{
       const token = Cookies.get("token");
       try{
-        // await axios.post("https://strikem.site/auth/users/set_username/",
-        await axios.post("http://localhost:5100/auth/users/set_username/",
+        await axios.post(`${API_BASE_URL}/auth/users/set_username/`,
           {
   
               current_password:logPassword.current?.value ,
@@ -39,6 +39,7 @@ function ChangeUserInfo() {
         logUsername.current?.value && dispatch(setNewUsername(logUsername.current.value))
         setAxiosError("")
         dispatch(setUserSettingsBoxClose());
+        window.location.reload()
       }catch(err:any){
         // The backend returns errors shaped {"field": ["msg1", "msg2", ...]} - each value is an
         // ARRAY of messages, not a single string. .flat() before .join("\n") is required, or
@@ -78,13 +79,12 @@ function ChangeUserInfo() {
     const [selectedFile,setSelectedFile] = useState<File|null>(null)
 
     const uploadPicture = async (data:FormData) =>{
-        const token = Cookies.get("token");        
+        const token = Cookies.get("token");
         selectedFile && console.log(URL.createObjectURL(selectedFile));
         console.log(Object.fromEntries(data.entries()));
         
         try{
-            // await axios.patch(`https://strikem.site/api/players/${currentUser.id}/`,data,
-            const response = await axios.patch(`http://localhost:5100/api/players/${currentUser.id}/`,data,
+            const response = await axios.patch(`${API_BASE_URL}/api/players/${currentUser.id}/`,data,
                 {
                     headers: { Authorization: `JWT ${token}` },
                 }
@@ -96,6 +96,7 @@ function ChangeUserInfo() {
             dispatch(setProfileImage(response.data.profile_image))
             setAxiosError("")
             dispatch(setUserSettingsBoxClose());
+            window.location.reload()
         }catch(err:any){
             // The backend returns errors shaped {"field": ["msg1", "msg2", ...]} - each value is
             // an ARRAY of messages, not a single string. .flat() before .join("\n") is required,
@@ -116,7 +117,7 @@ function ChangeUserInfo() {
         const formData = new FormData()
         console.log(selectedFile,"selectedFile");
         
-        formData.append("profile_image",selectedFile)
+        formData.append("ProfileImage",selectedFile)
         setEmptyFileError(false)
         uploadPicture(formData)
         
