@@ -97,6 +97,17 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
     // fetching fresh data, and from the toggle switch itself).
     const [isOn, setIsOn] = useState(() => currentUser.inviting_to_play);
 
+    // Toggle off -> the current user shouldn't be in the matchmaking list at all (they're not
+    // looking for a match). Toggle on -> they should, but pinned first rather than wherever the
+    // API happened to sort them by points - every place that builds playersData from a fresh API
+    // response goes through this one function so the placement rule can't drift between them.
+    const placeCurrentUserFirst = (players: Player[], onState: boolean): Player[] => {
+      const others = players.filter((item: Player) => item.id != currentUser.id);
+      if (!onState) return others;
+      const self = players.find((item: Player) => item.id == currentUser.id);
+      return self ? [self, ...others] : others;
+    };
+
     const handleCheckboxChange = (num: number) => {
       let newFilter = [...filter]
       newFilter = newFilter.includes(num)? newFilter.filter((item) => item !== num):[...newFilter,num]
@@ -112,7 +123,7 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
         headers: { Authorization: `JWT ${token}` },
       })
       let PlayersData:Player[] = [...playersResponse.data]
-        PlayersData = IsOn? [...PlayersData]:PlayersData.filter((item:Player)=> item.id != currentUser.id)
+        PlayersData = placeCurrentUserFirst(PlayersData, !!IsOn)
         setPlayersData(PlayersData);
         setPlayersDataSearch(PlayersData)
     }
@@ -251,7 +262,7 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
         ]);
 
         let PlayersData:Player[] = [...playersResponse.data]
-        PlayersData = !(invitationsResponse?.data?.inviting_to_play)? PlayersData.filter((item:Player)=> item.id != invitationsResponse?.data.id):[...PlayersData]
+        PlayersData = placeCurrentUserFirst(PlayersData, !!invitationsResponse?.data?.inviting_to_play)
         setPlayersData(PlayersData);
         setPlayersDataSearch(PlayersData)
         setMatchMakes(matchMakesResponse.data.results);
@@ -296,10 +307,8 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
             'protocol': 'control_user'
         }
     );
-    let PlayersData:Player[] = [...playersData]
     if(isOn){
-      PlayersData = PlayersData.filter((item:Player)=> item.id != currentUser.id)
-      setPlayersData(PlayersData)
+      setPlayersData(placeCurrentUserFirst(playersData, false))
     }else{
       fetchPlayers([...filter],true)
     }
@@ -326,8 +335,8 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
         headers: { Authorization: `JWT ${token}` },
       })
       let PlayersData:Player[] = [...response.data]
-        PlayersData = isOn? [...PlayersData]:PlayersData.filter((item:Player)=> item.id != currentUser.id)
-      
+        PlayersData = placeCurrentUserFirst(PlayersData, isOn)
+
       if (!deepEqual(playersData, PlayersData)) { 
         setPlayersDataSearch(PlayersData)
         setPlayersData(PlayersData);
