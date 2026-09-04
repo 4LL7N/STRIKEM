@@ -97,14 +97,23 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
     // fetching fresh data, and from the toggle switch itself).
     const [isOn, setIsOn] = useState(() => currentUser.inviting_to_play);
 
+    // Tracks the current user's own player id independently of the Redux currentUser - the mount
+    // effect below fires before the app-wide currentUser fetch (elsewhere, e.g. Layout) is
+    // guaranteed to have resolved, so currentUser.id can still be 0/undefined at that first call.
+    // Seeded from Redux as a reasonable starting guess, then corrected from this page's own
+    // /api/player-details/ response (see the mount effect) the moment it comes back - every other
+    // call site below reads this instead of currentUser.id directly, so there's one source of
+    // truth instead of two that can disagree.
+    const [selfId, setSelfId] = useState<number>(currentUser.id);
+
     // Toggle off -> the current user shouldn't be in the matchmaking list at all (they're not
     // looking for a match). Toggle on -> they should, but pinned first rather than wherever the
     // API happened to sort them by points - every place that builds playersData from a fresh API
     // response goes through this one function so the placement rule can't drift between them.
-    const placeCurrentUserFirst = (players: Player[], onState: boolean): Player[] => {
-      const others = players.filter((item: Player) => item.id != currentUser.id);
+    const placeCurrentUserFirst = (players: Player[], onState: boolean, id: number): Player[] => {
+      const others = players.filter((item: Player) => item.id != id);
       if (!onState) return others;
-      const self = players.find((item: Player) => item.id == currentUser.id);
+      const self = players.find((item: Player) => item.id == id);
       return self ? [self, ...others] : others;
     };
 
@@ -123,7 +132,7 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
         headers: { Authorization: `JWT ${token}` },
       })
       let PlayersData:Player[] = [...playersResponse.data]
-        PlayersData = placeCurrentUserFirst(PlayersData, !!IsOn)
+        PlayersData = placeCurrentUserFirst(PlayersData, !!IsOn, selfId)
         setPlayersData(PlayersData);
         setPlayersDataSearch(PlayersData)
     }
@@ -261,8 +270,15 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
           }),
         ]);
 
+        // invitationsResponse.data.id is this page's own fresh fetch of the current player's id -
+        // used here (and pushed into selfId for every later call) instead of the Redux
+        // currentUser.id, which this effect can't wait on without adding it as a dependency and
+        // re-running the whole fetch every time Redux's copy changes.
+        const freshSelfId = invitationsResponse?.data?.id ?? currentUser.id;
+        setSelfId(freshSelfId);
+
         let PlayersData:Player[] = [...playersResponse.data]
-        PlayersData = placeCurrentUserFirst(PlayersData, !!invitationsResponse?.data?.inviting_to_play)
+        PlayersData = placeCurrentUserFirst(PlayersData, !!invitationsResponse?.data?.inviting_to_play, freshSelfId)
         setPlayersData(PlayersData);
         setPlayersDataSearch(PlayersData)
         setMatchMakes(matchMakesResponse.data.results);
@@ -308,7 +324,7 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
         }
     );
     if(isOn){
-      setPlayersData(placeCurrentUserFirst(playersData, false))
+      setPlayersData(placeCurrentUserFirst(playersData, false, selfId))
     }else{
       fetchPlayers([...filter],true)
     }
@@ -335,7 +351,7 @@ function Matchup({ usersSearch,setUsersSearch,setAcceptInvitation }: { usersSear
         headers: { Authorization: `JWT ${token}` },
       })
       let PlayersData:Player[] = [...response.data]
-        PlayersData = placeCurrentUserFirst(PlayersData, isOn)
+        PlayersData = placeCurrentUserFirst(PlayersData, isOn, selfId)
 
       if (!deepEqual(playersData, PlayersData)) { 
         setPlayersDataSearch(PlayersData)
